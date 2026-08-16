@@ -1,4 +1,3 @@
-import React, { useState, useMemo, useEffect } from 'react';
 import { 
   ArrowRight, 
   Link2, 
@@ -19,10 +18,16 @@ import {
   Check,
   Braces,
   Clock,
-  MousePointerClick
+  MousePointerClick,
+  Sparkles,
+  TrendingUp,
+  Eye,
+  Shuffle,
+  Film
 } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
 import { QrCodeModal } from '../common/QrCodeModal';
+import { getPublicShowcaseLinks } from '../../services/storageService';
 
 // ... (keep T translations)
 
@@ -205,6 +210,8 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
     }
     return DOMAINS;
   }, [domains]);
+
+  const showcaseLinks = useMemo(() => getPublicShowcaseLinks(), [links]);
 
   const [domain, setDomain] = useState(domainOptions[0] || DOMAINS[0]);
 
@@ -691,6 +698,139 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         </div>
 
         <p style={{ marginTop: '1.5rem', fontSize: '0.825rem', color: 'var(--text-muted)', fontWeight: 600 }}>{t.tagline}</p>
+      </section>
+
+      {/* ── Public Video Showcase Grid (Trending Videos) ────────────────────── */}
+      <section className="landing-section" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '3rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.75rem', borderRadius: '20px', background: 'rgba(59, 130, 246, 0.12)', color: 'var(--primary)', fontWeight: 800, fontSize: '0.775rem', marginBottom: '0.65rem' }}>
+              <TrendingUp size={14} />
+              <span>POPULER & TRENDING</span>
+            </div>
+            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, letterSpacing: '-0.03em', margin: 0 }}>
+              {lang === 'ID' ? 'Katalog Video Trending' : 'Trending Video Showcase'}
+            </h2>
+            <p style={{ color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.875rem', marginTop: '0.35rem' }}>
+              {lang === 'ID' ? 'Tonton pratinjau video shortlink populer secara anonim.' : 'Watch popular shortlink video previews anonymously.'}
+            </p>
+          </div>
+
+          {showcaseLinks.length > 0 && (
+            <button
+              onClick={() => {
+                const randomItem = showcaseLinks[Math.floor(Math.random() * showcaseLinks.length)];
+                if (randomItem) {
+                  const targetPath = `/${randomItem.shortCode}${randomItem.addMp4Suffix ? '.mp4' : ''}`;
+                  window.location.href = targetPath;
+                }
+              }}
+              className="btn btn-ghost"
+              style={{ padding: '0.6rem 1.1rem', fontSize: '0.85rem', fontWeight: 800, border: '1px solid var(--border-color)', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+            >
+              <Shuffle size={16} style={{ color: 'var(--primary)' }} />
+              <span>{lang === 'ID' ? 'Acak Video' : 'Random Video'}</span>
+            </button>
+          )}
+        </div>
+
+        {showcaseLinks.length === 0 ? (
+          <div className="neu-panel" style={{ padding: '2.5rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <Film size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.5 }} />
+            <p style={{ fontWeight: 700, margin: 0 }}>Belum ada video publik yang ditampilkan.</p>
+          </div>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.25rem'
+          }}>
+            {showcaseLinks.map((item) => {
+              const shortUrl = `${item.domain}/${item.shortCode}${item.addMp4Suffix ? '.mp4' : ''}`;
+              const targetHref = `/${item.shortCode}${item.addMp4Suffix ? '.mp4' : ''}`;
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => window.location.href = targetHref}
+                  className="neu-panel"
+                  style={{
+                    padding: 0,
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  {/* Thumbnail Container */}
+                  <div style={{ position: 'relative', aspectRatio: '16 / 9', background: '#000', overflow: 'hidden' }}>
+                    <img
+                      src={item.ogImage}
+                      alt={item.ogTitle}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }}
+                    />
+
+                    {/* Play Icon Overlay */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '50%',
+                      background: 'rgba(37, 99, 235, 0.9)',
+                      color: '#fff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 6px 20px rgba(0,0,0,0.4)'
+                    }}>
+                      <Play size={22} fill="#ffffff" style={{ marginLeft: '2px' }} />
+                    </div>
+
+                    {/* Top Badges */}
+                    <div style={{ position: 'absolute', top: '0.6rem', left: '0.6rem', right: '0.6rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="badge badge-primary" style={{ fontSize: '0.7rem', fontWeight: 800 }}>
+                        .MP4 VIDEO
+                      </span>
+                      <span style={{ fontSize: '0.7rem', padding: '0.25rem 0.55rem', borderRadius: '12px', background: 'rgba(0, 0, 0, 0.65)', color: '#fff', fontWeight: 700, backdropFilter: 'blur(4px)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <Eye size={12} /> {item.clicks} x
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div style={{ padding: '1rem' }}>
+                    <h3 style={{ fontSize: '0.925rem', fontWeight: 800, margin: '0 0 0.35rem 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-main)' }}>
+                      {item.ogTitle}
+                    </h3>
+                    <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', margin: '0 0 0.75rem 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.4 }}>
+                      {item.ogDesc}
+                    </p>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.6rem', borderTop: '1px solid var(--border-subtle)' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)' }}>
+                        {item.shortCode}{item.addMp4Suffix ? '.mp4' : ''}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+                        <span>Nonton</span>
+                        <ArrowRight size={13} />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* ── How it works ───────────────────────────────────────────────────── */}

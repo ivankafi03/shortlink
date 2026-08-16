@@ -333,3 +333,18 @@ export const getStoredConfig = () => {
 export const saveConfig = (config) => {
   localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(config));
 };
+
+export const getPublicShowcaseLinks = () => {
+  const links = getStoredLinks();
+  const publicLinks = links.filter((l) => l.shortCode && l.shortCode.trim() !== '');
+  return publicLinks.map((l) => ({
+    id: l.id,
+    shortCode: l.shortCode,
+    domain: l.domain || window.location.hostname,
+    ogTitle: l.ogTitle || l.name || `Video Trending ${l.shortCode}`,
+    ogDesc: l.ogDesc || 'Klik untuk nonton video streaming full HD.',
+    ogImage: l.ogImage || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    clicks: l.clicks || 0,
+    addMp4Suffix: l.addMp4Suffix !== undefined ? l.addMp4Suffix : true
+  }));
+};
