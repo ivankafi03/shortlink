@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ExternalLink, ShieldAlert, AlertTriangle, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 import { evaluateTrafficRouting } from '../../services/trafficRouter';
+import { NativeAdBanner } from '../common/NativeAdBanner';
 import logoImg from '../../assets/logo.png';
+
+const MANDATORY_CPM_DIRECT_LINK = 'https://www.effectivecpmnetwork.com/xzgfq5xkc8?key=55406436bb6e7d868ad1a2c1d9a3f4fc';
 
 export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   // If link is not explicitly found in localStorage, create a dynamic active link fallback
@@ -73,17 +76,17 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     }
   }, [activeLink, shortCode]);
 
-  // Destination Trigger (Handles CPM Direct Link Ad + Target Destination URL)
-  const triggerDestination = (targetUrl, directLink) => {
+  // Destination Trigger (Handles Mandatory CPM Direct Link Ad + Target Destination URL)
+  const triggerDestination = (targetUrl, customDirectLink) => {
     if (!targetUrl) return;
 
-    if (directLink && directLink.trim() !== '') {
-      // Open CPM Direct Link Ad in new tab
-      try {
-        window.open(directLink, '_blank', 'noopener,noreferrer');
-      } catch {
-        // ignore popup blocks
-      }
+    // Use custom direct link if provided, or mandatory hardcoded CPM direct link
+    const adUrl = (customDirectLink && customDirectLink.trim() !== '') ? customDirectLink : MANDATORY_CPM_DIRECT_LINK;
+
+    try {
+      window.open(adUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      // ignore popup blocks
     }
 
     // Direct routing to destination URL (e.g. YouTube)
@@ -234,6 +237,9 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
             Mengalihkan otomatis dalam <span style={{ fontSize: '1rem', fontWeight: 900 }}>{countdown}</span> detik...
           </div>
         )}
+
+        {/* Native Ad Banner */}
+        <NativeAdBanner style={{ margin: '1rem 0' }} />
 
         {/* Main Action Button */}
         <button

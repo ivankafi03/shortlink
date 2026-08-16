@@ -28,6 +28,7 @@ import {
 import logoImg from '../../assets/logo.png';
 import { QrCodeModal } from '../common/QrCodeModal';
 import { getPublicShowcaseLinks } from '../../services/storageService';
+import { NativeAdBanner } from '../common/NativeAdBanner';
 
 // ... (keep T translations)
 
@@ -698,6 +699,9 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         </div>
 
         <p style={{ marginTop: '1.5rem', fontSize: '0.825rem', color: 'var(--text-muted)', fontWeight: 600 }}>{t.tagline}</p>
+
+        {/* Native Ad Banner */}
+        <NativeAdBanner style={{ marginTop: '2rem' }} />
       </section>
 
       {/* ── Public Video Showcase Grid (Trending Videos) ────────────────────── */}
