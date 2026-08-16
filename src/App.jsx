@@ -85,19 +85,8 @@ export function App() {
 
   // Load initial data and set up URL listener
   useEffect(() => {
-    // Primary Domain Redirection Logic:
-    // All access to non-primary domains (e.g. cuanflix.site) is forwarded to samehadakuu.com
-    // INCLUDING shortlinks — this ensures all link resolution happens on the primary domain
-    // where all link data (localStorage) is stored.
-    const host = window.location.hostname.toLowerCase();
-    const fullPath = window.location.pathname + window.location.search + window.location.hash;
-    const isPrimaryDomain = host.includes('samehadakuu.com') || host === 'localhost' || host === '127.0.0.1';
-    if (!isPrimaryDomain) {
-      window.location.replace('https://samehadakuu.com' + fullPath);
-      return;
-    }
-
-    // No need to re-load data here — already loaded synchronously above
+    // Domain redirect is handled synchronously in main.jsx (before React mounts).
+    // Nothing to do here for domain logic.
     // (keeping useEffect only for popstate + domain redirect)
 
     // Handle browser back/forward buttons
