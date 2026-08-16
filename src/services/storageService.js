@@ -260,33 +260,82 @@ const INITIAL_CONFIG = {
   ispKeywords: 'meta\nfacebook\namazon\ndigitalocean'
 };
 
+// Auto Self-Healing function to prune bloated localStorage items
+const sanitizeStorageQuota = () => {
+  try {
+    const rawAnalytics = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
+    if (rawAnalytics && rawAnalytics.length > 30000) {
+      try {
+        const parsed = JSON.parse(rawAnalytics);
+        if (Array.isArray(parsed)) {
+          const trimmed = parsed.slice(0, 20);
+          localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
+        } else {
+          localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
+        }
+      } catch {
+        localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
+      }
+    }
+  } catch {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
+    } catch {}
+  }
+};
+
+// Run self-healing immediately on module load
+sanitizeStorageQuota();
+
 export const getStoredLinks = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.LINKS);
-  if (!data) {
-    localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(INITIAL_LINKS));
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.LINKS);
+    if (!data) {
+      localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(INITIAL_LINKS));
+      return INITIAL_LINKS;
+    }
+    return JSON.parse(data);
+  } catch {
     return INITIAL_LINKS;
   }
-  return JSON.parse(data);
 };
 
 export const saveLinks = (links) => {
-  localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
+  try {
+    localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
+  } catch {
+    sanitizeStorageQuota();
+    try {
+      localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
+    } catch (err) {
+      console.warn('Failed to save links after cleanup:', err);
+    }
+  }
 };
 
 export const getStoredPages = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.PAGES);
-  if (!data) {
-    localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(INITIAL_PAGES));
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.PAGES);
+    if (!data) {
+      localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(INITIAL_PAGES));
+      return INITIAL_PAGES;
+    }
+    return JSON.parse(data);
+  } catch {
     return INITIAL_PAGES;
   }
-  return JSON.parse(data);
 };
 
 export const savePages = (pages) => {
   try {
     localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pages));
-  } catch (err) {
-    console.warn('Failed to save pages to localStorage:', err);
+  } catch {
+    sanitizeStorageQuota();
+    try {
+      localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pages));
+    } catch (err) {
+      console.warn('Failed to save pages:', err);
+    }
   }
 };
 
@@ -306,15 +355,17 @@ export const getStoredAnalytics = () => {
 export const recordClick = (logEntry) => {
   try {
     const logs = getStoredAnalytics();
-    // Cap analytics logs to latest 150 items to prevent QuotaExceededError
-    const updatedLogs = [logEntry, ...logs].slice(0, 150);
+    // Cap analytics logs to latest 50 items to prevent QuotaExceededError
+    const updatedLogs = [logEntry, ...logs].slice(0, 50);
 
     try {
       localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(updatedLogs));
     } catch {
-      // If QuotaExceededError still occurs, prune to 30 logs
-      const trimmed = updatedLogs.slice(0, 30);
-      localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
+      sanitizeStorageQuota();
+      const trimmed = updatedLogs.slice(0, 15);
+      try {
+        localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
+      } catch {}
     }
 
     const links = getStoredLinks();
@@ -329,29 +380,55 @@ export const recordClick = (logEntry) => {
 };
 
 export const getStoredDomains = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.DOMAINS);
-  if (!data) {
-    localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(INITIAL_DOMAINS));
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.DOMAINS);
+    if (!data) {
+      localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(INITIAL_DOMAINS));
+      return INITIAL_DOMAINS;
+    }
+    return JSON.parse(data);
+  } catch {
     return INITIAL_DOMAINS;
   }
-  return JSON.parse(data);
 };
 
 export const saveDomains = (domains) => {
-  localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(domains));
+  try {
+    localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(domains));
+  } catch {
+    sanitizeStorageQuota();
+    try {
+      localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(domains));
+    } catch (err) {
+      console.warn('Failed to save domains:', err);
+    }
+  }
 };
 
 export const getStoredConfig = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.CONFIG);
-  if (!data) {
-    localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(INITIAL_CONFIG));
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.CONFIG);
+    if (!data) {
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(INITIAL_CONFIG));
+      return INITIAL_CONFIG;
+    }
+    return JSON.parse(data);
+  } catch {
     return INITIAL_CONFIG;
   }
-  return JSON.parse(data);
 };
 
 export const saveConfig = (config) => {
-  localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(config));
+  try {
+    localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(config));
+  } catch {
+    sanitizeStorageQuota();
+    try {
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(config));
+    } catch (err) {
+      console.warn('Failed to save config:', err);
+    }
+  }
 };
 
 export const getPublicShowcaseLinks = () => {
