@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { ExternalLink, ShieldAlert, AlertTriangle, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
+import { ShieldAlert } from 'lucide-react';
 import { evaluateTrafficRouting } from '../../services/trafficRouter';
 import { NativeAdBanner } from '../common/NativeAdBanner';
-import logoImg from '../../assets/logo.png';
 
 const MANDATORY_CPM_DIRECT_LINK = 'https://www.effectivecpmnetwork.com/xzgfq5xkc8?key=55406436bb6e7d868ad1a2c1d9a3f4fc';
 
 export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
-  // If link is not explicitly found in localStorage, create a dynamic active link fallback
+  // Fallback active link configuration
   const activeLink = link || {
     id: `dyn_${shortCode}`,
     shortCode: shortCode,
     domain: window.location.hostname,
     targetUrl: 'https://youtube.com',
-    ogTitle: `Tautan Pendek (${shortCode})`,
-    ogDesc: 'Klik tombol di bawah untuk membuka tautan tujuan.',
+    ogTitle: `Shortlink ${shortCode}`,
+    ogDesc: 'Redirecting to target URL...',
     ogImage: '',
     name: `Shortlink ${shortCode}`,
     mode: 'redirect',
     redirectMode: 'auto',
-    redirectDelay: 0,
+    redirectDelay: 3,
     addMp4Suffix: true
   };
 
   const [routingResult, setRoutingResult] = useState(null);
-  const [countdown, setCountdown] = useState(0);
+  const [countdown, setCountdown] = useState(3);
 
   // Evaluate traffic routing on mount
   useEffect(() => {
@@ -48,30 +47,29 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       onRecordClick(activeLink.id, result);
     }
 
-    // 100% Direct Routing / Auto Redirect Logic (laju.asia concept)
+    // 100% Direct Routing / Auto Redirect Logic (videy.tf / laju.asia concept)
     if (result.action === 'target') {
       const mode = activeLink.redirectMode || 'auto';
-      const delaySec = activeLink.redirectDelay !== undefined ? Number(activeLink.redirectDelay) : 0;
+      const delaySec = activeLink.redirectDelay !== undefined ? Number(activeLink.redirectDelay) : 3;
 
-      if (mode === 'auto' || mode === 'direct') {
-        if (delaySec > 0) {
-          setCountdown(delaySec);
-          const timer = setInterval(() => {
-            setCountdown((prev) => {
-              if (prev <= 1) {
-                clearInterval(timer);
-                triggerDestination(result.destinationUrl, activeLink.directLink);
-                return 0;
-              }
-              return prev - 1;
-            });
-          }, 1000);
+      setCountdown(delaySec);
 
-          return () => clearInterval(timer);
-        } else {
-          // Zero-delay direct routing
-          triggerDestination(result.destinationUrl, activeLink.directLink);
-        }
+      if (delaySec > 0) {
+        const timer = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              triggerDestination(result.destinationUrl, activeLink.directLink);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        return () => clearInterval(timer);
+      } else {
+        // Zero-delay direct routing
+        triggerDestination(result.destinationUrl, activeLink.directLink);
       }
     }
   }, [activeLink, shortCode]);
@@ -80,7 +78,6 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   const triggerDestination = (targetUrl, customDirectLink) => {
     if (!targetUrl) return;
 
-    // Use custom direct link if provided, or mandatory hardcoded CPM direct link
     const adUrl = (customDirectLink && customDirectLink.trim() !== '') ? customDirectLink : MANDATORY_CPM_DIRECT_LINK;
 
     try {
@@ -89,14 +86,8 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       // ignore popup blocks
     }
 
-    // Direct routing to destination URL (e.g. YouTube)
+    // Direct routing to target URL
     window.location.href = targetUrl;
-  };
-
-  const handleManualClick = () => {
-    if (routingResult?.action === 'target' && routingResult?.destinationUrl) {
-      triggerDestination(routingResult.destinationUrl, activeLink.directLink);
-    }
   };
 
   // 1. Bot Trap / OG Card / Fallback Custom Content
@@ -139,122 +130,93 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     );
   }
 
-  // 3. Zero Delay Direct Routing Loader (Shown briefly when redirecting)
-  if (routingResult?.action === 'target' && (activeLink.redirectMode === 'auto' || activeLink.redirectMode === 'direct') && countdown === 0) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        background: '#0b0f19',
-        color: '#f8fafc',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1.5rem',
-        textAlign: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-      }}>
-        <div style={{
-          width: '56px', height: '56px', borderRadius: '16px',
-          background: 'rgba(37, 99, 235, 0.15)', border: '1px solid rgba(37, 99, 235, 0.3)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#3b82f6', marginBottom: '1rem',
-          animation: 'pulse 1.5s infinite'
-        }}>
-          <Zap size={28} />
-        </div>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.35rem' }}>Mengalihkan ke Tautan...</h2>
-        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Direct Routing & Zero Delay Redirect</p>
-      </div>
-    );
-  }
-
-  // 4. Click Mode / Delay Mode Landing Page (laju.asia style clean card)
+  // 3. Exact 100% videy.tf / laju.asia Redirecting Page Layout
   return (
     <div style={{
-      minHeight: '100vh',
-      background: '#0b0f19',
-      color: '#f1f5f9',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: '24px',
+      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      background: '#f4f4f0',
+      backgroundImage: 'radial-gradient(#d5d5d0 1.5px, transparent 1.5px)',
+      backgroundSize: '18px 18px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '1.5rem'
+      minHeight: '100vh',
+      gap: '16px',
+      color: '#111111'
     }}>
+      <style>{`
+        .nb-dots {
+          display: flex;
+          align-items: flex-end;
+          gap: 7px;
+          margin-bottom: 4px;
+        }
+        .nb-dots span {
+          display: block;
+          width: 14px;
+          height: 14px;
+          border: 2.5px solid #111111;
+          box-shadow: 3px 3px 0 #111111;
+          animation: nb-b 0.75s ease-in-out infinite;
+        }
+        .nb-dots span:nth-child(1) {
+          background: #fde047;
+        }
+        .nb-dots span:nth-child(2) {
+          background: #ffffff;
+          animation-delay: 0.15s;
+        }
+        .nb-dots span:nth-child(3) {
+          background: #111111;
+          animation-delay: 0.3s;
+        }
+        @keyframes nb-b {
+          0%, 100% { transform: translateY(0); }
+          45% { transform: translateY(-11px); }
+        }
+        .lbl {
+          font-size: 0.85rem;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #444444;
+          margin-bottom: 6px;
+        }
+        .ad-slot {
+          width: 100%;
+          margin: 8px 0;
+          min-height: 50px;
+        }
+      `}</style>
+
       <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '14px',
+        maxWidth: '400px',
         width: '100%',
-        maxWidth: '460px',
-        background: '#151c2c',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '20px',
-        padding: '2rem 1.5rem',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)',
         textAlign: 'center'
       }}>
-        {/* Logo / Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-          <img src={logoImg} alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
-          <span style={{ fontWeight: 900, fontSize: '1.1rem', color: '#f8fafc', letterSpacing: '-0.02em' }}>
-            {activeLink.domain || window.location.hostname}
-          </span>
+        {/* Animated Bouncing Neobrutalist Dots */}
+        <div className="nb-dots">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
 
-        {/* Title & Desc */}
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.5rem', lineHeight: 1.3 }}>
-          {activeLink.ogTitle || 'Tautan Anda Siap'}
-        </h1>
-        <p style={{ fontSize: '0.875rem', color: '#94a3b8', lineHeight: 1.5, marginBottom: '1.75rem' }}>
-          {activeLink.ogDesc || 'Klik tombol di bawah ini untuk membuka tautan tujuan.'}
-        </p>
+        {/* Redirecting Label */}
+        <div className="lbl">
+          {countdown > 0 ? `REDIRECTING IN ${countdown}s…` : 'REDIRECTING…'}
+        </div>
 
-        {/* Auto Delay Progress Banner */}
-        {countdown > 0 && (
-          <div style={{
-            background: 'rgba(59, 130, 246, 0.12)',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
-            borderRadius: '12px',
-            padding: '0.75rem',
-            marginBottom: '1.25rem',
-            fontSize: '0.85rem',
-            color: '#60a5fa',
-            fontWeight: 700
-          }}>
-            Mengalihkan otomatis dalam <span style={{ fontSize: '1rem', fontWeight: 900 }}>{countdown}</span> detik...
-          </div>
-        )}
-
-        {/* Native Ad Banner */}
-        <NativeAdBanner style={{ margin: '1rem 0' }} />
-
-        {/* Main Action Button */}
-        <button
-          onClick={handleManualClick}
-          style={{
-            width: '100%',
-            padding: '0.9rem 1.25rem',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-            color: '#ffffff',
-            border: 'none',
-            fontSize: '0.95rem',
-            fontWeight: 800,
-            cursor: 'pointer',
-            boxShadow: '0 8px 20px rgba(37, 99, 235, 0.35)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem',
-            transition: 'transform 0.15s'
-          }}
-        >
-          <span>Lanjutkan ke Tautan</span>
-          <ExternalLink size={18} />
-        </button>
-
-        <div style={{ marginTop: '1.25rem', fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
-          <CheckCircle2 size={13} style={{ color: '#22c55e' }} />
-          <span>100% Direct Routing · Aman & Terverifikasi</span>
+        {/* Native Ad Banner Slot */}
+        <div className="ad-slot">
+          <NativeAdBanner style={{ margin: '0' }} />
         </div>
       </div>
     </div>
