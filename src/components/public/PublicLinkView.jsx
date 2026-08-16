@@ -109,7 +109,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   if (routingResult?.action === 'blocked') {
     return (
       <div style={{
-        minHeight: '100vh', background: '#090d16', color: '#f8fafc',
+        minHeight: '100vh', background: '#eef2f5', color: '#0f172a',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         padding: '1.5rem', textAlign: 'center', fontFamily: 'sans-serif'
       }}>
@@ -117,19 +117,19 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           width: '64px', height: '64px', borderRadius: '16px',
           background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#f59e0b', marginBottom: '1.25rem'
+          color: '#d97706', marginBottom: '1.25rem'
         }}>
           <ShieldAlert size={32} />
         </div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>Akses Dibatasi</h2>
-        <p style={{ color: '#94a3b8', fontSize: '0.9rem', maxWidth: '420px', marginBottom: '1rem' }}>
+        <p style={{ color: '#334155', fontSize: '0.9rem', maxWidth: '420px', marginBottom: '1rem' }}>
           Perangkat, lokasi, atau jaringan kamu tidak memenuhi kriteria akses untuk tautan ini.
         </p>
       </div>
     );
   }
 
-  // OUR SLEEK DARK THEME WORKFLOW (videy.tf mechanics + dark mode theme aesthetics)
+  // OUR LIGHT NEUMORPHISM THEME (videy.tf mechanics + Light Neumorphism aesthetics #eef2f5)
   return (
     <div 
       onClick={handlePageClick}
@@ -137,9 +137,9 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         boxSizing: 'border-box',
         margin: 0,
         padding: '24px',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Segoe UI", Roboto, sans-serif',
-        background: '#0b0f19',
-        backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 1.5px)',
+        fontFamily: "'Outfit', 'Plus Jakarta Sans', -apple-system, sans-serif",
+        background: '#eef2f5',
+        backgroundImage: 'radial-gradient(rgba(193, 203, 212, 0.5) 1.5px, transparent 1.5px)',
         backgroundSize: '18px 18px',
         display: 'flex',
         flexDirection: 'column',
@@ -147,7 +147,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         justifyContent: 'center',
         minHeight: '100vh',
         gap: '16px',
-        color: '#f8fafc',
+        color: '#0f172a',
         cursor: 'pointer'
       }}
     >
@@ -163,20 +163,18 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           width: 14px;
           height: 14px;
           border-radius: 4px;
+          box-shadow: 3px 3px 6px #c1cbd4, -3px -3px 6px #ffffff;
           animation: nb-b 0.75s ease-in-out infinite;
         }
         .nb-dots span:nth-child(1) {
-          background: #3b82f6;
-          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+          background: #2563eb;
         }
         .nb-dots span:nth-child(2) {
-          background: #06b6d4;
-          box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+          background: #38bdf8;
           animation-delay: 0.15s;
         }
         .nb-dots span:nth-child(3) {
-          background: #ffffff;
-          box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
+          background: #0f172a;
           animation-delay: 0.3s;
         }
         @keyframes nb-b {
@@ -188,13 +186,13 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           font-weight: 900;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: #3b82f6;
+          color: #2563eb;
           margin-bottom: 4px;
         }
         .sub-lbl {
           font-size: 0.8rem;
-          font-weight: 600;
-          color: #94a3b8;
+          font-weight: 700;
+          color: #334155;
           margin-bottom: 6px;
         }
         .ad-slot {
@@ -211,17 +209,17 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         gap: '14px',
         maxWidth: '420px',
         width: '100%',
-        background: '#151c2c',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: '#eef2f5',
+        border: '1px solid rgba(255, 255, 255, 0.8)',
         borderRadius: '20px',
         padding: '2.25rem 1.5rem',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)',
+        boxShadow: '6px 6px 14px #c1cbd4, -6px -6px 14px #ffffff',
         textAlign: 'center'
       }}>
         {/* Logo & Domain Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-          <img src={logoImg} alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
-          <span style={{ fontWeight: 900, fontSize: '1.1rem', color: '#f8fafc', letterSpacing: '-0.02em' }}>
+          <img src={logoImg} alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '8px', boxShadow: '2px 2px 5px #c1cbd4, -2px -2px 5px #ffffff' }} />
+          <span style={{ fontWeight: 900, fontSize: '1.1rem', color: '#0f172a', letterSpacing: '-0.02em' }}>
             {activeLink.domain || window.location.hostname}
           </span>
         </div>
