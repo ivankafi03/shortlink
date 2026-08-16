@@ -139,8 +139,6 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         padding: '24px',
         fontFamily: "'Outfit', 'Plus Jakarta Sans', -apple-system, sans-serif",
         background: '#eef2f5',
-        backgroundImage: 'radial-gradient(rgba(193, 203, 212, 0.5) 1.5px, transparent 1.5px)',
-        backgroundSize: '18px 18px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
