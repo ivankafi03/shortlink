@@ -575,33 +575,58 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
           {/* Redirect extra fields */}
           {!videoMode && (
             <div style={{ marginTop: '1rem', borderTop: '1px dashed var(--border-subtle)', paddingTop: '0.75rem' }}>
-              {/* Redirect Mode Selection Checkbox & Toggle */}
-              <div className="neu-panel-inset" style={{ padding: '0.75rem', marginBottom: '0.5rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-main)', cursor: 'pointer', marginBottom: '0.4rem' }}>
-                  <input 
-                    type="checkbox" 
-                    checked={redirectMode === 'click'} 
-                    onChange={e => setRedirectMode(e.target.checked ? 'click' : 'auto')} 
-                    style={{ accentColor: 'var(--primary)', width: '16px', height: '16px' }}
-                  />
-                  <span>Tampilkan Halaman Landing (Tombol Lanjutkan & Kartu Iklan)</span>
-                </label>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, display: 'block', paddingLeft: '1.5rem' }}>
-                  {redirectMode === 'click' 
-                    ? 'Pengunjung akan melihat kartu logo, iklan native, dan tombol "Lanjutkan ke Tautan".' 
-                    : 'Kosong (Default): Pengunjung akan langsung dialihkan secara otomatis tanpa tombol (Direct Redirect).'
-                  }
-                </span>
-                {redirectMode === 'auto' && (
-                  <input
-                    type="range"
-                    min="1"
-                    max="30"
-                    value={redirectDelay}
-                    onChange={e => setRedirectDelay(parseInt(e.target.value, 10))}
-                    style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--primary)' }}
-                  />
-                )}
+              {/* Redirect Mode Selection Cards */}
+              <div style={{ marginBottom: '0.75rem' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Mode Pengalihan</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {/* Option 1: Landing Page */}
+                  <button
+                    type="button"
+                    onClick={() => setRedirectMode('click')}
+                    style={{
+                      flex: 1, padding: '0.65rem 0.5rem', borderRadius: '10px', border: 'none',
+                      cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                      background: redirectMode === 'click'
+                        ? 'linear-gradient(135deg, #2563eb, #1d4ed8)'
+                        : 'var(--neu-bg)',
+                      color: redirectMode === 'click' ? '#fff' : 'var(--text-primary)',
+                      boxShadow: redirectMode === 'click'
+                        ? '0 4px 14px rgba(37,99,235,0.4)'
+                        : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <div style={{ fontSize: '1rem', marginBottom: '0.15rem' }}>🃏</div>
+                    <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Landing Page</div>
+                    <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
+                      Ada kartu iklan & tombol lanjutkan
+                    </div>
+                  </button>
+
+                  {/* Option 2: Langsung */}
+                  <button
+                    type="button"
+                    onClick={() => setRedirectMode('auto')}
+                    style={{
+                      flex: 1, padding: '0.65rem 0.5rem', borderRadius: '10px', border: 'none',
+                      cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                      background: redirectMode === 'auto'
+                        ? 'linear-gradient(135deg, #059669, #047857)'
+                        : 'var(--neu-bg)',
+                      color: redirectMode === 'auto' ? '#fff' : 'var(--text-primary)',
+                      boxShadow: redirectMode === 'auto'
+                        ? '0 4px 14px rgba(5,150,105,0.4)'
+                        : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <div style={{ fontSize: '1rem', marginBottom: '0.15rem' }}>⚡</div>
+                    <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Langsung</div>
+                    <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
+                      Redirect instan tanpa halaman
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           )}

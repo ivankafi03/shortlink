@@ -1038,52 +1038,62 @@ export const LinkBuilderView = ({
               {/* Redirect Mode & Delay Settings */}
               <div className="neu-panel" style={{ padding: '1rem', marginBottom: '1.5rem', background: 'var(--bg-card)' }}>
                 <div className="form-group" style={{ marginBottom: '1rem' }}>
-                  <label className="form-label">Mode Pengalihan (Redirect Mode)</label>
-                  <div className="neu-panel-inset" style={{ display: 'flex', gap: '0.4rem', padding: '0.35rem' }}>
-                    <button
-                      type="button"
-                      onClick={() => setRedirectMode('auto')}
-                      className={`btn ${redirectMode === 'auto' ? 'btn-primary' : 'btn-ghost'}`}
-                      style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
-                    >
-                      Auto Redirect ({redirectDelay}s)
-                    </button>
+                  <label className="form-label">Mode Pengalihan</label>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {/* Option 1: Landing Page */}
                     <button
                       type="button"
                       onClick={() => setRedirectMode('click')}
-                      className={`btn ${redirectMode === 'click' ? 'btn-primary' : 'btn-ghost'}`}
-                      style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
+                      style={{
+                        flex: 1, padding: '0.75rem 0.5rem', borderRadius: '10px', border: 'none',
+                        cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                        background: redirectMode === 'click'
+                          ? 'linear-gradient(135deg, #2563eb, #1d4ed8)'
+                          : 'var(--neu-bg)',
+                        color: redirectMode === 'click' ? '#fff' : 'var(--text-primary)',
+                        boxShadow: redirectMode === 'click'
+                          ? '0 4px 14px rgba(37,99,235,0.4)'
+                          : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
+                        transition: 'all 0.2s',
+                      }}
                     >
-                      Tombol Klik Manual
+                      <div style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>🃏</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Landing Page</div>
+                      <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
+                        Tampilkan iklan dulu,<br/>user klik untuk lanjut
+                      </div>
                     </button>
+
+                    {/* Option 2: Langsung */}
                     <button
                       type="button"
-                      onClick={() => setRedirectMode('direct')}
-                      className={`btn ${redirectMode === 'direct' ? 'btn-primary' : 'btn-ghost'}`}
-                      style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
+                      onClick={() => setRedirectMode('auto')}
+                      style={{
+                        flex: 1, padding: '0.75rem 0.5rem', borderRadius: '10px', border: 'none',
+                        cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+                        background: redirectMode === 'auto'
+                          ? 'linear-gradient(135deg, #059669, #047857)'
+                          : 'var(--neu-bg)',
+                        color: redirectMode === 'auto' ? '#fff' : 'var(--text-primary)',
+                        boxShadow: redirectMode === 'auto'
+                          ? '0 4px 14px rgba(5,150,105,0.4)'
+                          : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
+                        transition: 'all 0.2s',
+                      }}
                     >
-                      Langsung (0 Delay)
+                      <div style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>⚡</div>
+                      <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Langsung</div>
+                      <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
+                        Redirect tanpa halaman<br/>perantara, 0 detik
+                      </div>
                     </button>
                   </div>
+                  <span className="form-hint" style={{ marginTop: '0.4rem' }}>
+                    {redirectMode === 'click'
+                      ? '🃏 Pengunjung lihat halaman dengan iklan banner, lalu klik tombol untuk lanjut ke URL tujuan.'
+                      : '⚡ Pengunjung langsung diarahkan ke URL tujuan tanpa jeda atau halaman perantara.'}
+                  </span>
                 </div>
-
-                {redirectMode === 'auto' && (
-                  <div className="form-group">
-                    <div style={{ display: 'flex', justifyBetween: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                      <label className="form-label" style={{ marginBottom: 0 }}>Waktu Penundaan (Delay Timer)</label>
-                      <span className="badge badge-primary" style={{ fontFamily: 'var(--font-mono)' }}>{redirectDelay} Detik</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="30"
-                      value={redirectDelay}
-                      onChange={e => setRedirectDelay(parseInt(e.target.value, 10))}
-                      style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--primary)' }}
-                    />
-                    <span className="form-hint">Pengunjung akan melihat halaman pratinjau selama {redirectDelay} detik sebelum di-redirect otomatis.</span>
-                  </div>
-                )}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.75rem' }}>
