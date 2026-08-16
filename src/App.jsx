@@ -100,16 +100,34 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Navigation Loading Bar State
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [navProgress, setNavProgress] = useState(0);
+
   // Navigation Routing Function
   const navigateToTab = (tab, linkData = null) => {
     if (tab === 'create_link') {
       setLinkToEdit(linkData);
     }
-    setActiveTab(tab);
-    const targetPath = getPathFromTab(tab);
-    if (window.location.pathname !== targetPath) {
-      window.history.pushState({}, '', targetPath);
-    }
+
+    setIsNavigating(true);
+    setNavProgress(35);
+
+    setTimeout(() => setNavProgress(70), 60);
+
+    setTimeout(() => {
+      setNavProgress(100);
+      setActiveTab(tab);
+      const targetPath = getPathFromTab(tab);
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({}, '', targetPath);
+      }
+    }, 160);
+
+    setTimeout(() => {
+      setIsNavigating(false);
+      setNavProgress(0);
+    }, 320);
   };
 
   // Link Actions
@@ -238,6 +256,19 @@ export function App() {
 
   return (
     <div className="app-layout">
+      {/* Top Page Transition Loading Bar */}
+      {isNavigating && (
+        <>
+          <div className="page-loading-bar-container">
+            <div className="page-loading-bar" style={{ width: `${navProgress}%` }} />
+          </div>
+          <div className="page-loading-spinner-overlay">
+            <div className="spinner-icon" />
+            <span>Memuat...</span>
+          </div>
+        </>
+      )}
+
       {/* Left Vertical Sidebar */}
       <Sidebar 
         activeTab={getSidebarActiveTab()}
