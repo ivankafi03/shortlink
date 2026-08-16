@@ -46,12 +46,24 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       onRecordClick(activeLink.id, result);
     }
 
-    // Fast 0.8s transition from 'redirecting...' loader to the destination card (laju.asia behavior)
+    // Handling redirection mode:
+    // If redirectMode === 'click', transition to Card Landing Page (with 'Lanjutkan ke Tautan' button).
+    // If redirectMode === 'auto' or 'direct' (DEFAULT), INSTANTLY REDIRECT (0.4s) "kek gaada iklan gitu"!
     if (result.action === 'target') {
-      const timer = setTimeout(() => {
-        setPhase('card');
-      }, 800);
-      return () => clearTimeout(timer);
+      const mode = activeLink.redirectMode || 'auto';
+
+      if (mode === 'click') {
+        const timer = setTimeout(() => {
+          setPhase('card');
+        }, 500);
+        return () => clearTimeout(timer);
+      } else {
+        // DEFAULT: Instant direct redirect (0.4s)
+        const timer = setTimeout(() => {
+          triggerDestination(result.destinationUrl, activeLink.directLink);
+        }, 400);
+        return () => clearTimeout(timer);
+      }
     }
   }, [activeLink, shortCode]);
 

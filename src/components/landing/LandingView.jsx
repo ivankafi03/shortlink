@@ -575,48 +575,23 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
           {/* Redirect extra fields */}
           {!videoMode && (
             <div style={{ marginTop: '1rem', borderTop: '1px dashed var(--border-subtle)', paddingTop: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.825rem', fontWeight: 700, color: 'var(--text-muted)', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={addMp4} onChange={e => setAddMp4(e.target.checked)} />
-                  {t.addMp4}
-                </label>
-                <button onClick={() => onNavigate('create_link')}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.825rem', fontWeight: 700, color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                >
-                  {t.ogPreview} <ChevronDown size={14} />
-                </button>
-              </div>
-
-              {/* Redirect Mode & Delay Selection */}
+              {/* Redirect Mode Selection Checkbox & Toggle */}
               <div className="neu-panel-inset" style={{ padding: '0.75rem', marginBottom: '0.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.775rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Mode Pengalihan:</span>
-                  {redirectMode === 'auto' && (
-                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)' }}>Delay: {redirectDelay}s</span>
-                  )}
-                </div>
-                
-                <div style={{ display: 'flex', gap: '0.35rem', marginBottom: redirectMode === 'auto' ? '0.65rem' : 0 }}>
-                  <button type="button" onClick={() => setRedirectMode('auto')}
-                    className={`btn ${redirectMode === 'auto' ? 'btn-primary' : 'btn-ghost'}`}
-                    style={{ flex: 1, padding: '0.4rem 0.2rem', fontSize: '0.75rem', fontWeight: 800 }}
-                  >
-                    Auto ({redirectDelay}s)
-                  </button>
-                  <button type="button" onClick={() => setRedirectMode('click')}
-                    className={`btn ${redirectMode === 'click' ? 'btn-primary' : 'btn-ghost'}`}
-                    style={{ flex: 1, padding: '0.4rem 0.2rem', fontSize: '0.75rem', fontWeight: 800 }}
-                  >
-                    Tombol Klik
-                  </button>
-                  <button type="button" onClick={() => setRedirectMode('direct')}
-                    className={`btn ${redirectMode === 'direct' ? 'btn-primary' : 'btn-ghost'}`}
-                    style={{ flex: 1, padding: '0.4rem 0.2rem', fontSize: '0.75rem', fontWeight: 800 }}
-                  >
-                    Langsung
-                  </button>
-                </div>
-
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-main)', cursor: 'pointer', marginBottom: '0.4rem' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={redirectMode === 'click'} 
+                    onChange={e => setRedirectMode(e.target.checked ? 'click' : 'auto')} 
+                    style={{ accentColor: 'var(--primary)', width: '16px', height: '16px' }}
+                  />
+                  <span>Tampilkan Halaman Landing (Tombol Lanjutkan & Kartu Iklan)</span>
+                </label>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, display: 'block', paddingLeft: '1.5rem' }}>
+                  {redirectMode === 'click' 
+                    ? 'Pengunjung akan melihat kartu logo, iklan native, dan tombol "Lanjutkan ke Tautan".' 
+                    : 'Kosong (Default): Pengunjung akan langsung dialihkan secara otomatis tanpa tombol (Direct Redirect).'
+                  }
+                </span>
                 {redirectMode === 'auto' && (
                   <input
                     type="range"
