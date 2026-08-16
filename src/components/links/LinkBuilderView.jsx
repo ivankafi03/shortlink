@@ -1046,7 +1046,7 @@ export const LinkBuilderView = ({
                       className={`btn ${redirectMode === 'auto' ? 'btn-primary' : 'btn-ghost'}`}
                       style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
                     >
-                      ⚡ Auto Redirect ({redirectDelay}s)
+                      Auto Redirect ({redirectDelay}s)
                     </button>
                     <button
                       type="button"
@@ -1054,7 +1054,7 @@ export const LinkBuilderView = ({
                       className={`btn ${redirectMode === 'click' ? 'btn-primary' : 'btn-ghost'}`}
                       style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
                     >
-                      👆 Tombol Klik Manual
+                      Tombol Klik Manual
                     </button>
                     <button
                       type="button"
@@ -1062,7 +1062,7 @@ export const LinkBuilderView = ({
                       className={`btn ${redirectMode === 'direct' ? 'btn-primary' : 'btn-ghost'}`}
                       style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
                     >
-                      🚀 Langsung (0 Delay)
+                      Langsung (0 Delay)
                     </button>
                   </div>
                 </div>

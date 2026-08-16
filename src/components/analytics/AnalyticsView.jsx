@@ -492,7 +492,7 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
                       ) : log.isProxy ? (
                         <span className="badge badge-amber" style={{ fontSize: '0.7rem' }}>proksi</span>
                       ) : (
-                        <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>✓</span>
+                        <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Lolos</span>
                       )}
                     </td>
                   </tr>

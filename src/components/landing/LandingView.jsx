@@ -372,14 +372,14 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
               style={{ flex: 1, padding: '0.5rem', fontSize: '0.825rem' }}
               onClick={() => setLang('ID')}
             >
-              🇮🇩 Indonesia
+              Indonesia
             </button>
             <button 
               className={`btn ${lang === 'EN' ? 'btn-primary' : 'btn-ghost'}`}
               style={{ flex: 1, padding: '0.5rem', fontSize: '0.825rem' }}
               onClick={() => setLang('EN')}
             >
-              🇺🇸 English
+              English
             </button>
           </div>
         </div>
@@ -427,7 +427,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                       border: 'none', cursor: 'pointer', borderRadius: '6px',
                     }}
                   >
-                    {l === 'ID' ? '🇮🇩 ID' : '🇺🇸 EN'}
+                    {l === 'ID' ? 'ID' : 'EN'}
                   </button>
                 ))}
               </div>
@@ -593,19 +593,19 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                     className={`btn ${redirectMode === 'auto' ? 'btn-primary' : 'btn-ghost'}`}
                     style={{ flex: 1, padding: '0.4rem 0.2rem', fontSize: '0.75rem', fontWeight: 800 }}
                   >
-                    ⚡ Auto ({redirectDelay}s)
+                    Auto ({redirectDelay}s)
                   </button>
                   <button type="button" onClick={() => setRedirectMode('click')}
                     className={`btn ${redirectMode === 'click' ? 'btn-primary' : 'btn-ghost'}`}
                     style={{ flex: 1, padding: '0.4rem 0.2rem', fontSize: '0.75rem', fontWeight: 800 }}
                   >
-                    👆 Tombol Klik
+                    Tombol Klik
                   </button>
                   <button type="button" onClick={() => setRedirectMode('direct')}
                     className={`btn ${redirectMode === 'direct' ? 'btn-primary' : 'btn-ghost'}`}
                     style={{ flex: 1, padding: '0.4rem 0.2rem', fontSize: '0.75rem', fontWeight: 800 }}
                   >
-                    🚀 Langsung
+                    Langsung
                   </button>
                 </div>
 
