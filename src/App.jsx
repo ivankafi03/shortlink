@@ -85,6 +85,18 @@ export function App() {
 
   // Load initial data and set up URL listener
   useEffect(() => {
+    // Primary Domain Redirection Logic:
+    // If a visitor accesses the root homepage of any secondary domain (e.g. cuanflix.site, www.cuanflix.site)
+    // automatically redirect them to the primary domain https://samehadakuu.com
+    const host = window.location.hostname.toLowerCase();
+    const path = window.location.pathname.toLowerCase().replace(/\/$/, '');
+    if (host && !host.includes('samehadakuu.com') && host !== 'localhost' && host !== '127.0.0.1') {
+      if (path === '' || path === '/') {
+        window.location.href = 'https://samehadakuu.com';
+        return;
+      }
+    }
+
     setLinks(getStoredLinks());
     setPages(getStoredPages());
     setAnalyticsLogs(getStoredAnalytics());
