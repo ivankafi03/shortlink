@@ -17,6 +17,13 @@ export const NativeAdBanner = ({ style = {} }) => {
       script.async = true;
       script.setAttribute('data-cfasync', 'false');
       script.src = 'https://pl29429652.effectivecpmnetwork.com/863f6aef8282a41ad5ebdefcf161468b/invoke.js';
+      
+      script.onerror = () => {
+        // Silently handle AdBlocker blocked requests without breaking the app
+        if (containerRef.current) {
+          containerRef.current.style.display = 'none';
+        }
+      };
 
       containerRef.current.appendChild(adDiv);
       containerRef.current.appendChild(script);
