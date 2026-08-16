@@ -1057,10 +1057,9 @@ export const LinkBuilderView = ({
                         transition: 'all 0.2s',
                       }}
                     >
-                      <div style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>🃏</div>
                       <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Landing Page</div>
                       <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
-                        Tampilkan iklan dulu,<br/>user klik untuk lanjut
+                        Tampilkan iklan banner,<br/>klik tombol untuk lanjut
                       </div>
                     </button>
 
@@ -1081,7 +1080,6 @@ export const LinkBuilderView = ({
                         transition: 'all 0.2s',
                       }}
                     >
-                      <div style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>⚡</div>
                       <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Langsung</div>
                       <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
                         Iklan termuat & auto-redirect<br/>tanpa perlu klik tombol
@@ -1090,8 +1088,8 @@ export const LinkBuilderView = ({
                   </div>
                   <span className="form-hint" style={{ marginTop: '0.4rem' }}>
                     {redirectMode === 'click'
-                      ? '🃏 Pengunjung melihat halaman dengan iklan banner, lalu mengklik tombol untuk lanjut ke URL tujuan.'
-                      : '⚡ Iklan banner tetap dimuat di background & pengunjung otomatis dialihkan tanpa perlu klik tombol.'}
+                      ? 'Pengunjung melihat halaman dengan iklan banner, lalu mengklik tombol untuk lanjut ke URL tujuan.'
+                      : 'Iklan banner tetap dimuat di background & pengunjung otomatis dialihkan tanpa perlu klik tombol.'}
                   </span>
                 </div>
               </div>

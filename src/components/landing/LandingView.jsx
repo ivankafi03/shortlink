@@ -596,7 +596,6 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                       transition: 'all 0.2s',
                     }}
                   >
-                    <div style={{ fontSize: '1rem', marginBottom: '0.15rem' }}>🃏</div>
                     <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Landing Page</div>
                     <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
                       Ada kartu iklan & tombol lanjutkan
@@ -620,7 +619,6 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                       transition: 'all 0.2s',
                     }}
                   >
-                    <div style={{ fontSize: '1rem', marginBottom: '0.15rem' }}>⚡</div>
                     <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Langsung</div>
                     <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
                       Iklan termuat & auto-redirect
