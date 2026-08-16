@@ -200,20 +200,6 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           </span>
         </div>
 
-        {/* OG Image / Thumbnail if available */}
-        {activeLink.ogImage && (
-          <div style={{
-            width: '100%',
-            aspectRatio: '16 / 9',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            marginBottom: '1.25rem',
-            border: '1px solid rgba(255, 255, 255, 0.08)'
-          }}>
-            <img src={activeLink.ogImage} alt="OG Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-        )}
-
         {/* Title & Desc */}
         <h1 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.5rem', lineHeight: 1.3 }}>
           {activeLink.ogTitle || 'Tautan Anda Siap'}
