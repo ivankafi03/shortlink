@@ -283,28 +283,48 @@ export const getStoredPages = () => {
 };
 
 export const savePages = (pages) => {
-  localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pages));
+  try {
+    localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pages));
+  } catch (err) {
+    console.warn('Failed to save pages to localStorage:', err);
+  }
 };
 
 export const getStoredAnalytics = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
-  if (!data) {
-    localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(INITIAL_ANALYTICS));
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
+    if (!data) {
+      localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(INITIAL_ANALYTICS));
+      return INITIAL_ANALYTICS;
+    }
+    return JSON.parse(data);
+  } catch {
     return INITIAL_ANALYTICS;
   }
-  return JSON.parse(data);
 };
 
 export const recordClick = (logEntry) => {
-  const logs = getStoredAnalytics();
-  const updatedLogs = [logEntry, ...logs];
-  localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(updatedLogs));
+  try {
+    const logs = getStoredAnalytics();
+    // Cap analytics logs to latest 150 items to prevent QuotaExceededError
+    const updatedLogs = [logEntry, ...logs].slice(0, 150);
 
-  const links = getStoredLinks();
-  const targetLinkIndex = links.findIndex((l) => l.id === logEntry.linkId);
-  if (targetLinkIndex !== -1) {
-    links[targetLinkIndex].clicks = (links[targetLinkIndex].clicks || 0) + 1;
-    saveLinks(links);
+    try {
+      localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(updatedLogs));
+    } catch {
+      // If QuotaExceededError still occurs, prune to 30 logs
+      const trimmed = updatedLogs.slice(0, 30);
+      localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
+    }
+
+    const links = getStoredLinks();
+    const targetLinkIndex = links.findIndex((l) => l.id === logEntry.linkId);
+    if (targetLinkIndex !== -1) {
+      links[targetLinkIndex].clicks = (links[targetLinkIndex].clicks || 0) + 1;
+      saveLinks(links);
+    }
+  } catch (err) {
+    console.warn('Click log quota handled gracefully:', err);
   }
 };
 
