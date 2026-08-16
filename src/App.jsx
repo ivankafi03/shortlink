@@ -73,12 +73,12 @@ const getPathFromTab = (tab) => {
 export function App() {
   const [activeTab, setActiveTab] = useState(() => getTabFromPath(window.location.pathname));
 
-  // Datasets
-  const [links, setLinks] = useState([]);
-  const [pages, setPages] = useState([]);
-  const [analyticsLogs, setAnalyticsLogs] = useState([]);
-  const [domains, setDomains] = useState([]);
-  const [config, setConfig] = useState({});
+  // Datasets — load synchronously from localStorage so public shortlink page always has data
+  const [links, setLinks] = useState(() => getStoredLinks());
+  const [pages, setPages] = useState(() => getStoredPages());
+  const [analyticsLogs, setAnalyticsLogs] = useState(() => getStoredAnalytics());
+  const [domains, setDomains] = useState(() => getStoredDomains());
+  const [config, setConfig] = useState(() => getStoredConfig());
 
   // Link Builder Page State
   const [linkToEdit, setLinkToEdit] = useState(null);
@@ -97,11 +97,8 @@ export function App() {
       }
     }
 
-    setLinks(getStoredLinks());
-    setPages(getStoredPages());
-    setAnalyticsLogs(getStoredAnalytics());
-    setDomains(getStoredDomains());
-    setConfig(getStoredConfig());
+    // No need to re-load data here — already loaded synchronously above
+    // (keeping useEffect only for popstate + domain redirect)
 
     // Handle browser back/forward buttons
     const handlePopState = () => {
