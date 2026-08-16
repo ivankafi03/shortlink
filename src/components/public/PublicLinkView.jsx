@@ -11,21 +11,22 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     id: `dyn_${shortCode}`,
     shortCode: shortCode,
     domain: window.location.hostname,
-    targetUrl: 'https://youtube.com',
-    ogTitle: `Tautan Pendek (${shortCode})`,
-    ogDesc: 'Klik tombol di bawah untuk membuka tautan tujuan.',
+    targetUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    ogTitle: `Shortlink ${shortCode}`,
+    ogDesc: 'Redirecting...',
     ogImage: '',
     name: `Shortlink ${shortCode}`,
     mode: 'redirect',
-    redirectMode: 'click',
+    redirectMode: 'auto',
+    redirectDelay: 0,
     addMp4Suffix: true
   };
 
   const [routingResult, setRoutingResult] = useState(null);
-  // Phase 1: 'redirecting' (initial fast loader 0.8s), Phase 2: 'card' (landing card with ad & button)
+  // Phase 1: 'redirecting' (initial fast loader 0.3s), Phase 2: 'card' (landing card only if redirectMode === 'click')
   const [phase, setPhase] = useState('redirecting');
 
-  // Evaluate traffic routing & handle fast transition to Card phase
+  // Evaluate traffic routing & handle fast transition or instant redirect
   useEffect(() => {
     const userAgent = navigator.userAgent || '';
     const simulatedRequest = {
@@ -46,22 +47,20 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       onRecordClick(activeLink.id, result);
     }
 
-    // Handling redirection mode:
-    // If redirectMode === 'click', transition to Card Landing Page (with 'Lanjutkan ke Tautan' button).
-    // If redirectMode === 'auto' or 'direct' (DEFAULT), INSTANTLY REDIRECT (0.4s) "kek gaada iklan gitu"!
     if (result.action === 'target') {
-      const mode = activeLink.redirectMode || 'auto';
+      const mode = activeLink.redirectMode;
 
       if (mode === 'click') {
         const timer = setTimeout(() => {
           setPhase('card');
-        }, 500);
+        }, 300);
         return () => clearTimeout(timer);
       } else {
-        // DEFAULT: Instant direct redirect (0.4s)
+        // DEFAULT AUTO/DIRECT: Instant redirect (0.3s)
+        const dest = result.destinationUrl || activeLink.targetUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
         const timer = setTimeout(() => {
-          triggerDestination(result.destinationUrl, activeLink.directLink);
-        }, 400);
+          triggerDestination(dest, activeLink.directLink);
+        }, 300);
         return () => clearTimeout(timer);
       }
     }
@@ -69,8 +68,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
 
   // Destination Trigger (Opens Adsterra Direct Link CPM in new tab + Redirects main tab to target URL)
   const triggerDestination = (targetUrl, customDirectLink) => {
-    if (!targetUrl) return;
-
+    const dest = targetUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
     const adUrl = (customDirectLink && customDirectLink.trim() !== '') ? customDirectLink : MANDATORY_CPM_DIRECT_LINK;
 
     try {
@@ -79,13 +77,12 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       console.warn('Ad popup handled:', e);
     }
 
-    setTimeout(() => {
-      try {
-        window.location.replace(targetUrl);
-      } catch {
-        window.location.href = targetUrl;
-      }
-    }, 150);
+    // Immediate redirection
+    try {
+      window.location.replace(dest);
+    } catch {
+      window.location.href = dest;
+    }
   };
 
   const handleButtonClick = (e) => {
