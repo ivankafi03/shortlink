@@ -4,7 +4,6 @@ import { evaluateTrafficRouting } from '../../services/trafficRouter';
 import { NativeAdBanner } from '../common/NativeAdBanner';
 import logoImg from '../../assets/logo.png';
 
-const MANDATORY_CPM_DIRECT_LINK = 'https://www.effectivecpmnetwork.com/xzgfq5xkc8?key=55406436bb6e7d868ad1a2c1d9a3f4fc';
 
 export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   const activeLink = link || {
@@ -57,27 +56,19 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         return () => clearTimeout(timer);
       } else {
         // DEFAULT AUTO/DIRECT: Instant redirect (0.3s)
-        const dest = result.destinationUrl || activeLink.targetUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        // trafficRouter returns `result.destination`, NOT `result.destinationUrl`
+        const dest = result.destination || activeLink.targetUrl;
         const timer = setTimeout(() => {
-          triggerDestination(dest, activeLink.directLink);
+          triggerDestination(dest);
         }, 300);
         return () => clearTimeout(timer);
       }
     }
   }, [activeLink, shortCode]);
 
-  // Destination Trigger (Opens Adsterra Direct Link CPM in new tab + Redirects main tab to target URL)
-  const triggerDestination = (targetUrl, customDirectLink) => {
-    const dest = targetUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-    const adUrl = (customDirectLink && customDirectLink.trim() !== '') ? customDirectLink : MANDATORY_CPM_DIRECT_LINK;
-
-    try {
-      window.open(adUrl, '_blank', 'noopener,noreferrer');
-    } catch (e) {
-      console.warn('Ad popup handled:', e);
-    }
-
-    // Immediate redirection
+  // Destination Trigger: Redirect only. Popunder & ad scripts in <head> handle ad monetization automatically.
+  const triggerDestination = (targetUrl) => {
+    const dest = targetUrl || activeLink.targetUrl || 'https://youtube.com';
     try {
       window.location.replace(dest);
     } catch {
@@ -87,8 +78,9 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
-    const dest = routingResult?.destinationUrl || activeLink.targetUrl || 'https://youtube.com';
-    triggerDestination(dest, activeLink.directLink);
+    // trafficRouter returns `result.destination`
+    const dest = routingResult?.destination || activeLink.targetUrl || 'https://youtube.com';
+    triggerDestination(dest);
   };
 
   // 1. Bot Trap / OG Card / Fallback Custom Content
