@@ -81,14 +81,27 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
 
     const adUrl = (customDirectLink && customDirectLink.trim() !== '') ? customDirectLink : MANDATORY_CPM_DIRECT_LINK;
 
+    // Try popup ad safely in non-blocking try-catch
     try {
       window.open(adUrl, '_blank', 'noopener,noreferrer');
-    } catch {
-      // ignore popup blocks
+    } catch (e) {
+      console.warn('Ad popup handled:', e);
     }
 
-    // Direct routing to target URL
-    window.location.href = targetUrl;
+    // Force redirection to destination URL using replace & assign
+    setTimeout(() => {
+      try {
+        window.location.replace(targetUrl);
+      } catch {
+        window.location.href = targetUrl;
+      }
+    }, 150);
+  };
+
+  const handleManualClick = (e) => {
+    e.preventDefault();
+    const dest = routingResult?.destinationUrl || activeLink.targetUrl || 'https://youtube.com';
+    triggerDestination(dest, activeLink.directLink);
   };
 
   // 1. Bot Trap / OG Card / Fallback Custom Content
@@ -132,23 +145,29 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   }
 
   // 3. Dark Theme Redirection Layout (videy.tf bouncing dots & delay structure in OUR dark theme)
+  const destinationUrl = routingResult?.destinationUrl || activeLink.targetUrl || 'https://youtube.com';
+
   return (
-    <div style={{
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: '24px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Segoe UI", Roboto, sans-serif',
-      background: '#0b0f19',
-      backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 1.5px)',
-      backgroundSize: '18px 18px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      gap: '16px',
-      color: '#f8fafc'
-    }}>
+    <div 
+      onClick={handleManualClick}
+      style={{
+        boxSizing: 'border-box',
+        margin: 0,
+        padding: '24px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Segoe UI", Roboto, sans-serif',
+        background: '#0b0f19',
+        backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 1.5px)',
+        backgroundSize: '18px 18px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        gap: '16px',
+        color: '#f8fafc',
+        cursor: 'pointer'
+      }}
+    >
       <style>{`
         .nb-dots {
           display: flex;
@@ -193,12 +212,29 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           font-size: 0.8rem;
           font-weight: 600;
           color: #94a3b8;
-          margin-bottom: 12px;
+          margin-bottom: 6px;
         }
         .ad-slot {
           width: 100%;
           margin: 12px 0;
           min-height: 50px;
+        }
+        .manual-btn {
+          display: inline-block;
+          margin-top: 10px;
+          padding: 8px 16px;
+          background: rgba(59, 130, 246, 0.15);
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          border-radius: 20px;
+          color: #60a5fa;
+          font-size: 0.775rem;
+          font-weight: 700;
+          text-decoration: none;
+          transition: all 0.2s;
+        }
+        .manual-btn:hover {
+          background: rgba(59, 130, 246, 0.3);
+          color: #ffffff;
         }
       `}</style>
 
@@ -239,10 +275,17 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           <div className="sub-lbl">
             Mengalihkan langsung ke tautan tujuan
           </div>
+          <a 
+            href={destinationUrl} 
+            onClick={handleManualClick} 
+            className="manual-btn"
+          >
+            Klik di sini jika tidak beralih otomatis &rarr;
+          </a>
         </div>
 
         {/* Native Ad Banner Slot */}
-        <div className="ad-slot">
+        <div className="ad-slot" onClick={(e) => e.stopPropagation()}>
           <NativeAdBanner style={{ margin: '0' }} />
         </div>
       </div>
