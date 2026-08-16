@@ -1084,14 +1084,14 @@ export const LinkBuilderView = ({
                       <div style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>⚡</div>
                       <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Langsung</div>
                       <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
-                        Redirect tanpa halaman<br/>perantara, 0 detik
+                        Iklan termuat & auto-redirect<br/>tanpa perlu klik tombol
                       </div>
                     </button>
                   </div>
                   <span className="form-hint" style={{ marginTop: '0.4rem' }}>
                     {redirectMode === 'click'
-                      ? '🃏 Pengunjung lihat halaman dengan iklan banner, lalu klik tombol untuk lanjut ke URL tujuan.'
-                      : '⚡ Pengunjung langsung diarahkan ke URL tujuan tanpa jeda atau halaman perantara.'}
+                      ? '🃏 Pengunjung melihat halaman dengan iklan banner, lalu mengklik tombol untuk lanjut ke URL tujuan.'
+                      : '⚡ Iklan banner tetap dimuat di background & pengunjung otomatis dialihkan tanpa perlu klik tombol.'}
                   </span>
                 </div>
               </div>

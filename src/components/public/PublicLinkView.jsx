@@ -64,12 +64,15 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       // `result.destination` is the resolved destination from trafficRouter
       const dest = result.destination || al.targetUrl || 'https://youtube.com';
 
+      // Always switch to 'card' so NativeAdBanner mounts & registers impression
+      setPhase('card');
+
       if (mode === 'click') {
-        const t = setTimeout(() => setPhase('card'), 300);
-        return () => clearTimeout(t);
+        // Mode Landing Page: stays on card until user clicks button
+        return;
       } else {
-        // Auto/direct: show "REDIRECTING..." briefly then immediately navigate
-        const t = setTimeout(() => doRedirect(dest), 300);
+        // Mode Langsung: auto-redirect 400ms after banner script mounts, no user click required
+        const t = setTimeout(() => doRedirect(dest), 400);
         return () => clearTimeout(t);
       }
     }

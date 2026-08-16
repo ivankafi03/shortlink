@@ -623,7 +623,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                     <div style={{ fontSize: '1rem', marginBottom: '0.15rem' }}>⚡</div>
                     <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Langsung</div>
                     <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
-                      Redirect instan tanpa halaman
+                      Iklan termuat & auto-redirect
                     </div>
                   </button>
                 </div>
