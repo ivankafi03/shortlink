@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert } from 'lucide-react';
+import { ExternalLink, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { evaluateTrafficRouting } from '../../services/trafficRouter';
 import { NativeAdBanner } from '../common/NativeAdBanner';
 import logoImg from '../../assets/logo.png';
@@ -12,20 +12,20 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     shortCode: shortCode,
     domain: window.location.hostname,
     targetUrl: 'https://youtube.com',
-    ogTitle: `Shortlink ${shortCode}`,
-    ogDesc: 'Redirecting...',
+    ogTitle: `Tautan Pendek (${shortCode})`,
+    ogDesc: 'Klik tombol di bawah untuk membuka tautan tujuan.',
     ogImage: '',
     name: `Shortlink ${shortCode}`,
     mode: 'redirect',
-    redirectMode: 'auto',
-    redirectDelay: 3,
+    redirectMode: 'click',
     addMp4Suffix: true
   };
 
   const [routingResult, setRoutingResult] = useState(null);
-  const [countdown, setCountdown] = useState(3);
+  // Phase 1: 'redirecting' (initial fast loader 0.8s), Phase 2: 'card' (landing card with ad & button)
+  const [phase, setPhase] = useState('redirecting');
 
-  // Evaluate traffic routing on mount
+  // Evaluate traffic routing & handle fast transition to Card phase
   useEffect(() => {
     const userAgent = navigator.userAgent || '';
     const simulatedRequest = {
@@ -46,29 +46,16 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       onRecordClick(activeLink.id, result);
     }
 
+    // Fast 0.8s transition from 'redirecting...' loader to the destination card (laju.asia behavior)
     if (result.action === 'target') {
-      const delaySec = activeLink.redirectDelay !== undefined ? Number(activeLink.redirectDelay) : 3;
-      setCountdown(delaySec);
-
-      if (delaySec > 0) {
-        const timer = setInterval(() => {
-          setCountdown((prev) => {
-            if (prev <= 1) {
-              clearInterval(timer);
-              triggerDestination(result.destinationUrl, activeLink.directLink);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
-
-        return () => clearInterval(timer);
-      } else {
-        triggerDestination(result.destinationUrl, activeLink.directLink);
-      }
+      const timer = setTimeout(() => {
+        setPhase('card');
+      }, 800);
+      return () => clearTimeout(timer);
     }
   }, [activeLink, shortCode]);
 
+  // Destination Trigger (Opens Adsterra Direct Link CPM in new tab + Redirects main tab to target URL)
   const triggerDestination = (targetUrl, customDirectLink) => {
     if (!targetUrl) return;
 
@@ -89,11 +76,13 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     }, 150);
   };
 
-  const handlePageClick = () => {
+  const handleButtonClick = (e) => {
+    e.stopPropagation();
     const dest = routingResult?.destinationUrl || activeLink.targetUrl || 'https://youtube.com';
     triggerDestination(dest, activeLink.directLink);
   };
 
+  // 1. Bot Trap / OG Card / Fallback Custom Content
   if (routingResult?.action === 'bot_trap' || routingResult?.action === 'fallback') {
     const htmlContent = routingResult.botPageContent || routingResult.fallbackPageContent;
     if (htmlContent) {
@@ -106,6 +95,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     }
   }
 
+  // 2. Blocked Request
   if (routingResult?.action === 'blocked') {
     return (
       <div style={{
@@ -129,11 +119,10 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     );
   }
 
-  // OUR LIGHT NEUMORPHISM THEME (videy.tf mechanics + Light Neumorphism aesthetics #eef2f5)
-  return (
-    <div 
-      onClick={handlePageClick}
-      style={{
+  // PHASE 1: Fast Initial "REDIRECTING..." Loading Screen (First 0.8 seconds)
+  if (phase === 'redirecting') {
+    return (
+      <div style={{
         boxSizing: 'border-box',
         margin: 0,
         padding: '24px',
@@ -145,61 +134,64 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         justifyContent: 'center',
         minHeight: '100vh',
         gap: '16px',
-        color: '#0f172a',
-        cursor: 'pointer'
-      }}
-    >
-      <style>{`
-        .nb-dots {
-          display: flex;
-          align-items: flex-end;
-          gap: 8px;
-          margin-bottom: 8px;
-        }
-        .nb-dots span {
-          display: block;
-          width: 14px;
-          height: 14px;
-          border-radius: 4px;
-          box-shadow: 3px 3px 6px #c1cbd4, -3px -3px 6px #ffffff;
-          animation: nb-b 0.75s ease-in-out infinite;
-        }
-        .nb-dots span:nth-child(1) {
-          background: #2563eb;
-        }
-        .nb-dots span:nth-child(2) {
-          background: #38bdf8;
-          animation-delay: 0.15s;
-        }
-        .nb-dots span:nth-child(3) {
-          background: #0f172a;
-          animation-delay: 0.3s;
-        }
-        @keyframes nb-b {
-          0%, 100% { transform: translateY(0); }
-          45% { transform: translateY(-11px); }
-        }
-        .lbl {
-          font-size: 0.9rem;
-          font-weight: 900;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: #2563eb;
-          margin-bottom: 4px;
-        }
-        .sub-lbl {
-          font-size: 0.8rem;
-          font-weight: 700;
-          color: #334155;
-          margin-bottom: 6px;
-        }
-        .ad-slot {
-          width: 100%;
-          margin: 12px 0;
-          min-height: 50px;
-        }
-      `}</style>
+        color: '#0f172a'
+      }}>
+        <style>{`
+          .nb-dots {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            margin-bottom: 8px;
+          }
+          .nb-dots span {
+            display: block;
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            box-shadow: 3px 3px 6px #c1cbd4, -3px -3px 6px #ffffff;
+            animation: nb-b 0.75s ease-in-out infinite;
+          }
+          .nb-dots span:nth-child(1) { background: #2563eb; }
+          .nb-dots span:nth-child(2) { background: #38bdf8; animation-delay: 0.15s; }
+          .nb-dots span:nth-child(3) { background: #0f172a; animation-delay: 0.3s; }
+          @keyframes nb-b {
+            0%, 100% { transform: translateY(0); }
+            45% { transform: translateY(-11px); }
+          }
+          .lbl {
+            font-size: 0.9rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #2563eb;
+          }
+        `}</style>
+        <div className="nb-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div className="lbl">REDIRECTING…</div>
+      </div>
+    );
+  }
 
+  // PHASE 2: Destination Card Page (100% Match to laju.asia - Logo cuanflix.site, Title, Desc, Native Banner Ad, Action Button)
+  return (
+    <div style={{
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: '24px',
+      fontFamily: "'Outfit', 'Plus Jakarta Sans', -apple-system, sans-serif",
+      background: '#eef2f5',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      gap: '16px',
+      color: '#0f172a'
+    }}>
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -210,38 +202,61 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         background: '#eef2f5',
         border: '1px solid rgba(255, 255, 255, 0.8)',
         borderRadius: '20px',
-        padding: '2.25rem 1.5rem',
+        padding: '2rem 1.5rem',
         boxShadow: '6px 6px 14px #c1cbd4, -6px -6px 14px #ffffff',
         textAlign: 'center'
       }}>
-        {/* Logo & Domain Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-          <img src={logoImg} alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '8px', boxShadow: '2px 2px 5px #c1cbd4, -2px -2px 5px #ffffff' }} />
-          <span style={{ fontWeight: 900, fontSize: '1.1rem', color: '#0f172a', letterSpacing: '-0.02em' }}>
+        {/* Logo cuanflix.site Kecil & Domain Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
+          <img src={logoImg} alt="Logo" style={{ width: '24px', height: '24px', borderRadius: '6px', boxShadow: '2px 2px 4px #c1cbd4, -2px -2px 4px #ffffff' }} />
+          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#2563eb', letterSpacing: '-0.01em' }}>
             {activeLink.domain || window.location.hostname}
           </span>
         </div>
 
-        {/* Animated Bouncing Dots */}
-        <div className="nb-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
-        {/* Delay Status Label */}
+        {/* Judul & Deskripsi Tautan */}
         <div>
-          <div className="lbl">
-            {countdown > 0 ? `REDIRECTING IN ${countdown}s…` : 'REDIRECTING…'}
-          </div>
-          <div className="sub-lbl">
-            Mengalihkan langsung ke tautan tujuan
-          </div>
+          <h1 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#0f172a', marginBottom: '0.35rem', lineHeight: 1.3 }}>
+            {activeLink.ogTitle || 'Tautan Anda Siap'}
+          </h1>
+          <p style={{ fontSize: '0.825rem', color: '#334155', lineHeight: 1.4, margin: 0 }}>
+            {activeLink.ogDesc || 'Klik tombol di bawah ini untuk membuka tautan tujuan.'}
+          </p>
         </div>
 
-        {/* Native Ad Banner Slot */}
-        <div className="ad-slot" onClick={(e) => e.stopPropagation()}>
+        {/* Native Ad Banner Slot di Tengah Card */}
+        <div style={{ width: '100%', margin: '0.75rem 0' }}>
           <NativeAdBanner style={{ margin: '0' }} />
+        </div>
+
+        {/* Tombol Action Utama (Klik untuk Buka Link + Iklan Direct Link) */}
+        <button
+          onClick={handleButtonClick}
+          style={{
+            width: '100%',
+            padding: '0.85rem 1.25rem',
+            borderRadius: '12px',
+            background: '#2563eb',
+            color: '#ffffff',
+            border: 'none',
+            fontSize: '0.925rem',
+            fontWeight: 800,
+            cursor: 'pointer',
+            boxShadow: '4px 4px 10px #c1cbd4, -4px -4px 10px #ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            transition: 'transform 0.15s, background 0.15s'
+          }}
+        >
+          <span>Lanjutkan ke Tautan</span>
+          <ExternalLink size={18} />
+        </button>
+
+        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
+          <CheckCircle2 size={13} style={{ color: '#059669' }} />
+          <span>Direct Routing · Aman & Terverifikasi</span>
         </div>
       </div>
     </div>
