@@ -1035,9 +1035,7 @@ export const LinkBuilderView = ({
                 Atur mode pengalihan (Auto / Tombol Klik / Langsung), penundaan timer, deteksi bot, dan batas klik.
               </p>
 
-              {/* Redirect Mode & Delay Settings */}
-              <div className="neu-panel" style={{ padding: '1rem', marginBottom: '1.5rem', background: 'var(--bg-card)' }}>
-                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
                   <label className="form-label">Mode Pengalihan</label>
                   <div className="neu-panel-inset" style={{ display: 'flex', gap: '0.4rem', padding: '0.35rem' }}>
                     <button
@@ -1063,7 +1061,6 @@ export const LinkBuilderView = ({
                       : 'Langsung: Memuat iklan di background & otomatis mengalihkan tanpa klik.'}
                   </span>
                 </div>
-              </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.75rem' }}>
                 <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.65rem' }}>
