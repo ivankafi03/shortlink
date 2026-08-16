@@ -144,7 +144,7 @@ const INITIAL_LINKS = [
     targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     ogTitle: 'Full HD Viral Video Stream',
     ogDesc: 'Klik tombol play untuk streaming full HD.',
-    ogImage: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    ogImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
     name: 'Cuanflix Video Demo fMRS4R',
     mode: 'video',
     redirectMode: 'click',
@@ -170,7 +170,7 @@ const INITIAL_LINKS = [
     targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     ogTitle: 'Full HD Viral Video Stream Yq8WF6',
     ogDesc: 'Klik tombol play untuk streaming full HD.',
-    ogImage: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    ogImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
     name: 'Cuanflix Video Yq8WF6',
     mode: 'video',
     redirectMode: 'click',
@@ -440,7 +440,7 @@ export const getPublicShowcaseLinks = () => {
     domain: l.domain || window.location.hostname,
     ogTitle: l.ogTitle || l.name || `Video Trending ${l.shortCode}`,
     ogDesc: l.ogDesc || 'Klik untuk nonton video streaming full HD.',
-    ogImage: l.ogImage || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    ogImage: l.ogImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
     clicks: l.clicks || 0,
     addMp4Suffix: l.addMp4Suffix !== undefined ? l.addMp4Suffix : true
   }));
