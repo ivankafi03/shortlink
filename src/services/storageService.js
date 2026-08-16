@@ -3,8 +3,13 @@ const STORAGE_KEYS = {
   PAGES: 'vidy_pages_v1',
   ANALYTICS: 'vidy_analytics_v1',
   DOMAINS: 'vidy_domains_v1',
-  CONFIG: 'vidy_config_v1'
+  CONFIG: 'vidy_config_v1',
+  DATA_VERSION: 'vidy_data_version'
 };
+
+// Increment this whenever INITIAL_LINKS/INITIAL_CONFIG changes significantly
+// This forces a reset of stale localStorage on the next page load
+const CURRENT_DATA_VERSION = '3';
 
 export const AVAILABLE_DOMAINS = [
   'cuanflix.site',
@@ -291,6 +296,14 @@ sanitizeStorageQuota();
 
 export const getStoredLinks = () => {
   try {
+    // Version check: if data is from an older version, reset to fresh INITIAL_LINKS
+    const savedVersion = localStorage.getItem(STORAGE_KEYS.DATA_VERSION);
+    if (savedVersion !== CURRENT_DATA_VERSION) {
+      localStorage.removeItem(STORAGE_KEYS.LINKS);
+      localStorage.setItem(STORAGE_KEYS.DATA_VERSION, CURRENT_DATA_VERSION);
+      localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(INITIAL_LINKS));
+      return INITIAL_LINKS;
+    }
     const data = localStorage.getItem(STORAGE_KEYS.LINKS);
     if (!data) {
       localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(INITIAL_LINKS));
