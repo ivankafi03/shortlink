@@ -575,54 +575,25 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
           {/* Redirect extra fields */}
           {!videoMode && (
             <div style={{ marginTop: '1rem', borderTop: '1px dashed var(--border-subtle)', paddingTop: '0.75rem' }}>
-              {/* Redirect Mode Selection Cards */}
+              {/* Redirect Mode Selection */}
               <div style={{ marginBottom: '0.75rem' }}>
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Mode Pengalihan</label>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  {/* Option 1: Landing Page */}
+                <div className="neu-panel-inset" style={{ display: 'flex', gap: '0.4rem', padding: '0.35rem' }}>
                   <button
                     type="button"
                     onClick={() => setRedirectMode('click')}
-                    style={{
-                      flex: 1, padding: '0.65rem 0.5rem', borderRadius: '10px', border: 'none',
-                      cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-                      background: redirectMode === 'click'
-                        ? 'linear-gradient(135deg, #2563eb, #1d4ed8)'
-                        : 'var(--neu-bg)',
-                      color: redirectMode === 'click' ? '#fff' : 'var(--text-primary)',
-                      boxShadow: redirectMode === 'click'
-                        ? '0 4px 14px rgba(37,99,235,0.4)'
-                        : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
-                      transition: 'all 0.2s',
-                    }}
+                    className={`btn ${redirectMode === 'click' ? 'btn-primary' : 'btn-ghost'}`}
+                    style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
                   >
-                    <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Landing Page</div>
-                    <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
-                      Ada kartu iklan & tombol lanjutkan
-                    </div>
+                    Landing Page
                   </button>
-
-                  {/* Option 2: Langsung */}
                   <button
                     type="button"
                     onClick={() => setRedirectMode('auto')}
-                    style={{
-                      flex: 1, padding: '0.65rem 0.5rem', borderRadius: '10px', border: 'none',
-                      cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-                      background: redirectMode === 'auto'
-                        ? 'linear-gradient(135deg, #059669, #047857)'
-                        : 'var(--neu-bg)',
-                      color: redirectMode === 'auto' ? '#fff' : 'var(--text-primary)',
-                      boxShadow: redirectMode === 'auto'
-                        ? '0 4px 14px rgba(5,150,105,0.4)'
-                        : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
-                      transition: 'all 0.2s',
-                    }}
+                    className={`btn ${redirectMode === 'auto' ? 'btn-primary' : 'btn-ghost'}`}
+                    style={{ flex: 1, padding: '0.55rem', fontSize: '0.825rem', fontWeight: 800 }}
                   >
-                    <div style={{ fontWeight: 800, fontSize: '0.825rem' }}>Langsung</div>
-                    <div style={{ fontSize: '0.7rem', opacity: 0.85, marginTop: '0.1rem' }}>
-                      Iklan termuat & auto-redirect
-                    </div>
+                    Langsung
                   </button>
                 </div>
               </div>

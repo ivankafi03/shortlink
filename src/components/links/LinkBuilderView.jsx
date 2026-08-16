@@ -1039,57 +1039,28 @@ export const LinkBuilderView = ({
               <div className="neu-panel" style={{ padding: '1rem', marginBottom: '1.5rem', background: 'var(--bg-card)' }}>
                 <div className="form-group" style={{ marginBottom: '1rem' }}>
                   <label className="form-label">Mode Pengalihan</label>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    {/* Option 1: Landing Page */}
+                  <div className="neu-panel-inset" style={{ display: 'flex', gap: '0.4rem', padding: '0.35rem' }}>
                     <button
                       type="button"
                       onClick={() => setRedirectMode('click')}
-                      style={{
-                        flex: 1, padding: '0.75rem 0.5rem', borderRadius: '10px', border: 'none',
-                        cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-                        background: redirectMode === 'click'
-                          ? 'linear-gradient(135deg, #2563eb, #1d4ed8)'
-                          : 'var(--neu-bg)',
-                        color: redirectMode === 'click' ? '#fff' : 'var(--text-primary)',
-                        boxShadow: redirectMode === 'click'
-                          ? '0 4px 14px rgba(37,99,235,0.4)'
-                          : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
-                        transition: 'all 0.2s',
-                      }}
+                      className={`btn ${redirectMode === 'click' ? 'btn-primary' : 'btn-ghost'}`}
+                      style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', fontWeight: 800 }}
                     >
-                      <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Landing Page</div>
-                      <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
-                        Tampilkan iklan banner,<br/>klik tombol untuk lanjut
-                      </div>
+                      Landing Page
                     </button>
-
-                    {/* Option 2: Langsung */}
                     <button
                       type="button"
                       onClick={() => setRedirectMode('auto')}
-                      style={{
-                        flex: 1, padding: '0.75rem 0.5rem', borderRadius: '10px', border: 'none',
-                        cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-                        background: redirectMode === 'auto'
-                          ? 'linear-gradient(135deg, #059669, #047857)'
-                          : 'var(--neu-bg)',
-                        color: redirectMode === 'auto' ? '#fff' : 'var(--text-primary)',
-                        boxShadow: redirectMode === 'auto'
-                          ? '0 4px 14px rgba(5,150,105,0.4)'
-                          : '4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light)',
-                        transition: 'all 0.2s',
-                      }}
+                      className={`btn ${redirectMode === 'auto' ? 'btn-primary' : 'btn-ghost'}`}
+                      style={{ flex: 1, padding: '0.6rem', fontSize: '0.85rem', fontWeight: 800 }}
                     >
-                      <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>Langsung</div>
-                      <div style={{ fontSize: '0.72rem', opacity: 0.8, marginTop: '0.15rem' }}>
-                        Iklan termuat & auto-redirect<br/>tanpa perlu klik tombol
-                      </div>
+                      Langsung
                     </button>
                   </div>
                   <span className="form-hint" style={{ marginTop: '0.4rem' }}>
                     {redirectMode === 'click'
-                      ? 'Pengunjung melihat halaman dengan iklan banner, lalu mengklik tombol untuk lanjut ke URL tujuan.'
-                      : 'Iklan banner tetap dimuat di background & pengunjung otomatis dialihkan tanpa perlu klik tombol.'}
+                      ? 'Landing Page: Menampilkan halaman iklan banner & tombol lanjutkan.'
+                      : 'Langsung: Memuat iklan di background & otomatis mengalihkan tanpa klik.'}
                   </span>
                 </div>
               </div>
