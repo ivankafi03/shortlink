@@ -1,0 +1,282 @@
+const STORAGE_KEYS = {
+  LINKS: 'vidy_links_v1',
+  PAGES: 'vidy_pages_v1',
+  ANALYTICS: 'vidy_analytics_v1',
+  DOMAINS: 'vidy_domains_v1',
+  CONFIG: 'vidy_config_v1'
+};
+
+export const AVAILABLE_DOMAINS = [
+  'cuanflix.site',
+  'link.cuanflix.site',
+  'cdn.cuanflix.site',
+  'go.cuanflix.site'
+];
+
+const INITIAL_PAGES = [
+  {
+    id: 'page_bot_trap_1',
+    name: 'Halaman Perangkap Bot (Bot Trap)',
+    slug: 'security-verification',
+    htmlContent: `<!DOCTYPE html>
+<html>
+<head>
+  <title>Verifikasi Keamanan</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 12px; text-align: center; max-width: 400px; border: 1px solid #334155; }
+    h2 { color: #f43f5e; margin-top: 0; }
+    p { color: #94a3b8; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Access Restricted</h2>
+    <p>Sistem kami mendeteksi lalu lintas otomatis atau bot crawling. Silakan verifikasi identitas Anda.</p>
+  </div>
+</body>
+</html>`,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'page_bio_link_1',
+    name: 'Halaman Arahan Bio Link Affiliate',
+    slug: 'bio-links',
+    htmlContent: `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Bio Link</title>
+  <style>
+    body { font-family: sans-serif; background: #f6f8fc; color: #1e293b; display: flex; justify-content: center; padding: 2rem 1rem; }
+    .container { max-width: 420px; width: 100%; text-align: center; }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; background: #2563eb; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem; }
+    .link-btn { display: block; width: 100%; padding: 1rem; margin: 0.75rem 0; background: white; color: #0f172a; font-weight: 600; text-decoration: none; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    .link-btn:hover { border-color: #2563eb; color: #2563eb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="avatar">IV</div>
+    <h3>Ivanka Fipradana</h3>
+    <p style="color: #64748b; font-size: 0.9rem;">Official Links & Special Offers</p>
+    <a href="#" class="link-btn">Promo Shopee Hari Ini</a>
+    <a href="#" class="link-btn">Join Channel Telegram VIP</a>
+    <a href="#" class="link-btn">Kunjungi Website Resmi</a>
+  </div>
+</body>
+</html>`,
+    createdAt: new Date().toISOString()
+  }
+];
+
+const INITIAL_LINKS = [
+  {
+    id: 'link_1',
+    shortCode: 'e17QVX',
+    domain: 'vidy.vu',
+    targetUrl: 'https://shopee.co.id/promo-affiliate-special',
+    name: 'Kampanye Shopee Sales ID',
+    mode: 'redirect',
+    addMp4Suffix: false,
+    fallbackPageId: '',
+    botPageId: 'page_bot_trap_1',
+    devices: ['seluler', 'desktop'],
+    countries: ['ID', 'MY', 'SG'],
+    countryRule: 'allow',
+    referers: ['facebook.com', 'instagram.com'],
+    refererRule: 'allow',
+    params: ['utm_source=fb', 'ref=campaign1'],
+    blockProxy: true,
+    clickLimit: 1000,
+    forwardUtm: true,
+    clicks: 142,
+    createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
+  },
+  {
+    id: 'link_2',
+    shortCode: 'x89KLP',
+    domain: 'videy.fans',
+    targetUrl: 'https://github.com/trending',
+    name: 'Github Trending Bot Filter',
+    mode: 'redirect',
+    addMp4Suffix: false,
+    fallbackPageId: 'page_bio_link_1',
+    botPageId: 'page_bot_trap_1',
+    devices: ['desktop'],
+    countries: ['US', 'JP', 'DE'],
+    countryRule: 'allow',
+    referers: [],
+    refererRule: 'allow',
+    params: [],
+    blockProxy: false,
+    clickLimit: 0,
+    forwardUtm: false,
+    clicks: 89,
+    createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
+  },
+  {
+    id: 'link_3',
+    shortCode: 'bunny-demo',
+    domain: 'cdn.vidy.my',
+    targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    name: 'Big Buck Bunny Video Player',
+    mode: 'video',
+    addMp4Suffix: true,
+    fallbackPageId: '',
+    botPageId: '',
+    devices: [],
+    countries: [],
+    countryRule: 'allow',
+    referers: [],
+    refererRule: 'allow',
+    params: [],
+    blockProxy: false,
+    clickLimit: 0,
+    forwardUtm: false,
+    clicks: 310,
+    createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
+  }
+];
+
+const INITIAL_ANALYTICS = [
+  {
+    id: 'log_1',
+    linkId: 'link_1',
+    timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+    ip: '180.252.12.98',
+    country: 'ID',
+    device: 'seluler',
+    referer: 'facebook.com',
+    triggeredRule: 'Rule Allowed (Mobile ID)',
+    destinationUrl: 'https://shopee.co.id/promo-affiliate-special?utm_source=fb',
+    isBot: false,
+    isProxy: false
+  },
+  {
+    id: 'log_2',
+    linkId: 'link_1',
+    timestamp: new Date(Date.now() - 3600000 * 5).toISOString(),
+    ip: '66.249.66.1',
+    country: 'US',
+    device: 'desktop',
+    referer: 'google.com',
+    triggeredRule: 'Bot Trap Triggered',
+    destinationUrl: 'Page: Halaman Perangkap Bot (Bot Trap)',
+    isBot: true,
+    isProxy: false
+  },
+  {
+    id: 'log_3',
+    linkId: 'link_2',
+    timestamp: new Date(Date.now() - 3600000 * 8).toISOString(),
+    ip: '103.111.42.10',
+    country: 'JP',
+    device: 'desktop',
+    referer: 'direct',
+    triggeredRule: 'Rule Allowed (Desktop JP)',
+    destinationUrl: 'https://github.com/trending',
+    isBot: false,
+    isProxy: false
+  }
+];
+
+const INITIAL_DOMAINS = [
+  {
+    id: 'dom_cuanflix_1',
+    domainName: 'cuanflix.site',
+    serverIp: '51.79.145.138',
+    status: 'active',
+    sslActive: true,
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'dom_cuanflix_2',
+    domainName: 'link.cuanflix.site',
+    serverIp: '51.79.145.138',
+    status: 'active',
+    sslActive: true,
+    createdAt: new Date().toISOString()
+  }
+];
+
+const INITIAL_CONFIG = {
+  timezone: 'Asia/Jakarta',
+  googleCrawlerBlock: true,
+  ipBlacklist: '192.168.1.*\n10.0.0.1',
+  asnList: 'AS15169\nAS13335',
+  ispKeywords: 'meta\nfacebook\namazon\ndigitalocean'
+};
+
+export const getStoredLinks = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.LINKS);
+  if (!data) {
+    localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(INITIAL_LINKS));
+    return INITIAL_LINKS;
+  }
+  return JSON.parse(data);
+};
+
+export const saveLinks = (links) => {
+  localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(links));
+};
+
+export const getStoredPages = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.PAGES);
+  if (!data) {
+    localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(INITIAL_PAGES));
+    return INITIAL_PAGES;
+  }
+  return JSON.parse(data);
+};
+
+export const savePages = (pages) => {
+  localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(pages));
+};
+
+export const getStoredAnalytics = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
+  if (!data) {
+    localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(INITIAL_ANALYTICS));
+    return INITIAL_ANALYTICS;
+  }
+  return JSON.parse(data);
+};
+
+export const recordClick = (logEntry) => {
+  const logs = getStoredAnalytics();
+  const updatedLogs = [logEntry, ...logs];
+  localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(updatedLogs));
+
+  const links = getStoredLinks();
+  const targetLinkIndex = links.findIndex((l) => l.id === logEntry.linkId);
+  if (targetLinkIndex !== -1) {
+    links[targetLinkIndex].clicks = (links[targetLinkIndex].clicks || 0) + 1;
+    saveLinks(links);
+  }
+};
+
+export const getStoredDomains = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.DOMAINS);
+  if (!data) {
+    localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(INITIAL_DOMAINS));
+    return INITIAL_DOMAINS;
+  }
+  return JSON.parse(data);
+};
+
+export const saveDomains = (domains) => {
+  localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(domains));
+};
+
+export const getStoredConfig = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.CONFIG);
+  if (!data) {
+    localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(INITIAL_CONFIG));
+    return INITIAL_CONFIG;
+  }
+  return JSON.parse(data);
+};
+
+export const saveConfig = (config) => {
+  localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(config));
+};
