@@ -8,7 +8,7 @@ import { PagesView } from './components/pages/PagesView';
 import { DomainsView } from './components/domains/DomainsView';
 import { SettingsView } from './components/settings/SettingsView';
 import { TrafficSimulatorView } from './components/simulator/TrafficSimulatorView';
-import { ApiDocsView } from './components/api/ApiDocsView';
+import { PublicLinkView } from './components/public/PublicLinkView';
 
 import {
   getStoredLinks,
@@ -19,8 +19,15 @@ import {
   getStoredDomains,
   saveDomains,
   getStoredConfig,
-  saveConfig
+  saveConfig,
+  recordClick
 } from './services/storageService';
+
+// Extract shortcode from path (e.g. /fMRS4R.mp4 -> fMRS4R)
+const extractShortCodeFromPath = (path) => {
+  const clean = path.replace(/^\//, '').replace(/\/$/, '');
+  return clean.replace(/\.(mp4|m3u8|webm)$/i, '');
+};
 
 // Comprehensive Path to Tab mapping
 const getTabFromPath = (path) => {
@@ -35,7 +42,15 @@ const getTabFromPath = (path) => {
   if (cleanPath === '/settings' || cleanPath === '/pengaturan') return 'pengaturan';
   if (cleanPath === '/simulator' || cleanPath === '/test-router') return 'simulator';
   if (cleanPath === '/api' || cleanPath === '/api-docs') return 'api_docs';
-  return 'tautan'; // default /dashboard
+  if (cleanPath === '/dashboard' || cleanPath === '/tautan') return 'tautan';
+
+  // Check if path is a shortlink code (e.g. /fMRS4R or /fMRS4R.mp4)
+  const code = extractShortCodeFromPath(path);
+  if (code && code.length > 0 && !code.includes('/')) {
+    return 'public_shortlink';
+  }
+
+  return 'home';
 };
 
 // Tab to Path mapping
@@ -189,6 +204,27 @@ export function App() {
     if (activeTab === 'create_domain') return 'domain';
     return activeTab;
   };
+
+  // Public shortlink visitor page (no sidebar)
+  if (activeTab === 'public_shortlink') {
+    const code = extractShortCodeFromPath(window.location.pathname);
+    const matchedLink = links.find(l => 
+      l.shortCode === code || 
+      l.id === code || 
+      (l.shortCode && l.shortCode.toLowerCase() === code.toLowerCase())
+    );
+
+    return (
+      <PublicLinkView 
+        shortCode={code} 
+        link={matchedLink} 
+        onRecordClick={(linkId, routingResult) => {
+          recordClick(linkId, routingResult);
+          setAnalyticsLogs(getStoredAnalytics());
+        }}
+      />
+    );
+  }
 
   // Landing page is full-page (no sidebar)
   if (activeTab === 'home') {
