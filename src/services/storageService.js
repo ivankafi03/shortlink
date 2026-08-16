@@ -121,6 +121,7 @@ const INITIAL_LINKS = [
     targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     name: 'Big Buck Bunny Video Player',
     mode: 'video',
+    redirectMode: 'click',
     addMp4Suffix: true,
     fallbackPageId: '',
     botPageId: '',
@@ -135,6 +136,32 @@ const INITIAL_LINKS = [
     forwardUtm: false,
     clicks: 310,
     createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
+  },
+  {
+    id: 'link_4',
+    shortCode: 'fMRS4R',
+    domain: 'cuanflix.site',
+    targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    ogTitle: 'Full HD Viral Video Stream',
+    ogDesc: 'Klik tombol play untuk streaming full HD.',
+    ogImage: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    name: 'Cuanflix Video Demo fMRS4R',
+    mode: 'video',
+    redirectMode: 'click',
+    addMp4Suffix: true,
+    fallbackPageId: '',
+    botPageId: '',
+    devices: [],
+    countries: [],
+    countryRule: 'allow',
+    referers: [],
+    refererRule: 'allow',
+    params: [],
+    blockProxy: false,
+    clickLimit: 0,
+    forwardUtm: false,
+    clicks: 520,
+    createdAt: new Date().toISOString()
   }
 ];
 
