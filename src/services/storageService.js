@@ -162,6 +162,32 @@ const INITIAL_LINKS = [
     forwardUtm: false,
     clicks: 520,
     createdAt: new Date().toISOString()
+  },
+  {
+    id: 'link_5',
+    shortCode: 'Yq8WF6',
+    domain: 'cuanflix.site',
+    targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    ogTitle: 'Full HD Viral Video Stream Yq8WF6',
+    ogDesc: 'Klik tombol play untuk streaming full HD.',
+    ogImage: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    name: 'Cuanflix Video Yq8WF6',
+    mode: 'video',
+    redirectMode: 'click',
+    addMp4Suffix: true,
+    fallbackPageId: '',
+    botPageId: '',
+    devices: [],
+    countries: [],
+    countryRule: 'allow',
+    referers: [],
+    refererRule: 'allow',
+    params: [],
+    blockProxy: false,
+    clickLimit: 0,
+    forwardUtm: false,
+    clicks: 120,
+    createdAt: new Date().toISOString()
   }
 ];
 

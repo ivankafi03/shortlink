@@ -4,6 +4,21 @@ import { evaluateTrafficRouting } from '../../services/trafficRouter';
 import logoImg from '../../assets/logo.png';
 
 export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
+  // If link is not explicitly found in localStorage, create a dynamic active video link
+  const activeLink = link || {
+    id: `dyn_${shortCode}`,
+    shortCode: shortCode,
+    domain: window.location.hostname,
+    targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    ogTitle: `Full HD Video Content (${shortCode})`,
+    ogDesc: 'Klik tombol play untuk melanjutkan streaming full HD.',
+    ogImage: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80',
+    name: `Dynamic Video ${shortCode}`,
+    mode: 'video',
+    redirectMode: 'click',
+    addMp4Suffix: true
+  };
+
   const [routingResult, setRoutingResult] = useState(null);
   const [countdown, setCountdown] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -13,11 +28,6 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
 
   // Evaluate traffic routing on mount
   useEffect(() => {
-    if (!link) {
-      setRoutingResult({ action: 'not_found' });
-      return;
-    }
-
     // Determine visitor context (simulated browser visitor)
     const userAgent = navigator.userAgent || '';
     const simulatedRequest = {
@@ -31,17 +41,17 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       queryParams: Object.fromEntries(new URLSearchParams(window.location.search))
     };
 
-    const result = evaluateTrafficRouting(link, simulatedRequest);
+    const result = evaluateTrafficRouting(activeLink, simulatedRequest);
     setRoutingResult(result);
 
     // Record click log
     if (onRecordClick && typeof onRecordClick === 'function') {
-      onRecordClick(link.id, result);
+      onRecordClick(activeLink.id, result);
     }
 
     // Handle Auto Redirect Timer if mode is 'auto'
-    if (result.action === 'target' && (link.redirectMode === 'auto' || !link.redirectMode)) {
-      const delaySec = link.redirectDelay !== undefined ? link.redirectDelay : 3;
+    if (result.action === 'target' && (activeLink.redirectMode === 'auto' || !activeLink.redirectMode)) {
+      const delaySec = activeLink.redirectDelay !== undefined ? activeLink.redirectDelay : 3;
       setCountdown(delaySec);
 
       if (delaySec > 0) {
@@ -49,7 +59,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           setCountdown((prev) => {
             if (prev <= 1) {
               clearInterval(timer);
-              triggerDestination(result.destinationUrl, link.directLink);
+              triggerDestination(result.destinationUrl, activeLink.directLink);
               return 0;
             }
             return prev - 1;
@@ -58,13 +68,13 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
 
         return () => clearInterval(timer);
       } else {
-        triggerDestination(result.destinationUrl, link.directLink);
+        triggerDestination(result.destinationUrl, activeLink.directLink);
       }
-    } else if (result.action === 'target' && link.redirectMode === 'direct') {
+    } else if (result.action === 'target' && activeLink.redirectMode === 'direct') {
       // Direct mode (0 delay)
-      triggerDestination(result.destinationUrl, link.directLink);
+      triggerDestination(result.destinationUrl, activeLink.directLink);
     }
-  }, [link, shortCode]);
+  }, [activeLink, shortCode]);
 
   // Destination Trigger (Handles Direct Link CPM Ad + Target Video URL)
   const triggerDestination = (targetUrl, directLink) => {
@@ -84,13 +94,13 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     setHasClicked(true);
 
     if (routingResult?.action === 'target' && routingResult?.destinationUrl) {
-      if (link.directLink && link.directLink.trim() !== '') {
+      if (activeLink.directLink && activeLink.directLink.trim() !== '') {
         // Open Direct Link CPM Ad in new tab
-        window.open(link.directLink, '_blank', 'noopener,noreferrer');
+        window.open(activeLink.directLink, '_blank', 'noopener,noreferrer');
       }
 
       // If video URL is direct mp4/m3u8, attempt to play in video player first or redirect
-      const isMediaFile = /\.(mp4|m3u8|webm)($|\?)/i.test(link.targetUrl);
+      const isMediaFile = /\.(mp4|m3u8|webm)($|\?)/i.test(activeLink.targetUrl);
       if (isMediaFile && videoRef.current) {
         videoRef.current.play().then(() => {
           setIsPlaying(true);
@@ -105,8 +115,8 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     }
   };
 
-  // 1. Link Not Found (404)
-  if (!link || routingResult?.action === 'not_found') {
+  // 1. Link Not Found (Only if routing action specifically requested not_found)
+  if (routingResult?.action === 'not_found') {
     return (
       <div style={{
         minHeight: '100vh',
@@ -183,7 +193,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   }
 
   // 4. Real Visitor Target View (Video Player & Redirect Landing Page)
-  const isVideo = link.targetUrl && /\.(mp4|m3u8|webm)($|\?)/i.test(link.targetUrl);
+  const isVideo = activeLink.targetUrl && /\.(mp4|m3u8|webm)($|\?)/i.test(activeLink.targetUrl);
 
   return (
     <div style={{
@@ -210,7 +220,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <img src={logoImg} alt="Logo" style={{ width: '28px', height: '28px', borderRadius: '8px' }} />
           <span style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.02em', color: '#f8fafc' }}>
-            {link.domain || 'cuanflix.site'}
+            {activeLink.domain || window.location.hostname}
           </span>
         </div>
         <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem', borderRadius: '20px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', fontWeight: 700 }}>
@@ -222,7 +232,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       <main style={{ width: '100%', maxWidth: '720px' }}>
 
         {/* Timer Banner (for Auto Mode) */}
-        {link.redirectMode === 'auto' && countdown > 0 && (
+        {activeLink.redirectMode === 'auto' && countdown > 0 && (
           <div style={{
             background: 'linear-gradient(90deg, #1e293b, #0f172a)',
             border: '1px solid rgba(59, 130, 246, 0.3)',
@@ -237,7 +247,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
               Mengalihkan otomatis dalam <span style={{ color: '#60a5fa', fontWeight: 800, fontSize: '1rem' }}>{countdown}</span> detik...
             </div>
             <button
-              onClick={() => triggerDestination(routingResult?.destinationUrl, link.directLink)}
+              onClick={() => triggerDestination(routingResult?.destinationUrl, activeLink.directLink)}
               style={{
                 background: '#2563eb', color: '#fff', border: 'none', padding: '0.4rem 0.85rem',
                 borderRadius: '8px', fontWeight: 700, fontSize: '0.775rem', cursor: 'pointer',
@@ -264,8 +274,8 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           {isVideo ? (
             <video
               ref={videoRef}
-              src={link.targetUrl}
-              poster={link.ogImage || ''}
+              src={activeLink.targetUrl}
+              poster={activeLink.ogImage || ''}
               playsInline
               muted={isMuted}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -273,7 +283,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           ) : (
             <div style={{
               width: '100%', height: '100%',
-              backgroundImage: `url(${link.ogImage || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80'})`,
+              backgroundImage: `url(${activeLink.ogImage || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=800&q=80'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               filter: isPlaying ? 'none' : 'brightness(0.7)'
@@ -324,10 +334,10 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
           }}>
             <div>
               <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0, color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
-                {link.ogTitle || 'Video Content HD'}
+                {activeLink.ogTitle || 'Video Content HD'}
               </h3>
               <p style={{ fontSize: '0.75rem', color: '#cbd5e1', margin: '0.2rem 0 0 0' }}>
-                {link.ogDesc || 'Klik tombol play untuk melanjutkan ke pemutar full HD.'}
+                {activeLink.ogDesc || 'Klik tombol play untuk melanjutkan ke pemutar full HD.'}
               </p>
             </div>
             {isVideo && (
