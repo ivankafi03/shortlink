@@ -81,7 +81,7 @@ export const LinkBuilderView = ({
   const [paramText, setParamText] = useState('');
 
   // Tab 5: opsi (Options) — Default UNCHECKED (false) to match vidy.my 100%
-  const [redirectMode, setRedirectMode] = useState('auto'); // 'auto' | 'click' | 'direct'
+  const [redirectMode, setRedirectMode] = useState('click'); // 'auto' | 'click' | 'direct'
   const [redirectDelay, setRedirectDelay] = useState(2); // 1-30s
   const [enableBotBlocker, setEnableBotBlocker] = useState(false);
   const [blockProxy, setBlockProxy] = useState(false);

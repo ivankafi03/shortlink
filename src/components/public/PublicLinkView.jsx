@@ -13,7 +13,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     targetUrl: 'https://youtube.com',
     name: `Shortlink ${shortCode}`,
     mode: 'redirect',
-    redirectMode: 'auto',
+    redirectMode: 'click',
     addMp4Suffix: false
   });
 

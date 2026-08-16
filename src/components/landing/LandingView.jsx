@@ -228,7 +228,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
   const [directLink, setDirectLink] = useState('');
   const [videoOverlay, setVideoOverlay] = useState(true);
 
-  const [redirectMode, setRedirectMode] = useState('auto'); // 'auto' | 'click' | 'direct'
+  const [redirectMode, setRedirectMode] = useState('click'); // 'auto' | 'click' | 'direct'
   const [redirectDelay, setRedirectDelay] = useState(2);
   const [generatedResults, setGeneratedResults] = useState([]);
   const [copiedAll, setCopiedAll] = useState(false);
