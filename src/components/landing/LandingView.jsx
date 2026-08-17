@@ -77,12 +77,15 @@ const T = {
     featTitle: 'Yang kamu dapat',
     featSub: 'Dari tautan cepat sampai kontrol trafik penuh. Sembunyikan tujuanmu, filter per negara, blokir bot. Semua dalam satu alat.',
     features: [
-      { title: 'Siapa lihat apa', desc: 'Pengunjung asli lihat penawaranmu. Moderator, bot, dan traffic dari negara yang salah lihat halaman aman. Kamu yang tentukan siapa ke mana.' },
-      { title: 'Bot jebakan', desc: 'Reviewer Facebook? Crawler Google? Mereka lihat halaman bersih. Audiens aslimu lihat yang sesungguhnya. Gak kena banned, gak kena flag, data tetap bersih.' },
-      { title: 'Tamu asli doang', desc: 'VPN dan proxy ketahuan sebelum sampai halamanmu. Blokir atau kasih konten lain — terserah kamu.' },
-      { title: 'Intelijen Geo', desc: 'Cuma izinkan Indonesia dan Malaysia. Atau blokir Singapura. Daftar izin/tolak simpel. Sisanya kena halaman fallback.' },
-      { title: 'Domain Kustom', desc: 'Pakai domain sendiri. SSL termasuk. Audiensmu lihat merekmu, bukan merek kami. Jalankan banyak domain untuk kampanye berbeda.' },
-      { title: 'Tiap klik terlacak', desc: 'Setiap klik tercatat: IP, negara, perangkat, referer, aturan mana yang kena. Tahu persis apa yang terjadi — bukan cuma berapa yang klik.' },
+      { title: 'Smart Traffic Router & Penargetan', desc: 'Pengunjung asli lihat penawaranmu. Moderator, bot, dan trafik luar negeri lihat halaman aman (bot trap).' },
+      { title: 'Perangkap Bot & Moderator Ads', desc: 'Reviewer Facebook, crawler Google, dan ad moderator lihat halaman bersih. Akun iklan aman dari banned dan flag.' },
+      { title: 'Blokir Proxy & VPN', desc: 'VPN dan proksi terdeteksi otomatis sebelum sampai halaman utama. Bebas atur redirect atau blokir total.' },
+      { title: 'Filter Geo-Location Negara', desc: 'Batasi akses hanya untuk Indonesia atau negara pilihan. Trafik luar negeri otomatis masuk ke halaman fallback.' },
+      { title: 'Domain Kustom & Branding', desc: 'Gunakan domain milikmu sendiri (seperti whatsappp.my.id). SSL gratis aktif otomatis untuk semua domain.' },
+      { title: 'Mode Pengalihan Ganda', desc: 'Pilih antara Mode Langsung (0 detik tanpa jeda) atau Mode Landing Page (dengan banner iklan Adsterra).' },
+      { title: 'Analitik Klik Real-Time', desc: 'Setiap klik tercatat detail: IP, negara, perangkat, referer, ISP, dan aturan mana yang cocok secara real-time.' },
+      { title: 'Halaman Landing Builder HTML', desc: 'Buat dan edit template halaman perangkap bot HTML kustom langsung dari dashboard dengan live preview.' },
+      { title: 'Developer REST API & Simulator', desc: 'API publik untuk integrasi bot Telegram / script eksternal, plus simulator lalu lintas bawaan untuk pengujian.' },
     ],
     faqTitle: 'Yang sering ditanya',
     faqSub: 'Ada yang belum terjawab? Hubungi kami.',
@@ -168,8 +171,8 @@ const T = {
   }
 };
 
-const FEATURE_ICONS = [Target, Shield, Zap, Globe, Link2, BarChart2];
-const FEATURE_COLORS = ['#2563eb', '#f43f5e', '#10b981', '#8b5cf6', '#f59e0b', '#06b6d4'];
+const FEATURE_ICONS = [Target, Shield, Zap, Globe, Link2, MousePointerClick, BarChart2, Braces, Play];
+const FEATURE_COLORS = ['#2563eb', '#f43f5e', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#6366f1', '#10b981'];
 const DOMAINS = ['whatsappp.my.id', 'cuanflix.site', 'link.cuanflix.site', 'cdn.cuanflix.site', 'go.cuanflix.site'];
 
 // ─── FAQ Item ──────────────────────────────────────────────────────────────────
