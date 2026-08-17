@@ -29,7 +29,6 @@ import {
 import logoImg from '../../assets/logo.png';
 import { QrCodeModal } from '../common/QrCodeModal';
 import { getPublicShowcaseLinks } from '../../services/storageService';
-import { NativeAdBanner } from '../common/NativeAdBanner';
 
 // ... (keep T translations)
 
@@ -406,41 +405,43 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <button className="btn btn-ghost" style={{ padding: '0.5rem 0.85rem', fontSize: '0.875rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }} onClick={() => onNavigate('api_docs')}>
-            <Braces size={16} style={{ color: 'var(--primary)' }} />
-            <span>API</span>
-          </button>
-
-          <button className="btn btn-ghost" style={{ padding: '0.5rem 0.85rem', fontSize: '0.875rem', fontWeight: 700 }} onClick={() => onNavigate('tautan')}>
-            {t.login}
-          </button>
-
-          <div style={{ position: 'relative' }}>
-            <button 
-              className="btn btn-ghost"
-              style={{ padding: '0.5rem 0.75rem', fontSize: '0.825rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-              onClick={() => setLangOpen(o => !o)}
-            >
-              {lang}
-              <ChevronDown size={13} style={{ transition: 'transform 0.15s', transform: langOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+          <div className="landing-nav-desktop-items" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button className="btn btn-ghost" style={{ padding: '0.5rem 0.85rem', fontSize: '0.875rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }} onClick={() => onNavigate('api_docs')}>
+              <Braces size={16} style={{ color: 'var(--primary)' }} />
+              <span>API</span>
             </button>
-            {langOpen && (
-              <div className="neu-panel" style={{ position: 'absolute', right: 0, top: 'calc(100% + 6px)', minWidth: '90px', padding: '0.4rem', zIndex: 100 }}>
-                {['ID', 'EN'].map(l => (
-                  <button key={l} onClick={() => { setLang(l); setLangOpen(false); }}
-                    style={{ 
-                      display: 'block', width: '100%', textAlign: 'left',
-                      padding: '0.5rem 0.75rem', fontSize: '0.825rem', fontWeight: 800,
-                      background: lang === l ? 'var(--primary)' : 'none',
-                      color: lang === l ? '#fff' : 'var(--text-main)',
-                      border: 'none', cursor: 'pointer', borderRadius: '6px',
-                    }}
-                  >
-                    {l === 'ID' ? 'ID' : 'EN'}
-                  </button>
-                ))}
-              </div>
-            )}
+
+            <button className="btn btn-ghost" style={{ padding: '0.5rem 0.85rem', fontSize: '0.875rem', fontWeight: 700 }} onClick={() => onNavigate('tautan')}>
+              {t.login}
+            </button>
+
+            <div style={{ position: 'relative' }}>
+              <button 
+                className="btn btn-ghost"
+                style={{ padding: '0.5rem 0.75rem', fontSize: '0.825rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                onClick={() => setLangOpen(o => !o)}
+              >
+                {lang}
+                <ChevronDown size={13} style={{ transition: 'transform 0.15s', transform: langOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+              </button>
+              {langOpen && (
+                <div className="neu-panel" style={{ position: 'absolute', right: 0, top: 'calc(100% + 6px)', minWidth: '90px', padding: '0.4rem', zIndex: 100 }}>
+                  {['ID', 'EN'].map(l => (
+                    <button key={l} onClick={() => { setLang(l); setLangOpen(false); }}
+                      style={{ 
+                        display: 'block', width: '100%', textAlign: 'left',
+                        padding: '0.5rem 0.75rem', fontSize: '0.825rem', fontWeight: 800,
+                        background: lang === l ? 'var(--primary)' : 'none',
+                        color: lang === l ? '#fff' : 'var(--text-main)',
+                        border: 'none', cursor: 'pointer', borderRadius: '6px',
+                      }}
+                    >
+                      {l === 'ID' ? 'ID' : 'EN'}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Hamburger Menu Toggle for Mobile */}
@@ -533,7 +534,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
             <select className="form-control" value={domain} onChange={e => setDomain(e.target.value)} style={{ maxWidth: '150px', fontSize: '0.875rem' }}>
               {domainOptions.map(d => <option key={d} value={d}>{d}</option>)}
             </select>
-            <span style={{ color: 'var(--text-dim)', fontWeight: 700 }}>/</span>
+            <span className="domain-slash-separator" style={{ color: 'var(--text-dim)', fontWeight: 700 }}>/</span>
             <div style={{ flex: 1, position: 'relative' }}>
               <input type="text" className="form-control" value={shortCode} onChange={e => setShortCode(e.target.value)}
                 style={{ fontSize: '0.875rem', fontFamily: 'var(--font-mono)', paddingRight: '2.5rem' }}
@@ -669,9 +670,6 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         </div>
 
         <p style={{ marginTop: '1.5rem', fontSize: '0.825rem', color: 'var(--text-muted)', fontWeight: 600 }}>{t.tagline}</p>
-
-        {/* Native Ad Banner */}
-        <NativeAdBanner style={{ marginTop: '2rem' }} />
       </section>
 
       {/* ── How it works ───────────────────────────────────────────────────── */}

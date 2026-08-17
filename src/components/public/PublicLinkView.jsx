@@ -39,6 +39,12 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
   };
 
   useEffect(() => {
+    // Inject Popunder script dynamically (only on shortlink public view)
+    const popScript = document.createElement('script');
+    popScript.src = 'https://pl29429557.effectivecpmnetwork.com/ec/06/5a/ec065a7e4c204506aa310f99c17a98a4.js';
+    popScript.async = true;
+    document.head.appendChild(popScript);
+
     const al = activeLinkRef.current;
     const userAgent = navigator.userAgent || '';
     const simulatedRequest = {
