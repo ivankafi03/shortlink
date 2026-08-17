@@ -9,6 +9,7 @@ import { DomainsView } from './components/domains/DomainsView';
 import { SettingsView } from './components/settings/SettingsView';
 import { PublicLinkView } from './components/public/PublicLinkView';
 import { GoogleLoginModal } from './components/common/GoogleLoginModal';
+import { AdminAuthPortal } from './components/admin/AdminAuthPortal';
 
 import {
   getStoredLinks,
@@ -270,6 +271,14 @@ export function App() {
         }}
       />
     );
+  }
+
+  const isDedicatedAdminHost = typeof window !== 'undefined' && 
+    (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'));
+
+  // Dedicated Admin Portal view for whatsappp.my.id (if not logged in)
+  if (isDedicatedAdminHost && !currentUser) {
+    return <AdminAuthPortal onLoginSuccess={handleLoginSuccess} />;
   }
 
   // Landing page is full-page (no sidebar)
