@@ -5,23 +5,22 @@ import './index.css'
 
 // ─── Domain Redirect Guard (runs SYNCHRONOUSLY before any React render) ───────
 // All shortlink domains (cuanflix.site, link.cuanflix.site, etc.) forward to
-// www.samehadakuu.com so link resolution always reads the correct localStorage.
+// whatsappp.my.id so link resolution always reads the correct localStorage.
 ;(function domainGuard() {
   const host = window.location.hostname.toLowerCase();
   // Primary canonical domain — ALL link data lives here
   const isPrimary =
-    host === 'www.samehadakuu.com' ||
-    host === 'samehadakuu.com' ||
-    host === 'samehadakuu.site' ||
     host === 'whatsappp.my.id' ||
     host.includes('whatsappp') ||
+    host === 'cuanflix.site' ||
+    host.includes('cuanflix') ||
     host === 'localhost' ||
     host === '127.0.0.1';
 
   if (!isPrimary) {
     // Preserve the full path + query + hash so the shortlink still resolves
     const dest =
-      'https://www.samehadakuu.com' +
+      'https://whatsappp.my.id' +
       window.location.pathname +
       window.location.search +
       window.location.hash;
