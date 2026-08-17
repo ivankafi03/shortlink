@@ -50,6 +50,12 @@ const getTabFromPath = (path) => {
     return 'public_shortlink';
   }
 
+  // If host is dedicated admin domain (whatsappp.my.id), default root '/' to 'tautan' (Admin Dashboard)
+  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+  if (cleanPath === '/' && (host.includes('whatsappp') || host.includes('admin'))) {
+    return 'tautan';
+  }
+
   return 'home';
 };
 

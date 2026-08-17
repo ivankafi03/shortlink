@@ -12,6 +12,9 @@ import './index.css'
   const isPrimary =
     host === 'www.samehadakuu.com' ||
     host === 'samehadakuu.com' ||
+    host === 'samehadakuu.site' ||
+    host === 'whatsappp.my.id' ||
+    host.includes('whatsappp') ||
     host === 'localhost' ||
     host === '127.0.0.1';
 
