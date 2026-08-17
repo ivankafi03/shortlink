@@ -7,12 +7,11 @@ const STORAGE_KEYS = {
 };
 
 export const AVAILABLE_DOMAINS = [
-  'samehadakuu.com',
-  'whatsappp.my.id',
   'cuanflix.site',
   'link.cuanflix.site',
   'cdn.cuanflix.site',
-  'go.cuanflix.site'
+  'go.cuanflix.site',
+  'whatsappp.my.id'
 ];
 
 const INITIAL_PAGES = [
