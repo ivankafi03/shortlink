@@ -170,7 +170,7 @@ const T = {
 
 const FEATURE_ICONS = [Target, Shield, Zap, Globe, Link2, BarChart2];
 const FEATURE_COLORS = ['#2563eb', '#f43f5e', '#10b981', '#8b5cf6', '#f59e0b', '#06b6d4'];
-const DOMAINS = ['cuanflix.site', 'link.cuanflix.site', 'cdn.cuanflix.site', 'go.cuanflix.site'];
+const DOMAINS = ['whatsappp.my.id', 'cuanflix.site', 'link.cuanflix.site', 'cdn.cuanflix.site', 'go.cuanflix.site'];
 
 // ─── FAQ Item ──────────────────────────────────────────────────────────────────
 

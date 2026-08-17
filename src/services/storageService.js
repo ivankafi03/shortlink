@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
 };
 
 export const AVAILABLE_DOMAINS = [
+  'whatsappp.my.id',
   'cuanflix.site',
   'link.cuanflix.site',
   'cdn.cuanflix.site',
@@ -236,6 +237,14 @@ const INITIAL_ANALYTICS = [
 ];
 
 const INITIAL_DOMAINS = [
+  {
+    id: 'dom_whatsappp_1',
+    domainName: 'whatsappp.my.id',
+    serverIp: '51.79.145.138',
+    status: 'active',
+    sslActive: true,
+    createdAt: new Date().toISOString()
+  },
   {
     id: 'dom_cuanflix_1',
     domainName: 'cuanflix.site',
