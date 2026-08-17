@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
 };
 
 export const AVAILABLE_DOMAINS = [
+  'samehadakuu.com',
   'whatsappp.my.id',
   'cuanflix.site',
   'link.cuanflix.site',

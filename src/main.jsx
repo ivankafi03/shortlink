@@ -10,6 +10,10 @@ import './index.css'
   const host = window.location.hostname.toLowerCase();
   // Primary canonical domain — ALL link data lives here
   const isPrimary =
+    host === 'samehadakuu.com' ||
+    host === 'www.samehadakuu.com' ||
+    host === 'samehadakuu.site' ||
+    host.includes('samehadakuu') ||
     host === 'whatsappp.my.id' ||
     host.includes('whatsappp') ||
     host === 'cuanflix.site' ||
@@ -20,7 +24,7 @@ import './index.css'
   if (!isPrimary) {
     // Preserve the full path + query + hash so the shortlink still resolves
     const dest =
-      'https://whatsappp.my.id' +
+      'https://samehadakuu.com' +
       window.location.pathname +
       window.location.search +
       window.location.hash;
