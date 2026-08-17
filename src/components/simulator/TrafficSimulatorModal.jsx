@@ -128,7 +128,7 @@ export const TrafficSimulatorModal = ({ links, initialLink, onClose }) => {
           </div>
 
           {/* Simulation Input Grid */}
-          <div className="responsive-three-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.85rem', marginBottom: '1.25rem' }}>
+          <div className="responsive-three-col" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', marginBottom: '1.25rem' }}>
             <div>
               <label className="form-label">Alamat IP Pengunjung</label>
               <input type="text" className="form-control" value={userIp} onChange={e => setUserIp(e.target.value)} />

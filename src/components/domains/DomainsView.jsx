@@ -138,7 +138,7 @@ export const DomainsView = ({
       />
 
       {/* Main Header Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
           <h2 style={{ fontSize: '1.35rem', fontWeight: 900 }}>Daftar Domain ({domains.length})</h2>
         </div>

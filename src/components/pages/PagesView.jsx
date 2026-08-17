@@ -188,7 +188,7 @@ export const PagesView = ({
       />
 
       {/* Primary Actions Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
           <h2 style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: 'normal' }}>Daftar Halaman Landing ({pages.length})</h2>
         </div>
