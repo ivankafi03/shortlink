@@ -19,7 +19,10 @@ export const Sidebar = ({
   setActiveTab, 
   onOpenCreateModal,
   onOpenSimulator,
-  onGoHome
+  onGoHome,
+  currentUser,
+  onOpenGoogleLogin,
+  onLogout
 }) => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
@@ -180,28 +183,48 @@ export const Sidebar = ({
             <span>Test Router Simulator</span>
           </button>
 
-          <div className="neu-panel-inset" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.75rem 0.85rem' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 800 }}>
-              D
-            </div>
-            <div style={{ overflow: 'hidden' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                Ivanka Fipradana
+          {currentUser ? (
+            <>
+              <div className="neu-panel-inset" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.75rem 0.85rem' }}>
+                {currentUser.avatar ? (
+                  <img src={currentUser.avatar} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }} />
+                ) : (
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 800 }}>
+                    {currentUser.name?.charAt(0) || 'G'}
+                  </div>
+                )}
+                <div style={{ overflow: 'hidden' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {currentUser.name}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {currentUser.email}
+                  </div>
+                </div>
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                ivankafipradana@gmail.com
-              </div>
-            </div>
-          </div>
 
-          <button
-            onClick={() => { onGoHome(); setMobileDrawerOpen(false); }}
-            className="btn btn-ghost"
-            style={{ width: '100%', marginTop: '0.75rem', justifyContent: 'flex-start', fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-muted)' }}
-          >
-            <LogOut size={16} style={{ color: 'var(--text-muted)' }} />
-            <span>Keluar</span>
-          </button>
+              <button
+                onClick={() => { onLogout(); setMobileDrawerOpen(false); }}
+                className="btn btn-ghost"
+                style={{ width: '100%', marginTop: '0.75rem', justifyContent: 'flex-start', fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-muted)' }}
+              >
+                <LogOut size={16} style={{ color: 'var(--text-muted)' }} />
+                <span>Keluar</span>
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => { onOpenGoogleLogin(); setMobileDrawerOpen(false); }}
+              className="btn btn-primary"
+              style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', fontWeight: 800, justifyContent: 'center', gap: '0.5rem' }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <path fill="#ffffff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#ffffff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              </svg>
+              <span>Masuk dengan Google</span>
+            </button>
+          )}
         </div>
       </aside>
 
@@ -311,48 +334,68 @@ export const Sidebar = ({
             <span>Test Router Simulator</span>
           </button>
 
-          <div className="neu-panel-inset" style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '0.65rem',
-            padding: '0.75rem 0.85rem'
-          }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: 'var(--primary)',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '0.85rem',
-              fontWeight: 800
-            }}>
-              D
-            </div>
-            <div style={{ overflow: 'hidden' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                Ivanka Fipradana
+          {currentUser ? (
+            <>
+              <div className="neu-panel-inset" style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.65rem',
+                padding: '0.75rem 0.85rem'
+              }}>
+                {currentUser.avatar ? (
+                  <img src={currentUser.avatar} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }} />
+                ) : (
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'var(--primary)',
+                    color: '#ffffff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '0.85rem',
+                    fontWeight: 800
+                  }}>
+                    {currentUser.name?.charAt(0) || 'G'}
+                  </div>
+                )}
+                <div style={{ overflow: 'hidden' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {currentUser.name}
+                  </div>
+                  <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {currentUser.email}
+                  </div>
+                </div>
               </div>
-              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                ivankafipradana@gmail.com
-              </div>
-            </div>
-          </div>
 
-          <button
-            onClick={onGoHome}
-            className="btn btn-ghost"
-            style={{ 
-              width: '100%', marginTop: '0.75rem', justifyContent: 'flex-start',
-              fontWeight: 700, fontSize: '0.875rem',
-              color: 'var(--text-muted)'
-            }}
-          >
-            <LogOut size={15} style={{ color: 'var(--text-muted)' }} />
-            <span>Keluar</span>
-          </button>
+              <button
+                onClick={onLogout}
+                className="btn btn-ghost"
+                style={{ 
+                  width: '100%', marginTop: '0.75rem', justifyContent: 'flex-start',
+                  fontWeight: 700, fontSize: '0.875rem',
+                  color: 'var(--text-muted)'
+                }}
+              >
+                <LogOut size={15} style={{ color: 'var(--text-muted)' }} />
+                <span>Keluar</span>
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={onOpenGoogleLogin}
+              className="btn btn-primary"
+              style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', fontWeight: 800, justifyContent: 'center', gap: '0.5rem' }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <path fill="#ffffff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#ffffff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              </svg>
+              <span>Masuk dengan Google</span>
+            </button>
+          )}
         </div>
       </aside>
     </>

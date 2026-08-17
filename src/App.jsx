@@ -7,8 +7,8 @@ import { AnalyticsView } from './components/analytics/AnalyticsView';
 import { PagesView } from './components/pages/PagesView';
 import { DomainsView } from './components/domains/DomainsView';
 import { SettingsView } from './components/settings/SettingsView';
-import { TrafficSimulatorView } from './components/simulator/TrafficSimulatorView';
 import { PublicLinkView } from './components/public/PublicLinkView';
+import { GoogleLoginModal } from './components/common/GoogleLoginModal';
 
 import {
   getStoredLinks,
@@ -82,6 +82,30 @@ export function App() {
 
   // Link Builder Page State
   const [linkToEdit, setLinkToEdit] = useState(null);
+
+  // Member Google User State
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('vidy_user_v1');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [googleModalOpen, setGoogleModalOpen] = useState(false);
+
+  const handleLoginSuccess = (userData) => {
+    setCurrentUser(userData);
+    localStorage.setItem('vidy_user_v1', JSON.stringify(userData));
+    navigateToTab('tautan');
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('vidy_user_v1');
+    navigateToTab('home');
+  };
 
   // Load initial data and set up URL listener
   useEffect(() => {
@@ -245,12 +269,22 @@ export function App() {
   // Landing page is full-page (no sidebar)
   if (activeTab === 'home') {
     return (
-      <LandingView 
-        onNavigate={(tab) => navigateToTab(tab)} 
-        links={links}
-        analyticsLogs={analyticsLogs}
-        domains={domains}
-      />
+      <>
+        <LandingView 
+          onNavigate={(tab) => navigateToTab(tab)} 
+          links={links}
+          analyticsLogs={analyticsLogs}
+          domains={domains}
+          currentUser={currentUser}
+          onOpenGoogleLogin={() => setGoogleModalOpen(true)}
+          onLogout={handleLogout}
+        />
+        <GoogleLoginModal 
+          isOpen={googleModalOpen} 
+          onClose={() => setGoogleModalOpen(false)} 
+          onLoginSuccess={handleLoginSuccess} 
+        />
+      </>
     );
   }
 
@@ -276,6 +310,9 @@ export function App() {
         onOpenCreateModal={handleOpenCreateLink}
         onOpenSimulator={() => navigateToTab('simulator')}
         onGoHome={() => navigateToTab('home')}
+        currentUser={currentUser}
+        onOpenGoogleLogin={() => setGoogleModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* Main Content View Area */}
@@ -361,6 +398,12 @@ export function App() {
           />
         )}
       </main>
+
+      <GoogleLoginModal 
+        isOpen={googleModalOpen} 
+        onClose={() => setGoogleModalOpen(false)} 
+        onLoginSuccess={handleLoginSuccess} 
+      />
     </div>
   );
 }
