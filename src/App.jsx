@@ -311,6 +311,21 @@ export function App() {
     }
   }
 
+  // On public domains (samehadakuu.com, cuanflix.site), BLOCK access to Admin Dashboard/Settings!
+  if (!isDedicatedAdminHost && activeTab !== 'home' && activeTab !== 'public_shortlink') {
+    return (
+      <LandingView 
+        onNavigate={(tab) => navigateToTab('home')} 
+        links={links}
+        analyticsLogs={analyticsLogs}
+        domains={domains}
+        currentUser={currentUser}
+        onOpenGoogleLogin={() => setGoogleModalOpen(true)}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
   // Landing page is full-page for public domains (no sidebar)
   if (activeTab === 'home') {
     return (
