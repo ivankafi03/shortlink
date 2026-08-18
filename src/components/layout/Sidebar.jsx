@@ -70,13 +70,18 @@ export const Sidebar = ({
       <header className="mobile-top-bar">
         <div 
           onClick={onGoHome}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', marginBottom: '1.75rem' }}
         >
-          <div className="neu-logo-box" style={{ width: '38px', height: '38px', borderRadius: '12px', padding: '2px', flexShrink: 0 }}>
+          <div className="neu-logo-box" style={{ width: '42px', height: '42px', borderRadius: '12px', padding: '2px', flexShrink: 0 }}>
             <img src={logoImg} alt="D shortlink Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
           </div>
-          <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.15rem', color: 'var(--text-main)' }}>
-            D <span style={{ color: 'var(--primary)' }}>shortlink</span>
+          <div style={{ overflow: 'hidden' }}>
+            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.2rem', color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+              D <span style={{ color: 'var(--primary)' }}>shortlink</span>
+            </div>
+            <div style={{ fontSize: '0.675rem', fontWeight: 900, color: 'var(--primary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Shield size={10} /> SUPER ADMIN PORTAL
+            </div>
           </div>
         </div>
 
@@ -281,8 +286,8 @@ export const Sidebar = ({
               }}>
                 D <span style={{ color: 'var(--primary)' }}>shortlink</span>
               </div>
-              <span style={{ fontSize: '0.675rem', color: 'var(--text-muted)', fontWeight: 800, letterSpacing: '0.06em' }}>
-                TRAFFIC ROUTER ENGINE
+              <span style={{ fontSize: '0.675rem', color: 'var(--primary)', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.2rem' }}>
+                <Shield size={10} /> SUPER ADMIN PORTAL
               </span>
             </div>
           </div>
