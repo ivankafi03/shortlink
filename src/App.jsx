@@ -356,18 +356,7 @@ export function App() {
 
   return (
     <div className="app-layout">
-      {/* Top Page Transition Loading Bar */}
-      {isNavigating && (
-        <>
-          <div className="page-loading-bar-container">
-            <div className="page-loading-bar" style={{ width: `${navProgress}%` }} />
-          </div>
-          <div className="page-loading-spinner-overlay">
-            <div className="spinner-icon" />
-            <span>Memuat...</span>
-          </div>
-        </>
-      )}
+
 
       {/* Left Vertical Sidebar */}
       <Sidebar 
