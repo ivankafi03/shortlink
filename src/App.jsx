@@ -276,12 +276,42 @@ export function App() {
   const isDedicatedAdminHost = typeof window !== 'undefined' && 
     (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'));
 
-  // Dedicated Admin Portal view for whatsappp.my.id (if not logged in)
-  if (isDedicatedAdminHost && !currentUser) {
-    return <AdminAuthPortal onLoginSuccess={handleLoginSuccess} />;
+  // Dedicated Admin Portal view for whatsappp.my.id
+  if (isDedicatedAdminHost) {
+    if (!currentUser) {
+      return <AdminAuthPortal onLoginSuccess={handleLoginSuccess} />;
+    }
+    // If logged in on admin domain and activeTab is 'home', force to 'tautan' (Admin Dashboard)
+    if (activeTab === 'home') {
+      return (
+        <div className="app-layout">
+          {/* Left Vertical Sidebar */}
+          <Sidebar 
+            activeTab={getSidebarActiveTab()}
+            setActiveTab={(tab) => navigateToTab(tab)}
+            onOpenCreateModal={handleOpenCreateLink}
+            onOpenSimulator={() => navigateToTab('simulator')}
+            onGoHome={() => navigateToTab('tautan')}
+            currentUser={currentUser}
+            onOpenGoogleLogin={() => setGoogleModalOpen(true)}
+            onLogout={handleLogout}
+          />
+          <main className="main-wrapper">
+            <DashboardView 
+              links={links}
+              onDeleteLink={handleDeleteLink}
+              onOpenCreateModal={handleOpenCreateLink}
+              onEditLink={handleEditLink}
+              onOpenSimulator={() => navigateToTab('simulator')}
+              onNavigate={(tab) => navigateToTab(tab)}
+            />
+          </main>
+        </div>
+      );
+    }
   }
 
-  // Landing page is full-page (no sidebar)
+  // Landing page is full-page for public domains (no sidebar)
   if (activeTab === 'home') {
     return (
       <>
