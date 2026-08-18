@@ -26,9 +26,11 @@ export const ApiDocsView = ({ onOpenCreateModal, onOpenSimulator }) => {
   // Playground State
   const [testUrl, setTestUrl] = useState('https://example.com/target-page');
   const [testAlias, setTestAlias] = useState('');
-  const [testDomain, setTestDomain] = useState('vibey.cfd');
+  const [testDomain, setTestDomain] = useState('whatsappp.my.id');
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
+
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://whatsappp.my.id';
 
   const generateNewKey = () => {
     const randomHex = Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
@@ -74,32 +76,32 @@ export const ApiDocsView = ({ onOpenCreateModal, onOpenSimulator }) => {
   };
 
   const codeSnippets = {
-    curl: `curl -X POST "http://localhost:5173/api/v1/shorten" \\
+    curl: `curl -X POST "${baseUrl}/api/v1/shorten" \\
   -H "Authorization: Bearer ${apiKey}" \\
   -H "Content-Type: application/json" \\
-  -d '{"url": "https://example.com/link", "alias": "${testAlias || 'promo2026'}"}'`,
+  -d '{"url": "${testUrl}", "alias": "${testAlias || 'promo2026'}"}'`,
 
-    js: `fetch("http://localhost:5173/api/v1/shorten", {
+    js: `fetch("${baseUrl}/api/v1/shorten", {
   method: "POST",
   headers: { "Authorization": "Bearer ${apiKey}", "Content-Type": "application/json" },
-  body: JSON.stringify({ url: "https://example.com/link", alias: "${testAlias || 'promo2026'}" })
+  body: JSON.stringify({ url: "${testUrl}", alias: "${testAlias || 'promo2026'}" })
 }).then(r => r.json()).then(console.log);`,
 
     python: `import requests
 
 res = requests.post(
-    "http://localhost:5173/api/v1/shorten",
+    "${baseUrl}/api/v1/shorten",
     headers={"Authorization": "Bearer ${apiKey}"},
-    json={"url": "https://example.com/link", "alias": "${testAlias || 'promo2026'}"}
+    json={"url": "${testUrl}", "alias": "${testAlias || 'promo2026'}"}
 )
 print(res.json())`,
 
     php: `<?php
-$res = file_get_contents("http://localhost:5173/api/v1/shorten", false, stream_context_create([
+$res = file_get_contents("${baseUrl}/api/v1/shorten", false, stream_context_create([
     "http" => [
         "method" => "POST",
         "header" => "Authorization: Bearer ${apiKey}\r\nContent-Type: application/json\r\n",
-        "content" => json_encode(["url" => "https://example.com/link"])
+        "content" => json_encode(["url" => "${testUrl}"])
     ]
 ]));
 echo $res;`

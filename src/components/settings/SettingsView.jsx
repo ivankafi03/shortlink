@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Clock, 
   Shield, 
@@ -18,6 +18,15 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal, onOpenSi
   const [ispKeywords, setIspKeywords] = useState(config.ispKeywords || '');
 
   const [isSaved, setIsSaved] = useState(false);
+
+  // Sync state lokal saat prop config berubah dari luar (mis. reset ke default)
+  useEffect(() => {
+    setTimezone(config.timezone || 'Asia/Jakarta');
+    setGoogleCrawlerBlock(!!config.googleCrawlerBlock);
+    setIpBlacklist(config.ipBlacklist || '');
+    setAsnList(config.asnList || '');
+    setIspKeywords(config.ispKeywords || '');
+  }, [config]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

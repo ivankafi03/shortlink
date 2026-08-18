@@ -24,6 +24,7 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
 
   const activeLink = activeLinkRef.current;
 
+  const [resolvedIp, setResolvedIp] = useState('180.252.12.98');
   const [routingResult, setRoutingResult] = useState(null);
   // 'redirecting' = initial loading screen, 'card' = landing card (only for redirectMode='click')
   const [phase, setPhase] = useState('redirecting');
@@ -45,10 +46,17 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
     popScript.async = true;
     document.head.appendChild(popScript);
 
+    // Coba dapatkan IP real pengunjung dari API publik
+    // Ini async tapi tidak menghambat routing (routing jalan duluan)
+    fetch('https://api.ipify.org?format=json')
+      .then(r => r.json())
+      .then(data => { if (data?.ip) setResolvedIp(data.ip); })
+      .catch(() => {}); // Silently fail, pakai IP default
+
     const al = activeLinkRef.current;
     const userAgent = navigator.userAgent || '';
     const simulatedRequest = {
-      userIp: '180.252.12.98',
+      userIp: resolvedIp,  // Fix: gunakan IP yang diresolve, bukan hardcode
       country: 'ID',
       device: /mobile|android|iphone|ipad/i.test(userAgent) ? 'seluler' : 'desktop',
       referer: document.referrer || 'direct',

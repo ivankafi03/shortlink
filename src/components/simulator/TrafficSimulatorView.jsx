@@ -78,16 +78,28 @@ export const TrafficSimulatorView = ({
   const handleRunSimulation = () => {
     if (!selectedLink) return;
 
+    // Parse urlParams string (mis. 'utm_source=fb&campaign=test') menjadi object
+    const parseQueryParams = (paramStr) => {
+      if (!paramStr || !paramStr.trim()) return {};
+      try {
+        return Object.fromEntries(new URLSearchParams(paramStr));
+      } catch {
+        return {};
+      }
+    };
+
     const requestContext = {
       userIp: ip,
       country,
       device,
       userAgent,
       referer,
-      queryParams: { utm_source: 'fb_ad' }
+      ispName: 'Provider Internet',
+      asnNumber: 'AS23693',
+      queryParams: parseQueryParams(urlParams)  // Fix: gunakan state urlParams
     };
 
-    const result = evaluateTrafficRouting(selectedLink, requestContext);
+    const result = evaluateTrafficRouting(selectedLink, requestContext, { dryRun: true });
     setSimulationResult(result);
   };
 
@@ -277,7 +289,13 @@ export const TrafficSimulatorView = ({
               )}
             </div>
           ) : (
-            <p style={{ color: 'var(--text-muted)' }}>Menjalankan simulasi...</p>
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+              {links.length === 0 ? (
+                <p style={{ fontWeight: 700 }}>Belum ada tautan. Buat tautan pendek terlebih dahulu untuk menguji simulasi.</p>
+              ) : (
+                <p style={{ fontWeight: 700 }}>Menjalankan simulasi...</p>
+              )}
+            </div>
           )}
         </div>
       </div>

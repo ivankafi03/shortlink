@@ -376,9 +376,6 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
             <option value={250}>250</option>
           </select>
         </div>
-        <button className="btn btn-primary btn-sm" style={{ fontSize: '0.85rem', padding: '0.5rem 1rem' }}>
-          filter
-        </button>
       </div>
 
       {/* Daily Bar Chart */}

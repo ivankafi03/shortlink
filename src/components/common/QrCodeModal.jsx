@@ -52,11 +52,15 @@ export const QrCodeModal = ({ isOpen, onClose, url, title = 'Shortlink QR Code' 
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    const link = document.createElement('a');
-    const cleanUrlName = url.replace(/^https?:\/\//, '').replace(/[^a-zA-Z0-9]/g, '_');
-    link.download = `qrcode_${cleanUrlName}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    try {
+      const link = document.createElement('a');
+      const cleanUrlName = url.replace(/^https?:\/\//, '').replace(/[^a-zA-Z0-9]/g, '_');
+      link.download = `qrcode_${cleanUrlName}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.warn('Gagal mengunduh QR Code:', err);
+    }
   };
 
   return (

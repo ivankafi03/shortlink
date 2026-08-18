@@ -12,25 +12,20 @@ export const GoogleLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
   const handleGoogleLogin = (emailToUse) => {
     const finalEmail = emailToUse || customEmail || selectedEmail || 'user.member@gmail.com';
-    setLoading(true);
+    const nameFromEmail = finalEmail.split('@')[0].replace(/[._]/g, ' ');
+    const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+    
+    const userData = {
+      id: `google_${Date.now()}`,
+      name: formattedName,
+      email: finalEmail.toLowerCase(),
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(finalEmail)}`,
+      authProvider: 'google',
+      loggedInAt: new Date().toISOString()
+    };
 
-    setTimeout(() => {
-      const nameFromEmail = finalEmail.split('@')[0].replace(/[._]/g, ' ');
-      const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
-      
-      const userData = {
-        id: `google_${Date.now()}`,
-        name: formattedName,
-        email: finalEmail.toLowerCase(),
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(finalEmail)}`,
-        authProvider: 'google',
-        loggedInAt: new Date().toISOString()
-      };
-
-      setLoading(false);
-      onLoginSuccess(userData);
-      onClose();
-    }, 600);
+    onLoginSuccess(userData);
+    onClose();
   };
 
   return (

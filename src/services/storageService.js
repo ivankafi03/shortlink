@@ -1,4 +1,5 @@
 const STORAGE_KEYS = {
+  USERS: 'vidy_users_v1',
   LINKS: 'vidy_links_v1',
   PAGES: 'vidy_pages_v1',
   ANALYTICS: 'vidy_analytics_v1',
@@ -13,6 +14,37 @@ export const AVAILABLE_DOMAINS = [
   'go.cuanflix.site',
   'whatsappp.my.id'
 ];
+
+export const DEFAULT_USERS = [
+  {
+    id: 'user_admin_1',
+    name: 'Super Admin',
+    email: 'admin.cuan@gmail.com',
+    role: 'admin',
+    status: 'active',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin.cuan@gmail.com',
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'user_member_1',
+    name: 'Member Samehadakuu',
+    email: 'member@samehadakuu.com',
+    role: 'member',
+    status: 'active',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=member@samehadakuu.com',
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'user_member_2',
+    name: 'Affiliate Publisher',
+    email: 'affiliate.owner@gmail.com',
+    role: 'member',
+    status: 'active',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=affiliate.owner@gmail.com',
+    createdAt: new Date().toISOString()
+  }
+];
+
 
 const INITIAL_PAGES = [
   {
@@ -279,7 +311,7 @@ const sanitizeStorageQuota = () => {
       try {
         const parsed = JSON.parse(rawAnalytics);
         if (Array.isArray(parsed)) {
-          const trimmed = parsed.slice(0, 20);
+          const trimmed = parsed.slice(0, 50);
           localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
         } else {
           localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
@@ -448,11 +480,25 @@ export const getPublicShowcaseLinks = () => {
   return publicLinks.map((l) => ({
     id: l.id,
     shortCode: l.shortCode,
-    domain: l.domain || window.location.hostname,
+    domain: l.domain || (typeof window !== 'undefined' ? window.location.hostname : ''),
     ogTitle: l.ogTitle || l.name || `Video Trending ${l.shortCode}`,
     ogDesc: l.ogDesc || 'Klik untuk nonton video streaming full HD.',
     ogImage: l.ogImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
     clicks: l.clicks || 0,
     addMp4Suffix: l.addMp4Suffix !== undefined ? l.addMp4Suffix : true
   }));
+};
+
+export const getStoredUsers = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.USERS);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return DEFAULT_USERS;
+};
+
+export const saveUsers = (users) => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+  } catch {}
 };

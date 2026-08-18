@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
 import { QrCodeModal } from '../common/QrCodeModal';
-import { getPublicShowcaseLinks } from '../../services/storageService';
+import { getPublicShowcaseLinks, saveLinks, getStoredLinks } from '../../services/storageService';
 
 // ... (keep T translations)
 
@@ -202,7 +202,7 @@ const FaqItem = ({ q, a }) => {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domains = [], currentUser = null, onOpenGoogleLogin, onLogout }) => {
+export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domains = [], currentUser = null, onOpenGoogleLogin, onLogout, onSaveLink }) => {
   const [lang, setLang] = useState('ID');
   const [langOpen, setLangOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -215,7 +215,20 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
     return DOMAINS;
   }, [domains]);
 
-  const showcaseLinks = useMemo(() => getPublicShowcaseLinks(), [links]);
+  const showcaseLinks = useMemo(() => {
+    return links
+      .filter(l => l.shortCode && l.shortCode.trim() !== '')
+      .map(l => ({
+        id: l.id,
+        shortCode: l.shortCode,
+        domain: l.domain || (typeof window !== 'undefined' ? window.location.hostname : ''),
+        ogTitle: l.ogTitle || l.name || `Video Trending ${l.shortCode}`,
+        ogDesc: l.ogDesc || 'Klik untuk nonton video streaming full HD.',
+        ogImage: l.ogImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
+        clicks: l.clicks || 0,
+        addMp4Suffix: l.addMp4Suffix !== undefined ? l.addMp4Suffix : true
+      }));
+  }, [links]);
 
   const [domain, setDomain] = useState(domainOptions[0] || DOMAINS[0]);
 
@@ -301,6 +314,58 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
     });
 
     setGeneratedResults(newItems);
+
+    // Simpan link ke storage agar bisa diakses via shortlink
+    if (onSaveLink) {
+      // Ubah format generatedItems ke format link yang dikenali storageService
+      const linkItems = newItems.map(item => ({
+        id: item.id,
+        shortCode: item.alias,
+        domain: item.domain,
+        targetUrl: item.targetUrl,
+        name: `Quick Link ${item.alias}`,
+        mode: videoMode ? 'video' : 'redirect',
+        addMp4Suffix: item.addMp4,
+        redirectMode: item.redirectMode,
+        redirectDelay: item.redirectDelay,
+        devices: [],
+        countries: [],
+        countryRule: 'allow',
+        referers: [],
+        refererRule: 'allow',
+        params: [],
+        blockProxy: false,
+        forwardUtm: false,
+        enableBotBlocker: false,
+        clicks: 0,
+        createdAt: item.createdAt
+      }));
+      // Simpan ke App state tanpa navigate (agar user tetap di landing)
+      const currentLinks = getStoredLinks();
+      const updatedLinks = [...linkItems, ...currentLinks];
+      saveLinks(updatedLinks);
+      // Jika hanya 1 link, panggil onSaveLink agar state App update
+      // tapi jangan navigate (onSaveLink biasanya navigate ke tautan)
+      // Kita skip onSaveLink agar user tetap di halaman
+    } else {
+      // Fallback: simpan langsung ke storage tanpa update App state
+      const currentLinks = getStoredLinks();
+      const linkItems = newItems.map(item => ({
+        id: item.id,
+        shortCode: item.alias,
+        domain: item.domain,
+        targetUrl: item.targetUrl,
+        name: `Quick Link ${item.alias}`,
+        mode: videoMode ? 'video' : 'redirect',
+        addMp4Suffix: item.addMp4,
+        redirectMode: item.redirectMode,
+        devices: [], countries: [], countryRule: 'allow',
+        referers: [], refererRule: 'allow', params: [],
+        blockProxy: false, forwardUtm: false, enableBotBlocker: false,
+        clicks: 0, createdAt: item.createdAt
+      }));
+      saveLinks([...linkItems, ...currentLinks]);
+    }
   };
 
   const handleCopyAll = () => {

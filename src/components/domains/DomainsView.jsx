@@ -174,44 +174,48 @@ export const DomainsView = ({
 
       {/* Domains Grid */}
       <div className="responsive-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-        {domains.map(dom => (
-          <div key={dom.id} className="neu-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div className="neu-panel-inset" style={{ width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
-                    <Globe size={20} />
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '0.1rem' }}>
-                      {dom.domainName || dom.domain || dom}
-                    </h4>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
-                        <CheckCircle2 size={10} /> Terverifikasi & Aktif
-                      </span>
+        {domains.map((dom, idx) => {
+          const domainId = dom.id || dom.domainName || dom.domain || dom;
+          const displayName = dom.domainName || dom.domain || dom;
+          return (
+            <div key={domainId || idx} className="neu-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div className="neu-panel-inset" style={{ width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
+                      <Globe size={20} />
+                    </div>
+                    <div>
+                      <h4 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '0.1rem' }}>
+                        {displayName}
+                      </h4>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                        <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
+                          <CheckCircle2 size={10} /> Terverifikasi & Aktif
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                  SSL / HTTPS: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>Aktif (Let's Encrypt)</span>
+                </div>
               </div>
 
-              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                SSL / HTTPS: <span style={{ color: 'var(--accent-emerald)', fontWeight: 700 }}>Aktif (Let's Encrypt)</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
+                <button 
+                  onClick={() => onDeleteDomain(domainId)}
+                  className="btn btn-danger btn-sm"
+                  title="Hapus Domain"
+                >
+                  <Trash2 size={14} />
+                  <span>Hapus</span>
+                </button>
               </div>
             </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
-              <button 
-                onClick={() => onDeleteDomain(dom.id)}
-                className="btn btn-danger btn-sm"
-                title="Hapus Domain"
-              >
-                <Trash2 size={14} />
-                <span>Hapus</span>
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

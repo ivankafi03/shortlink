@@ -10,6 +10,9 @@ import { SettingsView } from './components/settings/SettingsView';
 import { PublicLinkView } from './components/public/PublicLinkView';
 import { GoogleLoginModal } from './components/common/GoogleLoginModal';
 import { AdminAuthPortal } from './components/admin/AdminAuthPortal';
+import { TrafficSimulatorView } from './components/simulator/TrafficSimulatorView';
+import { ApiDocsView } from './components/api/ApiDocsView';
+import { UsersView } from './components/users/UsersView';
 
 import {
   getStoredLinks,
@@ -21,8 +24,10 @@ import {
   saveDomains,
   getStoredConfig,
   saveConfig,
-  recordClick
+  getStoredUsers,
+  saveUsers
 } from './services/storageService';
+
 
 // Extract shortcode from path (e.g. /fMRS4R.mp4 -> fMRS4R)
 const extractShortCodeFromPath = (path) => {
@@ -32,29 +37,25 @@ const extractShortCodeFromPath = (path) => {
 
 // Comprehensive Path to Tab mapping
 const getTabFromPath = (path) => {
-  const cleanPath = path.toLowerCase().replace(/\/$/, '');
+  const cleanPath = (path || '').toLowerCase().split('?')[0].split('#')[0].trim().replace(/\/$/, '');
+  
+  if (cleanPath.includes('dashboard') || cleanPath.includes('tautan')) return 'tautan';
+  if (cleanPath.endsWith('/create')) return 'create_link';
+  if (cleanPath.includes('analytics') || cleanPath.includes('analitik')) return 'analitik';
+  if (cleanPath.includes('pages/editor') || cleanPath.includes('pages/create')) return 'create_page';
+  if (cleanPath.includes('pages') || cleanPath.includes('halaman')) return 'halaman';
+  if (cleanPath.includes('domains/create') || cleanPath.includes('domains/new')) return 'create_domain';
+  if (cleanPath.includes('domains') || cleanPath.includes('domain')) return 'domain';
+  if (cleanPath.includes('settings') || cleanPath.includes('pengaturan')) return 'pengaturan';
+  if (cleanPath.includes('users') || cleanPath.includes('pengguna')) return 'pengguna';
+  if (cleanPath.includes('simulator') || cleanPath.includes('test-router')) return 'simulator';
+  if (cleanPath.includes('api-docs') || cleanPath.includes('api')) return 'api_docs';
   if (cleanPath === '' || cleanPath === '/') return 'home';
-  if (cleanPath === '/create') return 'create_link';
-  if (cleanPath === '/analytics' || cleanPath === '/analitik') return 'analitik';
-  if (cleanPath === '/pages/editor' || cleanPath === '/pages/create') return 'create_page';
-  if (cleanPath === '/pages' || cleanPath === '/halaman') return 'halaman';
-  if (cleanPath === '/domains/create' || cleanPath === '/domains/new') return 'create_domain';
-  if (cleanPath === '/domains' || cleanPath === '/domain') return 'domain';
-  if (cleanPath === '/settings' || cleanPath === '/pengaturan') return 'pengaturan';
-  if (cleanPath === '/simulator' || cleanPath === '/test-router') return 'simulator';
-  if (cleanPath === '/api' || cleanPath === '/api-docs') return 'api_docs';
-  if (cleanPath === '/dashboard' || cleanPath === '/tautan') return 'tautan';
 
   // Check if path is a shortlink code (e.g. /fMRS4R or /fMRS4R.mp4)
-  const code = extractShortCodeFromPath(path);
+  const code = extractShortCodeFromPath(cleanPath);
   if (code && code.length > 0 && !code.includes('/')) {
     return 'public_shortlink';
-  }
-
-  // If host is dedicated admin domain (whatsappp.my.id), default root '/' to 'tautan' (Admin Dashboard)
-  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-  if (cleanPath === '/' && (host.includes('whatsappp') || host.includes('admin'))) {
-    return 'tautan';
   }
 
   return 'home';
@@ -71,11 +72,13 @@ const getPathFromTab = (tab) => {
     case 'domain': return '/domains';
     case 'create_domain': return '/domains/create';
     case 'pengaturan': return '/settings';
+    case 'pengguna': return '/users';
     case 'simulator': return '/simulator';
     case 'api_docs': return '/api';
     case 'tautan': default: return '/dashboard';
   }
 };
+
 
 export function App() {
   const [activeTab, setActiveTab] = useState(() => getTabFromPath(window.location.pathname));
@@ -86,91 +89,104 @@ export function App() {
   const [analyticsLogs, setAnalyticsLogs] = useState(() => getStoredAnalytics());
   const [domains, setDomains] = useState(() => getStoredDomains());
   const [config, setConfig] = useState(() => getStoredConfig());
+  const [users, setUsers] = useState(() => getStoredUsers());
 
+  const isDedicatedAdminHost = typeof window !== 'undefined' && (
+    window.location.hostname.toLowerCase().includes('whatsappp') ||
+    window.location.hostname.toLowerCase().includes('admin') ||
+    window.location.hostname.toLowerCase() === 'localhost' ||
+    window.location.hostname.toLowerCase() === '127.0.0.1'
+  );
   // Link Builder Page State
   const [linkToEdit, setLinkToEdit] = useState(null);
 
-  // Member Google User State
+  // Member Google User State — Default to active Member/Admin based on domain
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('vidy_user_v1');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    if (isDedicatedAdminHost) {
+      return {
+        id: 'admin_default',
+        name: 'Super Admin',
+        email: 'admin.cuan@gmail.com',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin',
+        role: 'admin',
+        loggedInAt: new Date().toISOString()
+      };
     }
+
+    return {
+      id: 'member_default',
+      name: 'Member Samehadakuu',
+      email: 'member@samehadakuu.com',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=samehadakuu',
+      role: 'member',
+      loggedInAt: new Date().toISOString()
+    };
   });
 
   const [googleModalOpen, setGoogleModalOpen] = useState(false);
 
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData);
-    localStorage.setItem('vidy_user_v1', JSON.stringify(userData));
-    navigateToTab('tautan');
+    try {
+      localStorage.setItem('vidy_user_v1', JSON.stringify(userData));
+    } catch {}
+    setGoogleModalOpen(false);
+    setActiveTab('tautan');
+    const targetPath = getPathFromTab('tautan');
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({}, '', targetPath);
+    }
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('vidy_user_v1');
-    navigateToTab('home');
+    try {
+      localStorage.removeItem('vidy_user_v1');
+    } catch {}
+    setActiveTab('home');
+    if (window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
+    }
   };
 
   // Load initial data and set up URL listener
   useEffect(() => {
-    // Domain redirect is handled synchronously in main.jsx (before React mounts).
-    // Nothing to do here for domain logic.
-    // (keeping useEffect only for popstate + domain redirect)
-
-    // Handle browser back/forward buttons
     const handlePopState = () => {
       const tab = getTabFromPath(window.location.pathname);
       setActiveTab(tab);
     };
-
     window.addEventListener('popstate', handlePopState);
-
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Navigation Loading Bar State
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [navProgress, setNavProgress] = useState(0);
-
-  // Navigation Routing Function
+  // Navigation Routing Function — Instant synchronous update to prevent desync
   const navigateToTab = (tab, linkData = null) => {
     if (tab === 'create_link') {
       setLinkToEdit(linkData);
     }
-
-    setIsNavigating(true);
-    setNavProgress(35);
-
-    setTimeout(() => setNavProgress(70), 60);
-
-    setTimeout(() => {
-      setNavProgress(100);
-      setActiveTab(tab);
-      const targetPath = getPathFromTab(tab);
-      if (window.location.pathname !== targetPath) {
-        window.history.pushState({}, '', targetPath);
-      }
-    }, 160);
-
-    setTimeout(() => {
-      setIsNavigating(false);
-      setNavProgress(0);
-    }, 320);
+    setActiveTab(tab);
+    const targetPath = getPathFromTab(tab);
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({}, '', targetPath);
+    }
   };
 
   // Link Actions
   const handleSaveLink = (linkData) => {
-    let updated;
-    const existsIndex = links.findIndex(l => l.id === linkData.id);
-    if (existsIndex !== -1) {
-      updated = [...links];
-      updated[existsIndex] = linkData;
-    } else {
-      updated = [linkData, ...links];
-    }
+    const items = Array.isArray(linkData) ? linkData : [linkData];
+    let updated = [...links];
+    items.forEach(item => {
+      const existsIndex = updated.findIndex(l => l.id === item.id);
+      if (existsIndex !== -1) {
+        updated[existsIndex] = item;
+      } else {
+        updated = [item, ...updated];
+      }
+    });
     setLinks(updated);
     saveLinks(updated);
     navigateToTab('tautan');
@@ -223,8 +239,11 @@ export function App() {
     saveDomains(updated);
   };
 
-  const handleDeleteDomain = (id) => {
-    const updated = domains.filter(d => d.id !== id);
+  const handleDeleteDomain = (target) => {
+    const updated = domains.filter(d => {
+      const currentId = d.id || d.domainName || d.domain || d;
+      return currentId !== target && d !== target;
+    });
     setDomains(updated);
     saveDomains(updated);
   };
@@ -235,6 +254,26 @@ export function App() {
     saveConfig(updatedConfig);
   };
 
+  // User Actions
+  const handleSaveUser = (userData) => {
+    let updated;
+    const existsIndex = users.findIndex(u => u.id === userData.id);
+    if (existsIndex !== -1) {
+      updated = [...users];
+      updated[existsIndex] = userData;
+    } else {
+      updated = [userData, ...users];
+    }
+    setUsers(updated);
+    saveUsers(updated);
+  };
+
+  const handleDeleteUser = (id) => {
+    const updated = users.filter(u => u.id !== id);
+    setUsers(updated);
+    saveUsers(updated);
+  };
+
   // Simulator Launchers
   const handleOpenSimulatorForLink = (link) => {
     navigateToTab('simulator');
@@ -243,6 +282,7 @@ export function App() {
   const handleSelectLinkAnalytics = (linkId) => {
     navigateToTab('analitik');
   };
+
 
   const getSidebarActiveTab = () => {
     if (activeTab === 'home') return 'home';
@@ -265,65 +305,30 @@ export function App() {
       <PublicLinkView 
         shortCode={code} 
         link={matchedLink} 
-        onRecordClick={(linkId, routingResult) => {
-          recordClick(linkId, routingResult);
+        onRecordClick={() => {
+          // trafficRouter.js sudah memanggil recordClick(logEntry) secara internal.
+          // Di sini cukup sync ulang state analytics agar UI dashboard terupdate.
           setAnalyticsLogs(getStoredAnalytics());
         }}
       />
     );
   }
 
-  const isDedicatedAdminHost = typeof window !== 'undefined' && 
-    (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'));
-
-  // Dedicated Admin Portal view for whatsappp.my.id
-  if (isDedicatedAdminHost) {
+  // Untuk semua rute admin (/dashboard, /analytics, /pages, /domains, /settings, /create, /simulator, /api):
+  // Jika user belum login, tampilkan AdminAuthPortal (Portal Login Admin) langsung di domain tersebut
+  if (activeTab !== 'home' && activeTab !== 'public_shortlink') {
     if (!currentUser) {
-      return <AdminAuthPortal onLoginSuccess={handleLoginSuccess} />;
-    }
-    // If logged in on admin domain and activeTab is 'home', force to 'tautan' (Admin Dashboard)
-    if (activeTab === 'home') {
       return (
-        <div className="app-layout">
-          {/* Left Vertical Sidebar */}
-          <Sidebar 
-            activeTab={getSidebarActiveTab()}
-            setActiveTab={(tab) => navigateToTab(tab)}
-            onOpenCreateModal={handleOpenCreateLink}
-            onOpenSimulator={() => navigateToTab('simulator')}
-            onGoHome={() => navigateToTab('tautan')}
-            currentUser={currentUser}
-            onOpenGoogleLogin={() => setGoogleModalOpen(true)}
-            onLogout={handleLogout}
+        <>
+          <AdminAuthPortal onLoginSuccess={handleLoginSuccess} />
+          <GoogleLoginModal 
+            isOpen={googleModalOpen} 
+            onClose={() => setGoogleModalOpen(false)} 
+            onLoginSuccess={handleLoginSuccess} 
           />
-          <main className="main-wrapper">
-            <DashboardView 
-              links={links}
-              onDeleteLink={handleDeleteLink}
-              onOpenCreateModal={handleOpenCreateLink}
-              onEditLink={handleEditLink}
-              onOpenSimulator={() => navigateToTab('simulator')}
-              onNavigate={(tab) => navigateToTab(tab)}
-            />
-          </main>
-        </div>
+        </>
       );
     }
-  }
-
-  // On public domains (samehadakuu.com, cuanflix.site), BLOCK access to Admin Dashboard/Settings!
-  if (!isDedicatedAdminHost && activeTab !== 'home' && activeTab !== 'public_shortlink') {
-    return (
-      <LandingView 
-        onNavigate={(tab) => navigateToTab('home')} 
-        links={links}
-        analyticsLogs={analyticsLogs}
-        domains={domains}
-        currentUser={currentUser}
-        onOpenGoogleLogin={() => setGoogleModalOpen(true)}
-        onLogout={handleLogout}
-      />
-    );
   }
 
   // Landing page is full-page for public domains (no sidebar)
@@ -338,6 +343,7 @@ export function App() {
           currentUser={currentUser}
           onOpenGoogleLogin={() => setGoogleModalOpen(true)}
           onLogout={handleLogout}
+          onSaveLink={handleSaveLink}
         />
         <GoogleLoginModal 
           isOpen={googleModalOpen} 
@@ -369,7 +375,7 @@ export function App() {
         setActiveTab={(tab) => navigateToTab(tab)}
         onOpenCreateModal={handleOpenCreateLink}
         onOpenSimulator={() => navigateToTab('simulator')}
-        onGoHome={() => navigateToTab('home')}
+        onGoHome={() => navigateToTab('tautan')}
         currentUser={currentUser}
         onOpenGoogleLogin={() => setGoogleModalOpen(true)}
         onLogout={handleLogout}
@@ -433,13 +439,38 @@ export function App() {
           />
         )}
 
+        {activeTab === 'pengguna' && (
+          currentUser?.role === 'admin' || isDedicatedAdminHost ? (
+            <UsersView 
+              users={users}
+              links={links}
+              onSaveUser={handleSaveUser}
+              onDeleteUser={handleDeleteUser}
+              onOpenCreateModal={handleOpenCreateLink}
+              onOpenSimulator={() => navigateToTab('simulator')}
+            />
+          ) : (
+            <div className="neu-panel" style={{ padding: '2rem', textAlign: 'center' }}>
+              <h2 style={{ color: 'var(--accent-rose)', fontWeight: 900 }}>Akses Dibatasi</h2>
+              <p style={{ color: 'var(--text-muted)' }}>Manajemen pengguna hanya dapat diakses oleh Super Admin di whatsappp.my.id</p>
+            </div>
+          )
+        )}
+
         {activeTab === 'pengaturan' && (
-          <SettingsView 
-            config={config}
-            onSaveConfig={handleSaveConfig}
-            onOpenCreateModal={handleOpenCreateLink}
-            onOpenSimulator={() => navigateToTab('simulator')}
-          />
+          currentUser?.role === 'admin' || isDedicatedAdminHost ? (
+            <SettingsView 
+              config={config}
+              onSaveConfig={handleSaveConfig}
+              onOpenCreateModal={handleOpenCreateLink}
+              onOpenSimulator={() => navigateToTab('simulator')}
+            />
+          ) : (
+            <div className="neu-panel" style={{ padding: '2rem', textAlign: 'center' }}>
+              <h2 style={{ color: 'var(--accent-rose)', fontWeight: 900 }}>Akses Dibatasi</h2>
+              <p style={{ color: 'var(--text-muted)' }}>Pengaturan keamanan global hanya dapat diatur oleh Super Admin di whatsappp.my.id</p>
+            </div>
+          )
         )}
 
         {activeTab === 'simulator' && (

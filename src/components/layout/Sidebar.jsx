@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  Users,
   Link2, 
   BarChart2, 
   FileText, 
@@ -38,12 +39,18 @@ export const Sidebar = ({
     };
   }, [mobileDrawerOpen]);
 
+  const isAdmin = currentUser?.role === 'admin' || 
+    (typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin')));
+
   const navItems = [
     { id: 'tautan', label: 'Tautan & Dashboard', icon: Link2 },
     { id: 'analitik', label: 'Analitik Trafik', icon: BarChart2 },
     { id: 'halaman', label: 'Halaman Landing', icon: FileText },
     { id: 'domain', label: 'Domain Kustom', icon: Globe },
-    { id: 'pengaturan', label: 'Pengaturan Keamanan', icon: Shield },
+    ...(isAdmin ? [
+      { id: 'pengguna', label: 'Manajemen Pengguna', icon: Users },
+      { id: 'pengaturan', label: 'Pengaturan Keamanan', icon: Shield },
+    ] : []),
     { id: 'api_docs', label: 'Developer REST API', icon: Braces },
   ];
 
@@ -80,7 +87,7 @@ export const Sidebar = ({
               D <span style={{ color: 'var(--primary)' }}>shortlink</span>
             </div>
             <div style={{ fontSize: '0.675rem', fontWeight: 900, color: 'var(--primary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <Shield size={10} /> SUPER ADMIN PORTAL
+              <Shield size={10} /> {(typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) ? 'SUPER ADMIN PORTAL' : 'MEMBER DASHBOARD'}
             </div>
           </div>
         </div>
@@ -287,7 +294,7 @@ export const Sidebar = ({
                 D <span style={{ color: 'var(--primary)' }}>shortlink</span>
               </div>
               <span style={{ fontSize: '0.675rem', color: 'var(--primary)', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.2rem' }}>
-                <Shield size={10} /> SUPER ADMIN PORTAL
+                <Shield size={10} /> {(typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) ? 'SUPER ADMIN PORTAL' : 'MEMBER DASHBOARD'}
               </span>
             </div>
           </div>
@@ -310,7 +317,7 @@ export const Sidebar = ({
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => handleTabClick(item.id)}
                   className={`btn btn-ghost ${isActive ? 'active' : ''}`}
                   style={{
                     justifyContent: 'flex-start',

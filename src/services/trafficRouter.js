@@ -4,7 +4,8 @@ import { getStoredConfig, getStoredPages, recordClick } from './storageService';
  * Evaluates an incoming simulated visitor request against link rules and global configuration.
  * Returns the routing decision object: { action: 'target' | 'fallback' | 'bot_trap' | 'blocked', destination: string, reason: string }
  */
-export const evaluateTrafficRouting = (link, simulatedRequest = {}) => {
+export const evaluateTrafficRouting = (link, simulatedRequest = {}, options = {}) => {
+  const { dryRun = false } = options;
   const config = getStoredConfig();
   const pages = getStoredPages();
 
@@ -71,11 +72,15 @@ export const evaluateTrafficRouting = (link, simulatedRequest = {}) => {
   // 2. Check Global IP Blacklist
   const ipList = (config.ipBlacklist || '').split('\n').map(i => i.trim()).filter(Boolean);
   for (const pattern of ipList) {
-    const regexPattern = pattern.replace(/\./g, '\\.').replace(/\*/g, '.*');
-    const regex = new RegExp(`^${regexPattern}$`);
-    if (regex.test(userIp)) {
-      triggeredRule = `IP Blacklisted (${pattern})`;
-      finalAction = 'blocked';
+    try {
+      const regexPattern = pattern.replace(/\./g, '\\.').replace(/\*/g, '.*');
+      const regex = new RegExp(`^${regexPattern}$`);
+      if (regex.test(userIp)) {
+        triggeredRule = `IP Blacklisted (${pattern})`;
+        finalAction = 'blocked';
+      }
+    } catch {
+      // Pattern IP tidak valid, lewati
     }
   }
 
@@ -96,17 +101,24 @@ export const evaluateTrafficRouting = (link, simulatedRequest = {}) => {
   }
 
   // 4. Check Proxy / VPN Blocker
+  // Cek range IP private/LAN yang umum dipakai VPN atau proxy lokal
   const isProxyBlockerEnabled = link.blockProxy !== undefined ? link.blockProxy : true;
-  if (isProxyBlockerEnabled && (isProxy || userIp.startsWith('10.') || userIp.startsWith('192.168.'))) {
+  const isPrivateIp = (
+    userIp.startsWith('10.') ||
+    userIp.startsWith('192.168.') ||
+    userIp.startsWith('127.') ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(userIp) // 172.16.0.0/12
+  );
+  if (isProxyBlockerEnabled && (isProxy || isPrivateIp)) {
     isProxy = true;
-    triggeredRule = 'Proxy / VPN Detected';
+    triggeredRule = 'Proxy / VPN / Private IP Detected';
     finalAction = 'blocked';
   }
 
-  // 5. Check Click Limit per IP
-  const ipLimit = link.clickLimitPerIp || link.clickLimit || 0;
-  if (ipLimit > 0 && link.clicks >= ipLimit) {
-    triggeredRule = `Click Limit Exceeded (${ipLimit} per IP)`;
+  // 5. Check Global Click Limit (total clicks on this link, not per-IP)
+  const clickCap = link.clickLimit || 0;
+  if (clickCap > 0 && link.clicks >= clickCap) {
+    triggeredRule = `Click Limit Reached (${clickCap} total clicks)`;
     finalAction = 'blocked';
   }
 
@@ -251,7 +263,10 @@ export const evaluateTrafficRouting = (link, simulatedRequest = {}) => {
     isProxy
   };
 
-  recordClick(logEntry);
+  // Jangan record click jika dry run (mis. dari simulator)
+  if (!dryRun) {
+    recordClick(logEntry);
+  }
 
   return {
     action: finalAction,

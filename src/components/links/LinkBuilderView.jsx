@@ -174,31 +174,23 @@ export const LinkBuilderView = ({
     const countries = countryText.split('\n').map(c => c.trim().toUpperCase()).filter(Boolean);
     const referers = refererText.split('\n').map(r => r.trim()).filter(Boolean);
     const params = paramText.split('\n').map(p => p.trim()).filter(Boolean);
-
     const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
 
-    const linkData = {
-      id: linkToEdit ? linkToEdit.id : `link_${Date.now()}`,
-      shortCode,
+    const sharedFields = {
       domain,
-      targetUrl: mode === 'video' ? videoUrl : targetUrl,
       name: name || 'Tautan Baru',
       tags: tagsArray,
       mode,
       addMp4Suffix,
-
-      // Video mode fields
       videoUrl,
       directLink,
       videoMode,
-
       fallbackType,
       fallbackUrl,
       fallbackPageId,
       fallbackOgTitle,
       fallbackOgDesc,
       fallbackOgImage,
-
       botSameAsFallback,
       botType: botSameAsFallback ? fallbackType : botType,
       botUrl: botSameAsFallback ? fallbackUrl : botUrl,
@@ -206,14 +198,12 @@ export const LinkBuilderView = ({
       botOgTitle: botSameAsFallback ? fallbackOgTitle : botOgTitle,
       botOgDesc: botSameAsFallback ? fallbackOgDesc : botOgDesc,
       botOgImage: botSameAsFallback ? fallbackOgImage : botOgImage,
-
       devices,
       countries,
       countryRule,
       referers,
       refererRule,
       params,
-
       enableBotBlocker,
       blockProxy,
       forwardUtm,
@@ -221,9 +211,41 @@ export const LinkBuilderView = ({
       redirectDelay,
       clickLimitPerIp: clickLimitPerIp ? Number(clickLimitPerIp) : 0,
       resetLimitHours: resetLimitHours ? Number(resetLimitHours) : 0,
-
       clicks: linkToEdit ? linkToEdit.clicks : 0,
       createdAt: linkToEdit ? linkToEdit.createdAt : new Date().toISOString()
+    };
+
+    // ── Bulk Create Mode ──
+    if (isBulk && !linkToEdit) {
+      const urlsRaw = mode === 'video' ? videoUrl : bulkUrls;
+      const urlLines = urlsRaw.split('\n').map(u => u.trim()).filter(Boolean).slice(0, 20);
+      if (urlLines.length === 0) return;
+
+      const bulkLinks = urlLines.map((url, idx) => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+        return {
+          ...sharedFields,
+          id: `link_${Date.now()}_${idx}`,
+          shortCode: code,
+          targetUrl: url,
+          name: name || `Bulk Link ${idx + 1}`,
+          createdAt: new Date().toISOString()
+        };
+      });
+
+      onSaveLink(bulkLinks); // pass array — App.jsx sudah handle array
+      return;
+    }
+
+    // ── Single Create / Edit Mode ──
+    const linkData = {
+      ...sharedFields,
+      id: linkToEdit ? linkToEdit.id : `link_${Date.now()}`,
+      shortCode,
+      targetUrl: mode === 'video' ? videoUrl : targetUrl,
+      name: name || 'Tautan Baru',
     };
 
     onSaveLink(linkData);
