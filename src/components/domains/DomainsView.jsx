@@ -183,7 +183,9 @@ export const DomainsView = ({
                     <Globe size={20} />
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '0.1rem' }}>{dom.domain}</h4>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '0.1rem' }}>
+                      {dom.domainName || dom.domain || dom}
+                    </h4>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                       <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
                         <CheckCircle2 size={10} /> Terverifikasi & Aktif
