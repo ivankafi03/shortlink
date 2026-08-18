@@ -8,6 +8,10 @@ import './index.css'
 ;(function domainGuard() {
   const host = window.location.hostname.toLowerCase();
   const isPrimary =
+    host === 'samehadakuu.com' ||
+    host === 'www.samehadakuu.com' ||
+    host === 'samehadakuu.site' ||
+    host.includes('samehadakuu') ||
     host === 'whatsappp.my.id' ||
     host.includes('whatsappp') ||
     host === 'cuanflix.site' ||
