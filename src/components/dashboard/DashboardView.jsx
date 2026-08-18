@@ -381,7 +381,7 @@ export const DashboardView = ({
                     </div>
 
                     {/* Middle: Name & Target URL */}
-                    <div style={{ marginBottom: '0.55rem', paddingLeft: '1.65rem' }}>
+                    <div style={{ marginBottom: '0.55rem', paddingLeft: '0.25rem' }}>
                       <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
                         <span>{link.name || 'Tanpa Nama'}</span>
                         {link.mode === 'video' && <span className="badge badge-amber" style={{ fontSize: '0.625rem', padding: '0.1rem 0.35rem' }}>Video</span>}
@@ -393,13 +393,13 @@ export const DashboardView = ({
                         rel="noreferrer" 
                         style={{ fontSize: '0.775rem', fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', maxWidth: '100%', wordBreak: 'break-all' }}
                       >
-                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '260px' }}>{link.targetUrl}</span>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{link.targetUrl}</span>
                         <ExternalLink size={11} style={{ flexShrink: 0, color: 'var(--text-dim)' }} />
                       </a>
                     </div>
 
                     {/* Filter Rules Row */}
-                    <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.65rem', paddingLeft: '1.65rem' }}>
+                    <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.65rem', paddingLeft: '0.25rem' }}>
                       {link.devices && link.devices.length > 0 && (
                         <span className="badge badge-primary" style={{ fontSize: '0.675rem', padding: '0.15rem 0.45rem' }}>
                           <Smartphone size={10} />
@@ -423,7 +423,7 @@ export const DashboardView = ({
                     </div>
 
                     {/* Bottom Action Bar */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap', paddingLeft: '1.65rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(64px, 1fr))', gap: '0.35rem', paddingLeft: '0.25rem' }}>
                       <button 
                         onClick={() => handleCopy(fullShortUrl, link.id)}
                         className="btn btn-sm"

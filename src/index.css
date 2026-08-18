@@ -825,15 +825,16 @@ textarea.form-control {
   box-shadow: var(--neu-shadow-sm);
 }
 
-/* Table styling */
 .custom-table-container {
   width: 100%;
   overflow-x: auto;
   border-radius: var(--radius-md);
+  -webkit-overflow-scrolling: touch;
 }
 
 .custom-table {
   width: 100%;
+  min-width: 640px;
   border-collapse: separate;
   border-spacing: 0 0.6rem;
   text-align: left;
