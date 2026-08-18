@@ -263,7 +263,7 @@ export const Sidebar = ({
               cursor: 'pointer',
               transition: 'opacity 0.15s'
             }}
-            title="Halaman Utama"
+            title="Dashboard Admin"
           >
             <div className="neu-logo-box" style={{ width: '54px', height: '54px', borderRadius: '16px', padding: '3px', overflow: 'hidden', flexShrink: 0 }}>
               <img 
