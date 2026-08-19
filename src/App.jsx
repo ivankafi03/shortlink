@@ -226,6 +226,28 @@ export function App() {
     };
   }, []);
 
+  const isSuperAdmin = currentUser?.role === 'admin' || isDedicatedAdminHost || currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com' || currentUser?.email?.toLowerCase() === 'admin.cuan@gmail.com';
+
+  // Strict Privacy Isolation:
+  // Admin sees ALL links across the entire platform.
+  // Member ONLY sees their own links!
+  const userLinks = useMemo(() => {
+    if (isSuperAdmin) return links;
+    if (!currentUser?.email) return [];
+    const myEmail = currentUser.email.toLowerCase().trim();
+    return links.filter(l => 
+      (l.createdBy && l.createdBy.toLowerCase().trim() === myEmail) ||
+      (l.userEmail && l.userEmail.toLowerCase().trim() === myEmail)
+    );
+  }, [links, isSuperAdmin, currentUser]);
+
+  // Analytics Isolation: Member only sees click logs for their own links
+  const userAnalytics = useMemo(() => {
+    if (isSuperAdmin) return analyticsLogs;
+    const myLinkIds = new Set(userLinks.map(l => l.id));
+    return analyticsLogs.filter(log => myLinkIds.has(log.linkId));
+  }, [analyticsLogs, isSuperAdmin, userLinks]);
+
   const handleLoginSuccess = (userData) => {
     // Di domain whatsappp.my.id, hanya role admin yang boleh masuk
     const userEmail = (userData.email || '').toLowerCase().trim();
@@ -484,28 +506,6 @@ export function App() {
       />
     );
   }
-
-  const isSuperAdmin = currentUser?.role === 'admin' || isDedicatedAdminHost || currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com' || currentUser?.email?.toLowerCase() === 'admin.cuan@gmail.com';
-
-  // Strict Privacy Isolation:
-  // Admin sees ALL links across the entire platform.
-  // Member ONLY sees their own links!
-  const userLinks = useMemo(() => {
-    if (isSuperAdmin) return links;
-    if (!currentUser?.email) return [];
-    const myEmail = currentUser.email.toLowerCase().trim();
-    return links.filter(l => 
-      (l.createdBy && l.createdBy.toLowerCase().trim() === myEmail) ||
-      (l.userEmail && l.userEmail.toLowerCase().trim() === myEmail)
-    );
-  }, [links, isSuperAdmin, currentUser]);
-
-  // Analytics Isolation: Member only sees click logs for their own links
-  const userAnalytics = useMemo(() => {
-    if (isSuperAdmin) return analyticsLogs;
-    const myLinkIds = new Set(userLinks.map(l => l.id));
-    return analyticsLogs.filter(log => myLinkIds.has(log.linkId));
-  }, [analyticsLogs, isSuperAdmin, userLinks]);
 
   return (
     <div className="app-layout">
