@@ -501,18 +501,30 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 580px) {
+  .landing-hero {
+    padding: 2.25rem 0.85rem 1.5rem !important;
+  }
+
   .landing-hero h1 {
     font-size: 1.85rem !important;
     line-height: 1.15;
   }
 
   .landing-hero p {
-    font-size: 0.9rem !important;
+    font-size: 0.875rem !important;
     margin-bottom: 1.5rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .landing-stats-row {
+    gap: 0.75rem !important;
+    justify-content: space-around !important;
+    margin-bottom: 2rem !important;
   }
 
   .landing-widget-panel {
-    padding: 1.25rem 0.85rem !important;
+    padding: 1.25rem 0.95rem !important;
+    border-radius: 16px !important;
   }
 
   .landing-widget-row {
@@ -536,6 +548,8 @@ h1, h2, h3, h4, h5, h6 {
   .landing-widget-row > button {
     width: 100%;
     margin-top: 0.25rem;
+    padding: 0.75rem !important;
+    font-size: 0.925rem !important;
   }
 
   .landing-steps-grid {
@@ -547,11 +561,23 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1fr !important;
     gap: 0.85rem;
   }
+
+  .landing-section, .landing-section-narrow {
+    padding: 2.25rem 0.85rem !important;
+  }
 }
 
 @media (max-width: 440px) {
+  .landing-hero h1 {
+    font-size: 1.65rem !important;
+  }
+
   .landing-features-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .landing-features-grid .neu-panel {
+    padding: 1.15rem 0.9rem !important;
   }
 }
 

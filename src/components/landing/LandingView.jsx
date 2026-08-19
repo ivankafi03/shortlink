@@ -85,7 +85,7 @@ const T = {
       { title: 'Mode Pengalihan Ganda', desc: 'Pilih antara Mode Langsung (0 detik tanpa jeda) atau Mode Landing Page (dengan banner iklan Adsterra).' },
       { title: 'Analitik Klik Real-Time', desc: 'Setiap klik tercatat detail: IP, negara, perangkat, referer, ISP, dan aturan mana yang cocok secara real-time.' },
       { title: 'Halaman Landing Builder HTML', desc: 'Buat dan edit template halaman perangkap bot HTML kustom langsung dari dashboard dengan live preview.' },
-      { title: 'Developer REST API & Simulator', desc: 'API publik untuk integrasi bot Telegram / script eksternal, plus simulator lalu lintas bawaan untuk pengujian.' },
+      { title: 'Developer REST API', desc: 'API publik untuk integrasi bot Telegram, script otomatisasi eksternal, dan integrasi penyingkat URL.' },
     ],
     faqTitle: 'Yang sering ditanya',
     faqSub: 'Ada yang belum terjawab? Hubungi kami.',
@@ -564,20 +564,20 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="landing-hero">
-        <h1 style={{ fontSize: 'clamp(2.4rem, 5vw, 3.5rem)', fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.04em', marginBottom: '1rem' }}>
-          {t.heroTitle1}<br />
+        <h1 style={{ fontSize: 'clamp(1.85rem, 5.5vw, 3.25rem)', fontWeight: 900, lineHeight: 1.15, letterSpacing: '-0.03em', marginBottom: '0.85rem' }}>
+          {t.heroTitle1} <br />
           <span style={{ color: 'var(--primary)' }}>{t.heroTitle2}</span>
         </h1>
-        <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1.65, maxWidth: '600px', margin: '0 auto 2.5rem' }}>
+        <p style={{ fontSize: 'clamp(0.875rem, 2.6vw, 1.05rem)', color: 'var(--text-muted)', fontWeight: 600, lineHeight: 1.6, maxWidth: '580px', margin: '0 auto 2rem', padding: '0 0.5rem' }}>
           {t.heroSub}
         </p>
 
         {/* Stats */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginBottom: '3.5rem', flexWrap: 'wrap' }}>
+        <div className="landing-stats-row" style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(1.25rem, 4vw, 3rem)', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
           {stats.map(stat => (
-            <div key={stat.label} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--primary)', letterSpacing: '-0.04em', lineHeight: 1 }}>{stat.value}</div>
-              <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.07em', marginTop: '0.25rem' }}>{stat.label}</div>
+            <div key={stat.label} style={{ textAlign: 'center', minWidth: '85px' }}>
+              <div style={{ fontSize: 'clamp(1.5rem, 4.5vw, 2.25rem)', fontWeight: 900, color: 'var(--primary)', letterSpacing: '-0.03em', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: 'clamp(0.65rem, 1.8vw, 0.725rem)', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.07em', marginTop: '0.35rem' }}>{stat.label}</div>
             </div>
           ))}
         </div>
