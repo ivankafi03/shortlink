@@ -55,7 +55,47 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-      const { action, key, value, data } = req.body || {};
+      const { action, key, value, data, logEntry } = req.body || {};
+
+      if (action === 'record_click' && logEntry) {
+        const linkIdentifier = logEntry.linkId || logEntry.shortCode;
+
+        // 1. Atomically update links clicks in Postgres
+        const linkRows = await sql`SELECT value FROM app_store WHERE key = 'vidy_links_v1';`;
+        if (linkRows.length > 0 && Array.isArray(linkRows[0].value)) {
+          const links = linkRows[0].value;
+          const targetIndex = links.findIndex(
+            l => l.id === linkIdentifier || l.shortCode === linkIdentifier || l.shortCode?.toLowerCase() === linkIdentifier?.toLowerCase()
+          );
+          if (targetIndex !== -1) {
+            links[targetIndex].clicks = (links[targetIndex].clicks || 0) + 1;
+            const updatedLinksJson = JSON.stringify(links);
+            await sql`
+              INSERT INTO app_store (key, value, updated_at)
+              VALUES ('vidy_links_v1', ${updatedLinksJson}::jsonb, NOW())
+              ON CONFLICT (key)
+              DO UPDATE SET value = ${updatedLinksJson}::jsonb, updated_at = NOW();
+            `;
+          }
+        }
+
+        // 2. Atomically prepend analytics log in Postgres
+        const analyticsRows = await sql`SELECT value FROM app_store WHERE key = 'vidy_analytics_v1';`;
+        let analytics = [];
+        if (analyticsRows.length > 0 && Array.isArray(analyticsRows[0].value)) {
+          analytics = analyticsRows[0].value;
+        }
+        const updatedAnalytics = [logEntry, ...analytics].slice(0, 300);
+        const updatedAnalyticsJson = JSON.stringify(updatedAnalytics);
+        await sql`
+          INSERT INTO app_store (key, value, updated_at)
+          VALUES ('vidy_analytics_v1', ${updatedAnalyticsJson}::jsonb, NOW())
+          ON CONFLICT (key)
+          DO UPDATE SET value = ${updatedAnalyticsJson}::jsonb, updated_at = NOW();
+        `;
+
+        return res.status(200).json({ success: true, action: 'record_click' });
+      }
 
       if (action === 'save_all' && data && typeof data === 'object') {
         for (const [k, val] of Object.entries(data)) {

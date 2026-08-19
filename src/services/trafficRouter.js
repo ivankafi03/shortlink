@@ -252,6 +252,7 @@ export const evaluateTrafficRouting = (link, simulatedRequest = {}, options = {}
   const logEntry = {
     id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
     linkId: link.id,
+    shortCode: link.shortCode,
     timestamp: new Date().toISOString(),
     ip: userIp,
     country,

@@ -254,26 +254,31 @@ export const getStoredAnalytics = () => {
 export const recordClick = (logEntry) => {
   try {
     const logs = getStoredAnalytics();
-    // Cap analytics logs to latest 50 items to prevent QuotaExceededError
-    const updatedLogs = [logEntry, ...logs].slice(0, 50);
+    const updatedLogs = [logEntry, ...logs].slice(0, 100);
 
     try {
       localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(updatedLogs));
-    } catch {
-      sanitizeStorageQuota();
-      const trimmed = updatedLogs.slice(0, 15);
-      try {
-        localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
-      } catch {}
-    }
-    syncToCloud(STORAGE_KEYS.ANALYTICS, updatedLogs);
+    } catch {}
 
     const links = getStoredLinks();
-    const targetLinkIndex = links.findIndex((l) => l.id === logEntry.linkId);
+    const linkIdentifier = logEntry.linkId || logEntry.shortCode;
+    const targetLinkIndex = links.findIndex((l) => l.id === linkIdentifier || l.shortCode === linkIdentifier || l.shortCode?.toLowerCase() === linkIdentifier?.toLowerCase());
     if (targetLinkIndex !== -1) {
       links[targetLinkIndex].clicks = (links[targetLinkIndex].clicks || 0) + 1;
       saveLinks(links);
     }
+
+    // Atomic click increment on serverless Neon Postgres backend
+    fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'record_click',
+        linkId: logEntry.linkId,
+        shortCode: logEntry.shortCode,
+        logEntry
+      })
+    }).catch(() => {});
   } catch (err) {
     console.warn('Click log quota handled gracefully:', err);
   }
