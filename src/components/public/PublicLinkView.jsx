@@ -3,7 +3,7 @@ import { ExternalLink, ShieldAlert, CheckCircle2, AlertCircle, ArrowLeft } from 
 import { evaluateTrafficRouting } from '../../services/trafficRouter';
 import { fetchAllFromCloud, STORAGE_KEYS } from '../../services/storageService';
 import { NativeAdBanner } from '../common/NativeAdBanner';
-import logoImg from '../../assets/logo.png';
+import { BrandLogo } from '../common/BrandLogo';
 
 export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) => {
   const [activeLink, setActiveLink] = useState(initialLink || null);
@@ -242,8 +242,8 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
         display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center'
       }}>
         {/* Logo & Domain */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <img src={logoImg} alt="Logo" style={{ width: '24px', height: '24px', borderRadius: '6px', boxShadow: '2px 2px 4px #c1cbd4,-2px -2px 4px #fff' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <BrandLogo size={24} showText={false} />
           <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#2563eb' }}>
             {activeLink.domain || window.location.hostname}
           </span>

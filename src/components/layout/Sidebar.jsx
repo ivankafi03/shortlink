@@ -105,17 +105,9 @@ export const Sidebar = ({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-subtle)' }}>
             <div 
               onClick={() => { onGoHome(); setMobileDrawerOpen(false); }}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer' }}
+              style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
             >
-              <div className="neu-logo-box" style={{ width: '38px', height: '38px', borderRadius: '12px', padding: '2px', flexShrink: 0 }}>
-                <img src={logoImg} alt="D shortlink Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
-              </div>
-              <div>
-                <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.15rem', color: 'var(--text-main)', lineHeight: 1.1 }}>
-                  D <span style={{ color: 'var(--primary)' }}>shortlink</span>
-                </div>
-                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800 }}>TRAFFIC ROUTER</span>
-              </div>
+              <BrandLogo size={32} />
             </div>
 
             <button 
