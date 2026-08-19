@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, ShieldCheck, Check, Key } from 'lucide-react';
-import logoImg from '../../assets/logo.png';
+import { BrandLogo } from './BrandLogo';
 import { loadGoogleSdk, parseGoogleJwt, getActiveGoogleClientId, openRealGooglePopup } from '../../services/googleAuthService';
 
 export const GoogleLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
@@ -72,13 +72,8 @@ export const GoogleLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
       >
         {/* Modal Top Header */}
         <div style={{ padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <div className="neu-logo-box" style={{ width: '32px', height: '32px', borderRadius: '8px', padding: '2px' }}>
-              <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} />
-            </div>
-            <span style={{ fontWeight: 900, fontSize: '1rem', letterSpacing: '-0.02em' }}>
-              D <span style={{ color: 'var(--primary)' }}>shortlink</span>
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <BrandLogo size={28} />
           </div>
           <button onClick={onClose} className="btn btn-ghost btn-sm" style={{ width: '32px', height: '32px', padding: 0 }} aria-label="Tutup Modal">
             <X size={18} />

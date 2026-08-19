@@ -103,40 +103,25 @@ export const BrandLogo = ({
         <path d="M 96 15 C 102 12 109 13 113 19" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.8" />
       </svg>
 
-      {/* ── Modern Typography Wordmark ── */}
+      {/* ── Modern Typography Wordmark (Clean Black "shortlink") ── */}
       {showText && (
         <div 
           className={textClassName}
           style={{ 
             display: 'flex', 
             alignItems: 'baseline', 
-            gap: '0.12em',
             fontFamily: 'var(--font-heading, "Plus Jakarta Sans", sans-serif)',
             letterSpacing: '-0.035em',
             color: textColor || 'var(--text-main, #0f172a)'
           }}
         >
-          {/* Capital "D" */}
+          {/* "shortlink" in bold black */}
           <span 
             style={{ 
               fontWeight: 900, 
               fontSize: `${Math.round(size * 0.72)}px`,
-              letterSpacing: '-0.03em',
-              marginRight: '0.08em'
-            }}
-          >
-            D
-          </span>
-
-          {/* "shortlink" with cyan accent dot on "i" */}
-          <span 
-            style={{ 
-              fontWeight: 900, 
-              fontSize: `${Math.round(size * 0.72)}px`,
-              background: 'linear-gradient(135deg, #2563eb 0%, #0284c7 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.03em'
+              color: textColor || 'var(--text-main, #0f172a)',
+              letterSpacing: '-0.035em'
             }}
           >
             shortlink
