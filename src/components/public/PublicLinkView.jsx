@@ -148,7 +148,7 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
             padding: '0.65rem 1.25rem', borderRadius: '10px',
-            background: '#e11d48', color: '#fff', textDecoration: 'none',
+            background: '#f472b6', color: '#fff', textDecoration: 'none',
             fontSize: '0.85rem', fontWeight: 800
           }}
         >
@@ -216,11 +216,11 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
           .nb-dot:nth-child(3){animation-delay:.3s}
         `}</style>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <span className="nb-dot" style={{ background: '#e11d48', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
-          <span className="nb-dot" style={{ background: '#fb7185', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
+          <span className="nb-dot" style={{ background: '#f472b6', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
+          <span className="nb-dot" style={{ background: '#fbcfe8', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
           <span className="nb-dot" style={{ background: '#0f172a', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
         </div>
-        <span style={{ fontSize: '0.85rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#e11d48' }}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ec4899' }}>
           REDIRECTING…
         </span>
       </div>
@@ -250,7 +250,7 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
         {/* Logo & Domain */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <BrandLogo size={24} showText={false} />
-          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#e11d48' }}>
+          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ec4899' }}>
             {activeLink.domain || window.location.hostname}
           </span>
         </div>
@@ -275,7 +275,7 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
           onClick={handleGoToLink}
           style={{
             width: '100%', padding: '0.85rem 1.25rem', borderRadius: '12px',
-            background: '#e11d48', color: '#fff', border: 'none',
+            background: '#f472b6', color: '#fff', border: 'none',
             fontSize: '0.925rem', fontWeight: 800, cursor: 'pointer',
             boxShadow: '4px 4px 10px #c1cbd4,-4px -4px 10px #fff',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
