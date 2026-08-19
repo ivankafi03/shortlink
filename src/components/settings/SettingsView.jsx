@@ -130,7 +130,7 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
               onChange={e => setGoogleClientId(e.target.value)}
               style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}
             />
-            <span className="form-hint">Dapatkan Client ID gratis di Google Cloud Console (APIs & Services -> Credentials -> OAuth 2.0 Client IDs).</span>
+            <span className="form-hint">Dapatkan Client ID gratis di Google Cloud Console (APIs and Services / Credentials / OAuth 2.0 Client IDs).</span>
           </div>
         </div>
 
