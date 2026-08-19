@@ -111,6 +111,12 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
         const t = setTimeout(() => doRedirect(dest), 400);
         return () => clearTimeout(t);
       }
+    } else if (result.action === 'fallback' || result.action === 'bot_trap') {
+      const htmlContent = result.botPageContent || result.fallbackPageContent;
+      if (!htmlContent && result.destination && (result.destination.startsWith('http://') || result.destination.startsWith('https://'))) {
+        const t = setTimeout(() => doRedirect(result.destination), 300);
+        return () => clearTimeout(t);
+      }
     }
   }, [activeLink, resolvedIp]);
 
