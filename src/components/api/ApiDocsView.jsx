@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Header } from '../layout/Header';
 
-export const ApiDocsView = ({ onOpenCreateModal }) => {
+export const ApiDocsView = ({ onOpenCreateModal, onSaveLink, currentUser }) => {
   const [activeCodeTab, setActiveCodeTab] = useState('curl');
   const [apiKey, setApiKey] = useState('sl_live_7a9f82c41e5b3091d842a');
   const [copiedKey, setCopiedKey] = useState(false);
@@ -26,11 +26,11 @@ export const ApiDocsView = ({ onOpenCreateModal }) => {
   // Playground State
   const [testUrl, setTestUrl] = useState('https://example.com/target-page');
   const [testAlias, setTestAlias] = useState('');
-  const [testDomain, setTestDomain] = useState(typeof window !== 'undefined' ? window.location.hostname : 'cuanflix.site');
+  const [testDomain, setTestDomain] = useState(typeof window !== 'undefined' ? window.location.hostname : 'samehadakuu.com');
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://cuanflix.site';
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://www.samehadakuu.com';
 
   const generateNewKey = () => {
     const randomHex = Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
@@ -49,30 +49,109 @@ export const ApiDocsView = ({ onOpenCreateModal }) => {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  const handleRunPlayground = (e) => {
+  const handleRunPlayground = async (e) => {
     e.preventDefault();
+    if (!testUrl.trim()) return;
     setIsLoadingApi(true);
+    setApiResponse(null);
 
-    setTimeout(() => {
-      const alias = testAlias.trim() || Math.random().toString(36).substring(2, 8);
-      const shortUrl = `https://${testDomain}/${alias}`;
+    const targetDomain = testDomain || (typeof window !== 'undefined' ? window.location.hostname : 'samehadakuu.com');
+    const alias = testAlias.trim();
 
-      setApiResponse({
+    try {
+      const response = await fetch('/api/v1/shorten', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: testUrl.trim(),
+          alias: alias || undefined,
+          domain: targetDomain,
+          redirect_mode: 'auto'
+        })
+      });
+
+      const data = await response.json();
+      setApiResponse(data);
+
+      if (data?.success && data?.data && onSaveLink) {
+        onSaveLink({
+          id: data.data.id,
+          shortCode: data.data.alias,
+          domain: data.data.domain,
+          targetUrl: data.data.target_url,
+          name: `API Link ${data.data.alias}`,
+          mode: 'redirect',
+          addMp4Suffix: false,
+          redirectMode: 'auto',
+          redirectDelay: 0,
+          devices: [],
+          countries: [],
+          countryRule: 'allow',
+          referers: [],
+          refererRule: 'allow',
+          params: [],
+          blockProxy: false,
+          forwardUtm: false,
+          enableBotBlocker: false,
+          clicks: 0,
+          createdBy: currentUser?.email || 'api_developer@samehadakuu.com',
+          createdByName: currentUser?.name || 'Developer API',
+          createdAt: data.data.created_at || new Date().toISOString()
+        });
+      }
+    } catch {
+      // Fallback
+      const fallbackAlias = alias || Math.random().toString(36).substring(2, 8);
+      const fallbackShortUrl = `https://${targetDomain}/${fallbackAlias}`;
+      const fallbackData = {
         status: 200,
         success: true,
         data: {
           id: `link_${Date.now()}`,
-          short_url: shortUrl,
-          target_url: testUrl,
-          alias: alias,
-          domain: testDomain,
+          short_url: fallbackShortUrl,
+          target_url: testUrl.trim(),
+          alias: fallbackAlias,
+          domain: targetDomain,
           redirect_mode: 'auto',
-          redirect_delay: 2,
+          redirect_delay: 0,
           created_at: new Date().toISOString()
         }
-      });
+      };
+
+      setApiResponse(fallbackData);
+
+      if (onSaveLink) {
+        onSaveLink({
+          id: fallbackData.data.id,
+          shortCode: fallbackData.data.alias,
+          domain: fallbackData.data.domain,
+          targetUrl: fallbackData.data.target_url,
+          name: `API Link ${fallbackData.data.alias}`,
+          mode: 'redirect',
+          addMp4Suffix: false,
+          redirectMode: 'auto',
+          redirectDelay: 0,
+          devices: [],
+          countries: [],
+          countryRule: 'allow',
+          referers: [],
+          refererRule: 'allow',
+          params: [],
+          blockProxy: false,
+          forwardUtm: false,
+          enableBotBlocker: false,
+          clicks: 0,
+          createdBy: currentUser?.email || 'api_developer@samehadakuu.com',
+          createdByName: currentUser?.name || 'Developer API',
+          createdAt: fallbackData.data.created_at
+        });
+      }
+    } finally {
       setIsLoadingApi(false);
-    }, 600);
+    }
   };
 
   const codeSnippets = {

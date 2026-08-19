@@ -616,6 +616,8 @@ export function App() {
         {activeTab === 'api_docs' && (
           <ApiDocsView 
             onOpenCreateModal={handleOpenCreateLink}
+            onSaveLink={handleSaveLink}
+            currentUser={currentUser}
           />
         )}
       </main>
