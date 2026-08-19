@@ -90,11 +90,18 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Extract client IP
+  // Extract REAL verified client IP from Cloudflare edge proxy (cannot be faked by k6 or client)
+  const cfIp = req.headers['cf-connecting-ip'];
+  const xRealIp = req.headers['x-real-ip'];
   const forwarded = req.headers['x-forwarded-for'];
-  const clientIp = forwarded ? forwarded.split(',')[0].trim() : (req.socket?.remoteAddress || '127.0.0.1');
+  const clientIp = (cfIp && cfIp.trim()) || 
+                   (xRealIp && xRealIp.trim()) || 
+                   (forwarded ? forwarded.split(',')[0].trim() : '') || 
+                   (req.socket?.remoteAddress || '127.0.0.1');
 
-  // Apply Anti-DDoS Rate Limiter
+  const clientCountry = req.headers['cf-ipcountry'] || req.headers['x-vercel-ip-country'] || 'ID';
+
+  // Apply Anti-DDoS Rate Limiter on REAL physical IP
   if (!checkRateLimit(clientIp)) {
     return res.status(429).json({
       error: 'Too Many Requests',
@@ -162,6 +169,11 @@ export default async function handler(req, res) {
         if (isBotUserAgent(userAgentHeader) || logEntry.isBot) {
           return res.status(200).json({ success: false, reason: 'bot_click_ignored' });
         }
+
+        // Server-Side Security: Overwrite client payload with verified network IP & country
+        logEntry.ip = clientIp;
+        logEntry.country = clientCountry;
+        logEntry.timestamp = new Date().toISOString();
 
         const linkIdentifier = logEntry.linkId || logEntry.shortCode;
         const cooldownKey = `${clientIp}_${linkIdentifier}`;
