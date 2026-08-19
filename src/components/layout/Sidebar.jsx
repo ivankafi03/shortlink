@@ -372,13 +372,15 @@ export const Sidebar = ({
                   </div>
                 )}
                 <div style={{ overflow: 'hidden' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {currentUser.name}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {currentUser.name}
+                    </div>
+                    <LiveStatusBadge size="small" />
                   </div>
-                  <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: '0.25rem' }}>
+                  <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {currentUser.email}
                   </div>
-                  <LiveStatusBadge size="small" />
                 </div>
               </div>
 
