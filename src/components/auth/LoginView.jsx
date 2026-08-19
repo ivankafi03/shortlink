@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
-import logoImg from '../../assets/logo.png';
+import { BrandLogo } from '../common/BrandLogo';
 import { loadGoogleSdk, parseGoogleJwt, getActiveGoogleClientId, openRealGooglePopup } from '../../services/googleAuthService';
 
 export const LoginView = ({ onLoginSuccess, onNavigate }) => {
@@ -117,12 +117,8 @@ export const LoginView = ({ onLoginSuccess, onNavigate }) => {
         }}>
           {/* Header Logo */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <div className="neu-logo-box" style={{ width: '48px', height: '48px', borderRadius: '13px', padding: '2px', overflow: 'hidden', marginBottom: '1rem', flexShrink: 0 }}>
-              <img 
-                src={logoImg} 
-                alt="Logo" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '11px' }} 
-              />
+            <div style={{ marginBottom: '1rem' }}>
+              <BrandLogo size={52} showText={false} />
             </div>
 
             <h1 style={{ fontSize: 'clamp(1.2rem, 4.5vw, 1.45rem)', fontWeight: 900, letterSpacing: '-0.02em', color: 'var(--text-main)', margin: '0 0 0.35rem', lineHeight: 1.25 }}>

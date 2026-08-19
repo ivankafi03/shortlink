@@ -26,7 +26,7 @@ import {
   Shuffle,
   Film
 } from 'lucide-react';
-import logoImg from '../../assets/logo.png';
+import { BrandLogo } from '../common/BrandLogo';
 import { QrCodeModal } from '../common/QrCodeModal';
 import { getPublicShowcaseLinks, saveLinks, getStoredLinks } from '../../services/storageService';
 
@@ -396,15 +396,8 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
 
       <aside className={`mobile-slide-drawer ${mobileNavOpen ? 'open' : ''}`}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-              <div className="neu-logo-box" style={{ width: '36px', height: '36px', borderRadius: '10px', padding: '2px', flexShrink: 0 }}>
-                <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
-              </div>
-              <span style={{ fontWeight: 900, fontSize: '1.1rem', letterSpacing: '-0.03em' }}>
-                D <span style={{ color: 'var(--primary)' }}>shortlink</span>
-              </span>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
+            <BrandLogo size={32} />
             <button 
               onClick={() => setMobileNavOpen(false)} 
               className="btn btn-ghost btn-sm"
@@ -474,13 +467,8 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
 
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <nav className="landing-nav">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-          <div className="neu-logo-box" style={{ width: '36px', height: '36px', borderRadius: '10px', padding: '2px', overflow: 'hidden' }}>
-            <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '8px' }} loading="eager" decoding="sync" />
-          </div>
-          <span style={{ fontWeight: 900, fontSize: '1.1rem', letterSpacing: '-0.03em' }}>
-            D <span style={{ color: 'var(--primary)' }}>shortlink</span>
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <BrandLogo size={34} />
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -841,7 +829,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
       <footer style={{ borderTop: '1px solid var(--border-subtle)', padding: '2rem', textAlign: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-          <span style={{ fontWeight: 900, fontSize: '0.95rem' }}>D <span style={{ color: 'var(--primary)' }}>shortlink</span></span>
+          <BrandLogo size={28} />
           {t.footerLinks.map(link => (
             <a key={link} href="#" style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--text-muted)', textDecoration: 'none' }}>{link}</a>
           ))}

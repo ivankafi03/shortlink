@@ -13,7 +13,7 @@ import {
   Braces
 } from 'lucide-react';
 import { LiveStatusBadge } from '../common/LiveStatusBadge';
-import logoImg from '../../assets/logo.png';
+import { BrandLogo } from '../common/BrandLogo';
 
 export const Sidebar = ({ 
   activeTab, 
@@ -76,16 +76,9 @@ export const Sidebar = ({
       <header className="mobile-top-bar">
         <div 
           onClick={onGoHome}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
         >
-          <div className="neu-logo-box" style={{ width: '38px', height: '38px', borderRadius: '10px', padding: '2px', overflow: 'hidden', flexShrink: 0 }}>
-            <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '8px' }} />
-          </div>
-          <div>
-            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.15rem', color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1 }}>
-              D <span style={{ color: 'var(--primary)' }}>shortlink</span>
-            </div>
-          </div>
+          <BrandLogo size={32} />
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -243,35 +236,14 @@ export const Sidebar = ({
           <div 
             onClick={onGoHome}
             style={{ 
-              display: 'flex', alignItems: 'center', gap: '0.75rem', 
+              display: 'flex', alignItems: 'center', 
               padding: '0.5rem 0.25rem 1.5rem 0.25rem',
               cursor: 'pointer',
               transition: 'opacity 0.15s'
             }}
             title="Dashboard"
           >
-            <div className="neu-logo-box" style={{ width: '42px', height: '42px', borderRadius: '12px', padding: '2px', overflow: 'hidden', flexShrink: 0 }}>
-              <img 
-                src={logoImg} 
-                alt="Logo" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '10px' }} 
-                loading="eager"
-                decoding="sync"
-              />
-            </div>
-
-            <div>
-              <div style={{ 
-                fontFamily: 'var(--font-heading)', 
-                fontWeight: 900, 
-                fontSize: '1.25rem',
-                lineHeight: 1.1,
-                letterSpacing: '-0.03em',
-                color: 'var(--text-main)'
-              }}>
-                D <span style={{ color: 'var(--primary)' }}>shortlink</span>
-              </div>
-            </div>
+            <BrandLogo size={36} />
           </div>
 
           {/* Create Link Primary CTA */}
