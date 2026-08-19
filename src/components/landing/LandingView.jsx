@@ -172,7 +172,7 @@ const T = {
 };
 
 const FEATURE_ICONS = [Target, Shield, Zap, Globe, Link2, MousePointerClick, BarChart2, Braces, Play];
-const DOMAINS = ['samehadakuu.com', 'whatsappp.my.id', 'www.samehadakuu.com'];
+const DOMAINS = ['whatsappp.my.id', 'cuanflix.site', 'link.cuanflix.site', 'samehadakuu.com', 'cdn.cuanflix.site', 'go.cuanflix.site'];
 
 // ─── FAQ Item ──────────────────────────────────────────────────────────────────
 

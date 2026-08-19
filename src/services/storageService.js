@@ -33,8 +33,10 @@ export const fetchAllFromCloud = async () => {
 export const AVAILABLE_DOMAINS = [
   'samehadakuu.com',
   'whatsappp.my.id',
-  'www.samehadakuu.com',
-  'www.whatsappp.my.id'
+  'cuanflix.site',
+  'link.cuanflix.site',
+  'cdn.cuanflix.site',
+  'go.cuanflix.site'
 ];
 
 export const DEFAULT_USERS = [];
