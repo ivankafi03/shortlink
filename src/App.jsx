@@ -523,6 +523,7 @@ export function App() {
             onOpenCreateModal={handleOpenCreateLink}
             onSelectLinkAnalytics={handleSelectLinkAnalytics}
             currentUser={currentUser}
+            isAdmin={isSuperAdmin}
           />
         )}
 

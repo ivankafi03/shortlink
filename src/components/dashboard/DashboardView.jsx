@@ -29,7 +29,8 @@ export const DashboardView = ({
   onEditLink, 
   onOpenCreateModal, 
   onSelectLinkAnalytics,
-  currentUser = null
+  currentUser = null,
+  isAdmin = false
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('all');
@@ -37,6 +38,12 @@ export const DashboardView = ({
   const [copiedId, setCopiedId] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [qrModalUrl, setQrModalUrl] = useState('');
+
+  const isUserAdmin = isAdmin || 
+    currentUser?.role === 'admin' || 
+    (typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) || 
+    currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com' || 
+    currentUser?.email?.toLowerCase() === 'admin.cuan@gmail.com';
 
   const totalLinks = links.length;
   const totalClicks = links.reduce((sum, link) => sum + (link.clicks || 0), 0);
@@ -168,8 +175,8 @@ export const DashboardView = ({
             />
           </div>
 
-          {/* Owner Filter Dropdown */}
-          {uniqueOwners.length > 1 && (
+          {/* Owner Filter Dropdown (Admin Only) */}
+          {isUserAdmin && uniqueOwners.length > 1 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               <Filter size={15} style={{ color: 'var(--text-dim)', flexShrink: 0 }} />
               <select
@@ -247,7 +254,7 @@ export const DashboardView = ({
                     </th>
                     <th>TAUTAN PENDEK</th>
                     <th>NAMA & TUJUAN</th>
-                    <th>PEMILIK (EMAIL)</th>
+                    {isUserAdmin && <th>PEMILIK (EMAIL)</th>}
                     <th>ATURAN FILTER</th>
                     <th>KLIK</th>
                     <th style={{ textAlign: 'right' }}>AKSI</th>
@@ -292,29 +299,31 @@ export const DashboardView = ({
                           </a>
                         </td>
 
-                        {/* Owner Email Column */}
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <img 
-                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(ownerEmail)}`}
-                              alt=""
-                              style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid var(--border-subtle)', background: 'var(--bg-main)', flexShrink: 0 }}
-                            />
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span 
-                                style={{ fontSize: '0.785rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--text-main)', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                                title={ownerEmail}
-                              >
-                                {ownerEmail}
-                              </span>
-                              {link.createdByName && link.createdByName !== ownerEmail.split('@')[0] && (
-                                <span style={{ fontSize: '0.675rem', color: 'var(--text-dim)', fontWeight: 600 }}>
-                                  {link.createdByName}
+                        {/* Owner Email Column (Admin Only) */}
+                        {isUserAdmin && (
+                          <td>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <img 
+                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(ownerEmail)}`}
+                                alt=""
+                                style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid var(--border-subtle)', background: 'var(--bg-main)', flexShrink: 0 }}
+                              />
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span 
+                                  style={{ fontSize: '0.785rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--text-main)', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                  title={ownerEmail}
+                                >
+                                  {ownerEmail}
                                 </span>
-                              )}
+                                {link.createdByName && link.createdByName !== ownerEmail.split('@')[0] && (
+                                  <span style={{ fontSize: '0.675rem', color: 'var(--text-dim)', fontWeight: 600 }}>
+                                    {link.createdByName}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        </td>
+                          </td>
+                        )}
 
                         <td>
                           <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
@@ -463,13 +472,15 @@ export const DashboardView = ({
                         <ExternalLink size={11} style={{ flexShrink: 0, color: 'var(--text-dim)' }} />
                       </a>
 
-                      {/* Owner Email Pill */}
-                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.4rem', background: 'var(--bg-main)', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
-                        <Mail size={11} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-main)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-                          {link.createdBy || link.userEmail || 'admin.cuan@gmail.com'}
-                        </span>
-                      </div>
+                      {/* Owner Email Pill (Admin Only) */}
+                      {isUserAdmin && (
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.4rem', background: 'var(--bg-main)', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                          <Mail size={11} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-main)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                            {link.createdBy || link.userEmail || 'admin.cuan@gmail.com'}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Filter Rules Row */}
