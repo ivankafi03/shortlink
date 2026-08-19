@@ -97,171 +97,9 @@ const INITIAL_PAGES = [
   }
 ];
 
-const INITIAL_LINKS = [
-  {
-    id: 'link_1',
-    shortCode: 'e17QVX',
-    domain: 'vidy.vu',
-    targetUrl: 'https://shopee.co.id/promo-affiliate-special',
-    name: 'Kampanye Shopee Sales ID',
-    mode: 'redirect',
-    addMp4Suffix: false,
-    fallbackPageId: '',
-    botPageId: 'page_bot_trap_1',
-    devices: ['seluler', 'desktop'],
-    countries: ['ID', 'MY', 'SG'],
-    countryRule: 'allow',
-    referers: ['facebook.com', 'instagram.com'],
-    refererRule: 'allow',
-    params: ['utm_source=fb', 'ref=campaign1'],
-    blockProxy: true,
-    clickLimit: 1000,
-    forwardUtm: true,
-    clicks: 142,
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-  },
-  {
-    id: 'link_2',
-    shortCode: 'x89KLP',
-    domain: 'videy.fans',
-    targetUrl: 'https://github.com/trending',
-    name: 'Github Trending Bot Filter',
-    mode: 'redirect',
-    addMp4Suffix: false,
-    fallbackPageId: 'page_bio_link_1',
-    botPageId: 'page_bot_trap_1',
-    devices: ['desktop'],
-    countries: ['US', 'JP', 'DE'],
-    countryRule: 'allow',
-    referers: [],
-    refererRule: 'allow',
-    params: [],
-    blockProxy: false,
-    clickLimit: 0,
-    forwardUtm: false,
-    clicks: 89,
-    createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-  },
-  {
-    id: 'link_3',
-    shortCode: 'bunny-demo',
-    domain: 'cdn.vidy.my',
-    targetUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    name: 'Big Buck Bunny Video Player',
-    mode: 'video',
-    redirectMode: 'click',
-    addMp4Suffix: true,
-    fallbackPageId: '',
-    botPageId: '',
-    devices: [],
-    countries: [],
-    countryRule: 'allow',
-    referers: [],
-    refererRule: 'allow',
-    params: [],
-    blockProxy: false,
-    clickLimit: 0,
-    forwardUtm: false,
-    clicks: 310,
-    createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
-  },
-  {
-    id: 'link_4',
-    shortCode: 'fMRS4R',
-    domain: 'cuanflix.site',
-    targetUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    ogTitle: 'Full HD Viral Video Stream',
-    ogDesc: 'Klik tombol play untuk streaming full HD.',
-    ogImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
-    name: 'Cuanflix Video Demo fMRS4R',
-    mode: 'redirect',
-    redirectMode: 'click',
-    redirectDelay: 3,
-    addMp4Suffix: true,
-    fallbackPageId: '',
-    botPageId: '',
-    devices: [],
-    countries: [],
-    countryRule: 'allow',
-    referers: [],
-    refererRule: 'allow',
-    params: [],
-    blockProxy: false,
-    clickLimit: 0,
-    forwardUtm: false,
-    clicks: 520,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'link_5',
-    shortCode: 'Yq8WF6',
-    domain: 'cuanflix.site',
-    targetUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    ogTitle: 'Full HD Viral Video Stream Yq8WF6',
-    ogDesc: 'Klik tombol play untuk streaming full HD.',
-    ogImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
-    name: 'Cuanflix Video Yq8WF6',
-    mode: 'redirect',
-    redirectMode: 'click',
-    redirectDelay: 3,
-    addMp4Suffix: true,
-    fallbackPageId: '',
-    botPageId: '',
-    devices: [],
-    countries: [],
-    countryRule: 'allow',
-    referers: [],
-    refererRule: 'allow',
-    params: [],
-    blockProxy: false,
-    clickLimit: 0,
-    forwardUtm: false,
-    clicks: 120,
-    createdAt: new Date().toISOString()
-  }
-];
+const INITIAL_LINKS = [];
 
-const INITIAL_ANALYTICS = [
-  {
-    id: 'log_1',
-    linkId: 'link_1',
-    timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-    ip: '180.252.12.98',
-    country: 'ID',
-    device: 'seluler',
-    referer: 'facebook.com',
-    triggeredRule: 'Rule Allowed (Mobile ID)',
-    destinationUrl: 'https://shopee.co.id/promo-affiliate-special?utm_source=fb',
-    isBot: false,
-    isProxy: false
-  },
-  {
-    id: 'log_2',
-    linkId: 'link_1',
-    timestamp: new Date(Date.now() - 3600000 * 5).toISOString(),
-    ip: '66.249.66.1',
-    country: 'US',
-    device: 'desktop',
-    referer: 'google.com',
-    triggeredRule: 'Bot Trap Triggered',
-    destinationUrl: 'Page: Halaman Perangkap Bot (Bot Trap)',
-    isBot: true,
-    isProxy: false
-  },
-  {
-    id: 'log_3',
-    linkId: 'link_2',
-    timestamp: new Date(Date.now() - 3600000 * 8).toISOString(),
-    ip: '103.111.42.10',
-    country: 'JP',
-    device: 'desktop',
-    referer: 'direct',
-    triggeredRule: 'Rule Allowed (Desktop JP)',
-    destinationUrl: 'https://github.com/trending',
-    isBot: false,
-    isProxy: false
-  }
-];
+const INITIAL_ANALYTICS = [];
 
 const INITIAL_DOMAINS = [
   {
@@ -299,22 +137,37 @@ export const DEFAULT_CONFIG = {
   ispKeywords: 'Googlebot\nDigitalOcean\nLinode\nAmazon'
 };
 
-// Auto Self-Healing function to prune bloated localStorage items
+// Auto Self-Healing function to prune bloated localStorage items & purge old dummy seeds
 const sanitizeStorageQuota = () => {
   try {
     const rawAnalytics = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
-    if (rawAnalytics && rawAnalytics.length > 30000) {
+    if (rawAnalytics) {
       try {
         const parsed = JSON.parse(rawAnalytics);
         if (Array.isArray(parsed)) {
-          const trimmed = parsed.slice(0, 50);
-          localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
+          // Purge legacy sample dummy logs
+          const filtered = parsed.filter(l => l.id !== 'log_1' && l.id !== 'log_2' && l.id !== 'log_3');
+          localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(filtered.slice(0, 300)));
         } else {
           localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
         }
       } catch {
         localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
       }
+    }
+
+    const rawLinks = localStorage.getItem(STORAGE_KEYS.LINKS);
+    if (rawLinks) {
+      try {
+        const parsed = JSON.parse(rawLinks);
+        if (Array.isArray(parsed)) {
+          // Purge legacy dummy demo links
+          const filtered = parsed.filter(l => !['link_1', 'link_2', 'link_3', 'link_4', 'link_5'].includes(l.id));
+          if (filtered.length !== parsed.length) {
+            localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(filtered));
+          }
+        }
+      } catch {}
     }
   } catch {
     try {

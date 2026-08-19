@@ -116,14 +116,20 @@ const BreakdownList = ({ items, total }) => {
 // ─── Analytics List View ───────────────────────────────────────────────────────
 
 const AnalyticsListView = ({ links, analyticsLogs, onSelectLink }) => {
+  const validLinkIds = useMemo(() => new Set(links.map(l => l.id)), [links]);
+  const activeLogs = useMemo(() => {
+    if (links.length === 0) return [];
+    return analyticsLogs.filter(l => validLinkIds.has(l.linkId));
+  }, [links, analyticsLogs, validLinkIds]);
+
   const totalLinks = links.length;
-  const totalClicks = analyticsLogs.length;
-  const totalTargeted = analyticsLogs.filter(l => !l.isBot && !l.isProxy).length;
-  const totalBot = analyticsLogs.filter(l => l.isBot).length;
-  const totalProxy = analyticsLogs.filter(l => l.isProxy).length;
+  const totalClicks = activeLogs.length;
+  const totalTargeted = activeLogs.filter(l => !l.isBot && !l.isProxy).length;
+  const totalBot = activeLogs.filter(l => l.isBot).length;
+  const totalProxy = activeLogs.filter(l => l.isProxy).length;
 
   const linkStats = links.map(link => {
-    const logs = analyticsLogs.filter(l => l.linkId === link.id);
+    const logs = activeLogs.filter(l => l.linkId === link.id);
     const total = logs.length;
     const targeted = logs.filter(l => !l.isBot && !l.isProxy).length;
     const bot = logs.filter(l => l.isBot).length;
@@ -136,24 +142,24 @@ const AnalyticsListView = ({ links, analyticsLogs, onSelectLink }) => {
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.15rem' }}>
-          <h1 style={{ fontSize: '1.85rem' }}>analitik</h1>
+          <h1 style={{ fontSize: '1.85rem', fontWeight: 900 }}>Analitik Trafik</h1>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', fontWeight: 800, color: '#059669', background: '#d1fae5', padding: '0.2rem 0.65rem', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
-            Live
+            Live Real-Time
           </span>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600 }}>
-          Statistik trafik real-time semua tautan kamu
+          Statistik trafik real-time seluruh tautan kamu
         </p>
       </div>
 
       {/* Global KPI Row */}
       <div className="analytics-kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
-        <StatCard label="tautan" value={totalLinks} color="var(--primary)" />
-        <StatCard label="total klik" value={totalClicks} color="var(--primary)" />
-        <StatCard label="tertarget" value={totalTargeted} color="#10b981" />
-        <StatCard label="bot" value={totalBot} color="#f43f5e" />
-        <StatCard label="proksi" value={totalProxy} color="#f59e0b" />
+        <StatCard label="Total Tautan" value={totalLinks} color="var(--primary)" />
+        <StatCard label="Total Klik" value={totalClicks} color="var(--primary)" />
+        <StatCard label="Tertarget" value={totalTargeted} color="#10b981" />
+        <StatCard label="Bot & Crawler" value={totalBot} color="#f43f5e" />
+        <StatCard label="Proxy / VPN" value={totalProxy} color="#f59e0b" />
       </div>
 
       {/* Per-link Table */}
@@ -162,19 +168,19 @@ const AnalyticsListView = ({ links, analyticsLogs, onSelectLink }) => {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>tautan</th>
-                <th style={{ textAlign: 'right' }}>total</th>
-                <th style={{ textAlign: 'right' }}>tertarget</th>
-                <th style={{ textAlign: 'right' }}>bot</th>
-                <th style={{ textAlign: 'right' }}>proksi</th>
-                <th></th>
+                <th>TAUTAN</th>
+                <th style={{ textAlign: 'right' }}>TOTAL KLIK</th>
+                <th style={{ textAlign: 'right' }}>TERTARGET</th>
+                <th style={{ textAlign: 'right' }}>BOT</th>
+                <th style={{ textAlign: 'right' }}>PROXY</th>
+                <th style={{ textAlign: 'right' }}>AKSI</th>
               </tr>
             </thead>
             <tbody>
               {linkStats.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2.5rem', fontSize: '0.875rem', fontWeight: 600 }}>
-                    Belum ada tautan
+                  <td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '3rem 1.5rem', fontSize: '0.875rem', fontWeight: 600 }}>
+                    Belum ada tautan aktif. Buat tautan pertama Anda untuk mulai mengumpulkan statistik trafik.
                   </td>
                 </tr>
               ) : (
