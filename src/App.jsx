@@ -10,7 +10,6 @@ import { SettingsView } from './components/settings/SettingsView';
 import { PublicLinkView } from './components/public/PublicLinkView';
 import { LoginView } from './components/auth/LoginView';
 import { AdminAuthPortal } from './components/admin/AdminAuthPortal';
-import { TrafficSimulatorView } from './components/simulator/TrafficSimulatorView';
 import { ApiDocsView } from './components/api/ApiDocsView';
 import { UsersView } from './components/users/UsersView';
 
@@ -515,7 +514,6 @@ export function App() {
         activeTab={getSidebarActiveTab()}
         setActiveTab={(tab) => navigateToTab(tab)}
         onOpenCreateModal={handleOpenCreateLink}
-        onOpenSimulator={() => navigateToTab('simulator')}
         onGoHome={() => navigateToTab('tautan')}
         currentUser={currentUser}
         onLogout={handleLogout}
@@ -531,7 +529,6 @@ export function App() {
             onEditLink={handleEditLink}
             onOpenCreateModal={handleOpenCreateLink}
             onSelectLinkAnalytics={handleSelectLinkAnalytics}
-            onTestLinkInSimulator={handleOpenSimulatorForLink}
           />
         )}
 
@@ -543,7 +540,6 @@ export function App() {
             currentUser={currentUser}
             onSaveLink={handleSaveLink}
             onCancel={() => navigateToTab('tautan')}
-            onOpenSimulator={() => navigateToTab('simulator')}
           />
         )}
 
@@ -551,8 +547,6 @@ export function App() {
           <AnalyticsView 
             analyticsLogs={userAnalytics}
             links={userLinks}
-            onOpenCreateModal={handleOpenCreateLink}
-            onOpenSimulator={() => navigateToTab('simulator')}
           />
         )}
 
@@ -563,7 +557,6 @@ export function App() {
               onSavePage={handleSavePage}
               onDeletePage={handleDeletePage}
               onOpenCreateModal={handleOpenCreateLink}
-              onOpenSimulator={() => navigateToTab('simulator')}
               currentRoute={activeTab}
               onNavigate={(tab) => navigateToTab(tab)}
             />
@@ -582,7 +575,6 @@ export function App() {
               onAddDomain={handleAddDomain}
               onDeleteDomain={handleDeleteDomain}
               onOpenCreateModal={handleOpenCreateLink}
-              onOpenSimulator={() => navigateToTab('simulator')}
               currentRoute={activeTab}
               onNavigate={(tab) => navigateToTab(tab)}
             />
@@ -602,7 +594,6 @@ export function App() {
               onSaveUser={handleSaveUser}
               onDeleteUser={handleDeleteUser}
               onOpenCreateModal={handleOpenCreateLink}
-              onOpenSimulator={() => navigateToTab('simulator')}
             />
           ) : (
             <div className="neu-panel" style={{ padding: '2rem', textAlign: 'center' }}>
@@ -618,7 +609,6 @@ export function App() {
               config={config}
               onSaveConfig={handleSaveConfig}
               onOpenCreateModal={handleOpenCreateLink}
-              onOpenSimulator={() => navigateToTab('simulator')}
             />
           ) : (
             <div className="neu-panel" style={{ padding: '2rem', textAlign: 'center' }}>
@@ -628,19 +618,9 @@ export function App() {
           )
         )}
 
-        {activeTab === 'simulator' && (
-          <TrafficSimulatorView 
-            links={userLinks}
-            initialLink={userLinks[0]}
-            onClose={() => navigateToTab('tautan')}
-            isModal={false}
-          />
-        )}
-
         {activeTab === 'api_docs' && (
           <ApiDocsView 
             onOpenCreateModal={handleOpenCreateLink}
-            onOpenSimulator={() => navigateToTab('simulator')}
           />
         )}
       </main>

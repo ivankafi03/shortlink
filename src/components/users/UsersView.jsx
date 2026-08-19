@@ -22,8 +22,7 @@ export const UsersView = ({
   links = [], 
   onSaveUser, 
   onDeleteUser, 
-  onOpenCreateModal, 
-  onOpenSimulator 
+  onOpenCreateModal 
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState(false);

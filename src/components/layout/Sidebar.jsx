@@ -20,7 +20,6 @@ export const Sidebar = ({
   activeTab, 
   setActiveTab, 
   onOpenCreateModal,
-  onOpenSimulator,
   onGoHome,
   currentUser,
   onOpenGoogleLogin,
@@ -68,11 +67,7 @@ export const Sidebar = ({
   ];
 
   const handleTabClick = (tabId) => {
-    if (tabId === 'simulator') {
-      onOpenSimulator();
-    } else {
-      setActiveTab(tabId);
-    }
+    setActiveTab(tabId);
     setMobileDrawerOpen(false);
   };
 

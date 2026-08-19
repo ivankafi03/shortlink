@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Header } from '../layout/Header';
 
-export const ApiDocsView = ({ onOpenCreateModal, onOpenSimulator }) => {
+export const ApiDocsView = ({ onOpenCreateModal }) => {
   const [activeCodeTab, setActiveCodeTab] = useState('curl');
   const [apiKey, setApiKey] = useState('sl_live_7a9f82c41e5b3091d842a');
   const [copiedKey, setCopiedKey] = useState(false);

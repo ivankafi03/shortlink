@@ -17,7 +17,6 @@ export const PagesView = ({
   onSavePage, 
   onDeletePage, 
   onOpenCreateModal, 
-  onOpenSimulator,
   currentRoute,
   onNavigate
 }) => {

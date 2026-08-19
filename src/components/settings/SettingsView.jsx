@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { Header } from '../layout/Header';
 
-export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal, onOpenSimulator }) => {
+export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
   const [activeTab, setActiveTab] = useState('general'); // 'general' | 'ip' | 'asn'
 
   const [timezone, setTimezone] = useState(config.timezone || 'Asia/Jakarta');

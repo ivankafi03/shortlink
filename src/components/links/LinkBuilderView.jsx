@@ -27,7 +27,6 @@ export const LinkBuilderView = ({
   currentUser = null,
   onSaveLink, 
   onCancel,
-  onOpenSimulator,
   onNavigate
 }) => {
   const isAdmin = currentUser?.role === 'admin' || 

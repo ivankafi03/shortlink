@@ -2,7 +2,7 @@ import React from 'react';
 import { Search, Plus, Play } from 'lucide-react';
 import { LiveStatusBadge } from '../common/LiveStatusBadge';
 
-export const Header = ({ title, subtitle, onOpenCreateModal, onOpenSimulator }) => {
+export const Header = ({ title, subtitle, onOpenCreateModal }) => {
   return (
     <header className="page-header" style={{ 
       display: 'flex', 
@@ -21,12 +21,6 @@ export const Header = ({ title, subtitle, onOpenCreateModal, onOpenSimulator }) 
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-        {onOpenSimulator && (
-          <button onClick={onOpenSimulator} className="btn btn-sm" style={{ padding: '0.45rem 0.8rem', fontSize: '0.8rem' }}>
-            <Play size={14} style={{ color: 'var(--accent-emerald)' }} />
-            <span>Test Router</span>
-          </button>
-        )}
         {onOpenCreateModal && (
           <button onClick={onOpenCreateModal} className="btn btn-primary btn-sm" style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem' }}>
             <Plus size={14} />

@@ -26,8 +26,7 @@ export const DashboardView = ({
   onBulkDelete, 
   onEditLink, 
   onOpenCreateModal, 
-  onSelectLinkAnalytics,
-  onTestLinkInSimulator 
+  onSelectLinkAnalytics
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState([]);
@@ -86,7 +85,6 @@ export const DashboardView = ({
         title="Dashboard & Tautan" 
         subtitle="Kelola tautan pendek, penargetan pengunjung, dan filter keamanan"
         onOpenCreateModal={onOpenCreateModal}
-        onOpenSimulator={() => onTestLinkInSimulator(links[0] || null)}
       />
 
       {/* 4 Equal-Aligned Neumorphic Stat Cards Grid */}

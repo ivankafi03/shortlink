@@ -17,7 +17,6 @@ export const DomainsView = ({
   onAddDomain, 
   onDeleteDomain,
   onOpenCreateModal,
-  onOpenSimulator,
   currentRoute,
   onNavigate
 }) => {
