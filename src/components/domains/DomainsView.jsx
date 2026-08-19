@@ -25,7 +25,7 @@ export const DomainsView = ({
   const [domainName, setDomainName] = useState('');
   const [copiedIp, setCopiedIp] = useState(false);
 
-  const targetIp = '51.79.145.138';
+  const targetIp = '76.76.21.21';
 
   const handleCopyIp = () => {
     navigator.clipboard.writeText(targetIp);
