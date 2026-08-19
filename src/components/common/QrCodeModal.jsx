@@ -65,34 +65,25 @@ export const QrCodeModal = ({ isOpen, onClose, url, title = 'Shortlink QR Code' 
 
   return (
     <div 
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '1rem',
-        background: 'rgba(15, 23, 42, 0.65)',
-        backdropFilter: 'blur(4px)',
-        animation: 'fadeIn 0.2s ease'
-      }}
+      className="modal-overlay" 
+      onClick={onClose} 
+      style={{ zIndex: 9999 }}
     >
       <div 
-        className="neu-panel"
+        className="modal-content"
+        onClick={e => e.stopPropagation()}
         style={{
-          width: '100%',
           maxWidth: '420px',
+          width: '92vw',
           padding: '1.75rem',
           position: 'relative',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           background: 'var(--bg-app)',
-          borderRadius: 'var(--radius-lg)'
+          borderRadius: '16px',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.35)',
+          border: '1px solid var(--border-subtle)'
         }}
       >
         {/* Close Button */}
@@ -126,10 +117,10 @@ export const QrCodeModal = ({ isOpen, onClose, url, title = 'Shortlink QR Code' 
         </div>
 
         {/* QR Canvas Box */}
-        <div className="neu-panel-inset" style={{ padding: '1.25rem', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', marginBottom: '1rem' }}>
+        <div style={{ padding: '1.25rem', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '260px', marginBottom: '1rem', background: 'var(--bg-surface)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
           <canvas
             ref={canvasRef}
-            style={{ width: '220px', height: '220px', borderRadius: 'var(--radius-sm)', background: '#FFFFFF', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+            style={{ width: '220px', height: '220px', borderRadius: '8px', background: '#FFFFFF', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
           />
           {!qrLoaded && (
             <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginTop: '0.5rem' }}>Generasi QR Code...</p>
@@ -137,7 +128,7 @@ export const QrCodeModal = ({ isOpen, onClose, url, title = 'Shortlink QR Code' 
         </div>
 
         {/* URL Box */}
-        <div className="neu-panel-inset" style={{ width: '100%', padding: '0.65rem 0.85rem', display: 'flex', alignItems: 'center', justifyBetween: 'space-between', gap: '0.5rem', marginBottom: '1.25rem' }}>
+        <div style={{ width: '100%', padding: '0.65rem 0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '1.25rem', background: 'var(--bg-surface)', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.775rem', fontWeight: 700, color: 'var(--primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {url}
           </span>
