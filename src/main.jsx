@@ -14,16 +14,8 @@ import './index.css'
     host.includes('samehadakuu') ||
     host === 'whatsappp.my.id' ||
     host.includes('whatsappp') ||
-    host === 'cuanflix.site' ||
-    host.includes('cuanflix') ||
     host === 'localhost' ||
     host === '127.0.0.1';
-
-  // If accessing cuanflix domain at root (/), redirect root URL directly to samehadakuu.com
-  if (host.includes('cuanflix') && (window.location.pathname === '/' || window.location.pathname === '')) {
-    window.location.replace('https://samehadakuu.com');
-    throw new Error('[domainGuard] Redirecting cuanflix root to samehadakuu.com');
-  }
 
   if (!isPrimary) {
     const dest =
