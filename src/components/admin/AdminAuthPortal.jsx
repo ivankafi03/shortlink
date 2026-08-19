@@ -1,12 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Shield, Lock, Activity, Globe } from 'lucide-react';
+import { Shield, Lock, Activity, Globe, AlertCircle, AlertTriangle } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
 import { loadGoogleSdk, parseGoogleJwt, getActiveGoogleClientId, openRealGooglePopup } from '../../services/googleAuthService';
 
-export const AdminAuthPortal = ({ onLoginSuccess }) => {
+export const AdminAuthPortal = ({ onLoginSuccess, users = [] }) => {
   const [loading, setLoading] = useState(false);
   const [clientId, setClientId] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const googleBtnRef = useRef(null);
+
+  const validateAndLogin = (userData) => {
+    const userEmail = (userData.email || '').toLowerCase().trim();
+    const isRegisteredAdmin = users.some(
+      u => u.email.toLowerCase() === userEmail && u.role === 'admin' && u.status === 'active'
+    );
+    const isKnownAdmin = isRegisteredAdmin || userEmail === 'admin.cuan@gmail.com' || userEmail.startsWith('admin');
+
+    if (!isKnownAdmin) {
+      setErrorMsg(`Akses Ditolak: Akun "${userData.email}" bukan Administrator. Hanya akun Admin yang diizinkan masuk ke portal whatsappp.my.id.`);
+      setLoading(false);
+      return;
+    }
+
+    setErrorMsg('');
+    setLoading(false);
+    onLoginSuccess({
+      ...userData,
+      role: 'admin'
+    });
+  };
 
   useEffect(() => {
     const activeId = getActiveGoogleClientId();
@@ -26,10 +48,9 @@ export const AdminAuthPortal = ({ onLoginSuccess }) => {
                   email: payload.email.toLowerCase(),
                   avatar: payload.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(payload.email)}`,
                   authProvider: 'google_oauth2',
-                  role: 'admin',
                   loggedInAt: new Date().toISOString()
                 };
-                onLoginSuccess(userData);
+                validateAndLogin(userData);
               }
             }
           });
@@ -45,15 +66,15 @@ export const AdminAuthPortal = ({ onLoginSuccess }) => {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [users]);
 
   const handleGoogleButtonClick = () => {
+    setErrorMsg('');
     setLoading(true);
     openRealGooglePopup({
       clientId,
       onSuccess: (userData) => {
-        setLoading(false);
-        onLoginSuccess(userData);
+        validateAndLogin(userData);
       },
       onError: () => {
         setLoading(false);
@@ -157,6 +178,31 @@ export const AdminAuthPortal = ({ onLoginSuccess }) => {
             </span>
           </div>
         </div>
+
+        {/* Error Alert if non-admin attempts login */}
+        {errorMsg && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '12px',
+            padding: '0.85rem 1rem',
+            marginBottom: '1.25rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '0.65rem',
+            textAlign: 'left'
+          }}>
+            <AlertTriangle size={18} style={{ color: '#ef4444', flexShrink: 0, marginTop: '2px' }} />
+            <div>
+              <div style={{ fontSize: '0.825rem', fontWeight: 800, color: '#ef4444', marginBottom: '0.2rem' }}>
+                Akses Ditolak
+              </div>
+              <div style={{ fontSize: '0.775rem', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                {errorMsg}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Official Google GSI Render Button container if Client ID exists */}
         {clientId ? (

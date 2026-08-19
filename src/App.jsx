@@ -100,52 +100,109 @@ export function App() {
   // Link Builder Page State
   const [linkToEdit, setLinkToEdit] = useState(null);
 
-  // Member Google User State — Default to active Member/Admin based on domain
+  // Member Google User State — Default to null (Wajib login) & 1 Hour Expiration
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('vidy_user_v1');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const lastActive = Number(localStorage.getItem('vidy_last_active_v1')) || 0;
+        const ONE_HOUR = 60 * 60 * 1000;
+        if (Date.now() - lastActive > ONE_HOUR) {
+          localStorage.removeItem('vidy_user_v1');
+          localStorage.removeItem('vidy_last_active_v1');
+          return null;
+        }
+        return JSON.parse(saved);
+      }
     } catch {}
-    if (isDedicatedAdminHost) {
-      return {
-        id: 'admin_default',
-        name: 'Super Admin',
-        email: 'admin.cuan@gmail.com',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin',
-        role: 'admin',
-        loggedInAt: new Date().toISOString()
-      };
-    }
-
-    return {
-      id: 'member_default',
-      name: 'Member Samehadakuu',
-      email: 'member@samehadakuu.com',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=samehadakuu',
-      role: 'member',
-      loggedInAt: new Date().toISOString()
-    };
+    return null;
   });
 
   const [googleModalOpen, setGoogleModalOpen] = useState(false);
 
+  // 1-Hour Inactivity Auto Logout Listener
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const ONE_HOUR = 60 * 60 * 1000;
+    
+    const updateActivity = () => {
+      try {
+        localStorage.setItem('vidy_last_active_v1', Date.now().toString());
+      } catch {}
+    };
+
+    updateActivity();
+
+    // Listen to user interactions with throttle
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart', 'click', 'mousemove'];
+    let lastRecorded = Date.now();
+    const handleUserActivity = () => {
+      const now = Date.now();
+      if (now - lastRecorded > 15000) { // update every 15 seconds on activity
+        lastRecorded = now;
+        updateActivity();
+      }
+    };
+
+    events.forEach(event => window.addEventListener(event, handleUserActivity, { passive: true }));
+
+    // Periodic check for 1-hour inactivity timeout (every 30 seconds)
+    const checkInterval = setInterval(() => {
+      try {
+        const lastActive = Number(localStorage.getItem('vidy_last_active_v1')) || 0;
+        if (Date.now() - lastActive > ONE_HOUR) {
+          handleLogout();
+          alert('Sesi Anda telah berakhir karena tidak ada aktivitas selama 1 jam. Silakan login kembali.');
+        }
+      } catch {}
+    }, 30000);
+
+    return () => {
+      events.forEach(event => window.removeEventListener(event, handleUserActivity));
+      clearInterval(checkInterval);
+    };
+  }, [currentUser]);
+
   const handleLoginSuccess = (userData) => {
-    setCurrentUser(userData);
+    // Di domain whatsappp.my.id, hanya role admin yang boleh masuk
+    const userEmail = (userData.email || '').toLowerCase().trim();
+    const isRegisteredAdmin = users.some(
+      u => u.email.toLowerCase() === userEmail && u.role === 'admin' && u.status === 'active'
+    );
+    const isKnownAdmin = isRegisteredAdmin || userEmail === 'admin.cuan@gmail.com' || userEmail.startsWith('admin');
+
+    if (isDedicatedAdminHost && !isKnownAdmin) {
+      alert(`Akses Ditolak: Akun "${userData.email}" bukan Administrator. Hanya akun Admin yang diizinkan masuk ke portal whatsappp.my.id.`);
+      return false;
+    }
+
+    const finalUserData = {
+      ...userData,
+      role: isDedicatedAdminHost || isKnownAdmin ? 'admin' : (userData.role || 'member'),
+      loggedInAt: new Date().toISOString()
+    };
+
+    setCurrentUser(finalUserData);
     try {
-      localStorage.setItem('vidy_user_v1', JSON.stringify(userData));
+      localStorage.setItem('vidy_user_v1', JSON.stringify(finalUserData));
+      localStorage.setItem('vidy_last_active_v1', Date.now().toString());
     } catch {}
+
     setGoogleModalOpen(false);
     setActiveTab('tautan');
     const targetPath = getPathFromTab('tautan');
     if (window.location.pathname !== targetPath) {
       window.history.pushState({}, '', targetPath);
     }
+    return true;
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
     try {
       localStorage.removeItem('vidy_user_v1');
+      localStorage.removeItem('vidy_last_active_v1');
     } catch {}
     setActiveTab('home');
     if (window.location.pathname !== '/') {
@@ -320,7 +377,7 @@ export function App() {
     if (!currentUser) {
       return (
         <>
-          <AdminAuthPortal onLoginSuccess={handleLoginSuccess} />
+          <AdminAuthPortal onLoginSuccess={handleLoginSuccess} users={users} />
           <GoogleLoginModal 
             isOpen={googleModalOpen} 
             onClose={() => setGoogleModalOpen(false)} 
