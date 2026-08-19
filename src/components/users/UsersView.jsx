@@ -31,12 +31,18 @@ export const UsersView = ({
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('member');
 
-  const filteredUsers = users.filter(u => {
+  // Hanya tampilkan Member nyata, kecualikan admin sistem
+  const memberUsers = users.filter(u => 
+    u.role !== 'admin' && 
+    u.email?.toLowerCase() !== 'ivankafipradana@gmail.com' &&
+    u.email?.toLowerCase() !== 'admin.cuan@gmail.com'
+  );
+
+  const filteredUsers = memberUsers.filter(u => {
     const q = searchQuery.toLowerCase();
     return (
       (u.name || '').toLowerCase().includes(q) ||
-      (u.email || '').toLowerCase().includes(q) ||
-      (u.role || '').toLowerCase().includes(q)
+      (u.email || '').toLowerCase().includes(q)
     );
   });
 
@@ -51,8 +57,8 @@ export const UsersView = ({
       id: `user_${Date.now()}`,
       name: formattedName,
       email: email.trim().toLowerCase(),
-      role: role, // 'admin' | 'member'
-      status: 'active', // 'active' | 'suspended'
+      role: 'member',
+      status: 'active',
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
       createdAt: new Date().toISOString()
     };
@@ -72,14 +78,6 @@ export const UsersView = ({
     onSaveUser(updated);
   };
 
-  const handleToggleRole = (user) => {
-    const updated = {
-      ...user,
-      role: user.role === 'admin' ? 'member' : 'admin'
-    };
-    onSaveUser(updated);
-  };
-
   const getUserLinkCount = (userEmail) => {
     if (!userEmail) return 0;
     return links.filter(l => l.createdBy === userEmail || l.userEmail === userEmail).length;
@@ -88,8 +86,8 @@ export const UsersView = ({
   return (
     <div>
       <Header 
-        title="Manajemen Pengguna (Data User)" 
-        subtitle="Kelola akun anggota platform, ubah peran Admin/Member, dan kelola hak akses"
+        title="Data Member" 
+        subtitle="Kelola akun member yang mendaftar di platform shortlink"
         onOpenCreateModal={onOpenCreateModal}
         onOpenSimulator={onOpenSimulator}
       />
@@ -97,11 +95,11 @@ export const UsersView = ({
       {/* Action Bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h2 style={{ fontSize: '1.35rem', fontWeight: 900 }}>Daftar Pengguna Platform ({users.length})</h2>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 800 }}>Daftar Member ({filteredUsers.length})</h2>
         </div>
         <button onClick={() => setModalOpen(true)} className="btn btn-primary">
           <UserPlus size={16} />
-          <span>+ Tambah Pengguna Baru</span>
+          <span>+ Tambah Member Manual</span>
         </button>
       </div>
 
@@ -111,7 +109,7 @@ export const UsersView = ({
           <Search size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
           <input 
             type="text"
-            placeholder="Cari nama, email, atau peran..."
+            placeholder="Cari nama atau email member..."
             className="form-control"
             style={{ paddingLeft: '2.5rem' }}
             value={searchQuery}
@@ -124,19 +122,18 @@ export const UsersView = ({
           <table className="custom-table">
             <thead>
               <tr>
-                <th>PENGGUNA</th>
+                <th>MEMBER</th>
                 <th>EMAIL</th>
-                <th>PERAN (ROLE)</th>
                 <th>STATUS AKUN</th>
                 <th>TOTAL TAUTAN</th>
-                <th style={{ textAlign: 'right' }}>AKSI ADMIN</th>
+                <th style={{ textAlign: 'right' }}>AKSI</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2.5rem', fontSize: '0.875rem', fontWeight: 600 }}>
-                    Belum ada pengguna ditemukan
+                  <td colSpan="5" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2.5rem', fontSize: '0.875rem', fontWeight: 600 }}>
+                    Belum ada member terdaftar
                   </td>
                 </tr>
               ) : (
@@ -172,18 +169,6 @@ export const UsersView = ({
                       </td>
 
                       <td>
-                        <button 
-                          onClick={() => handleToggleRole(user)}
-                          className={`badge ${isAdmin ? 'badge-primary' : 'badge-amber'}`}
-                          style={{ cursor: 'pointer', border: 'none', padding: '0.25rem 0.6rem', fontSize: '0.725rem', fontWeight: 800 }}
-                          title="Klik untuk ubah Peran"
-                        >
-                          <Shield size={11} />
-                          <span>{isAdmin ? 'Super Admin' : 'Member'}</span>
-                        </button>
-                      </td>
-
-                      <td>
                         <span className={`badge ${isActive ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.725rem', fontWeight: 800 }}>
                           {isActive ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
                           <span>{isActive ? 'Aktif' : 'Ditangguhkan'}</span>
@@ -211,7 +196,7 @@ export const UsersView = ({
                           <button 
                             onClick={() => onDeleteUser(user.id)}
                             className="btn btn-danger btn-sm"
-                            title="Hapus Pengguna"
+                            title="Hapus Member"
                           >
                             <Trash2 size={13} />
                           </button>
@@ -244,16 +229,12 @@ export const UsersView = ({
                   </div>
                 </div>
 
-                <span className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-amber'}`} style={{ fontSize: '0.675rem' }}>
-                  {user.role === 'admin' ? 'Super Admin' : 'Member'}
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
                 <span className={`badge ${user.status === 'active' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.675rem' }}>
                   {user.status === 'active' ? 'Aktif' : 'Ditangguhkan'}
                 </span>
+              </div>
 
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.35rem' }}>
                   <button onClick={() => handleToggleStatus(user)} className="btn btn-sm" style={{ padding: '0.25rem 0.5rem', fontSize: '0.725rem' }}>
                     {user.status === 'active' ? 'Block' : 'Unblock'}
@@ -273,12 +254,12 @@ export const UsersView = ({
         <div className="modal-overlay" onClick={() => setModalOpen(false)}>
           <div className="modal-content neu-panel" onClick={e => e.stopPropagation()} style={{ maxWidth: '440px', padding: '1.75rem' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <UserPlus size={18} style={{ color: 'var(--primary)' }} /> Tambah Pengguna Baru
+              <UserPlus size={18} style={{ color: 'var(--primary)' }} /> Tambah Member Baru
             </h3>
 
             <form onSubmit={handleCreateUser} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="form-group">
-                <label className="form-label">Nama Pengguna</label>
+                <label className="form-label">Nama Member</label>
                 <input 
                   type="text" 
                   placeholder="Nama Lengkap" 
@@ -293,19 +274,11 @@ export const UsersView = ({
                 <input 
                   type="email" 
                   required 
-                  placeholder="member@domain.com" 
+                  placeholder="member@gmail.com" 
                   className="form-control" 
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                 />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Peran (Role)</label>
-                <select className="form-control" value={role} onChange={e => setRole(e.target.value)}>
-                  <option value="member">Member (Publisher / Affiliate)</option>
-                  <option value="admin">Super Admin (Pengelola Platform)</option>
-                </select>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
@@ -314,7 +287,7 @@ export const UsersView = ({
                 </button>
                 <button type="submit" className="btn btn-primary" style={{ padding: '0.65rem 1.5rem' }}>
                   <Check size={16} />
-                  <span>Simpan Pengguna</span>
+                  <span>Simpan Member</span>
                 </button>
               </div>
             </form>

@@ -15,44 +15,7 @@ export const AVAILABLE_DOMAINS = [
   'whatsappp.my.id'
 ];
 
-export const DEFAULT_USERS = [
-  {
-    id: 'user_admin_ivan',
-    name: 'Ivan Kafi (Super Admin)',
-    email: 'ivankafipradana@gmail.com',
-    role: 'admin',
-    status: 'active',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ivankafipradana@gmail.com',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'user_admin_1',
-    name: 'Super Admin',
-    email: 'admin.cuan@gmail.com',
-    role: 'admin',
-    status: 'active',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin.cuan@gmail.com',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'user_member_1',
-    name: 'Member Samehadakuu',
-    email: 'member@samehadakuu.com',
-    role: 'member',
-    status: 'active',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=member@samehadakuu.com',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'user_member_2',
-    name: 'Affiliate Publisher',
-    email: 'affiliate.owner@gmail.com',
-    role: 'member',
-    status: 'active',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=affiliate.owner@gmail.com',
-    createdAt: new Date().toISOString()
-  }
-];
+export const DEFAULT_USERS = [];
 
 
 const INITIAL_PAGES = [
@@ -508,13 +471,12 @@ export const getStoredUsers = () => {
     const saved = localStorage.getItem(STORAGE_KEYS.USERS);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (!parsed.some(u => u.email.toLowerCase() === 'ivankafipradana@gmail.com')) {
-        parsed.unshift(DEFAULT_USERS[0]);
-      }
-      return parsed;
+      // Filter out previous dummy seed accounts
+      const dummyEmails = ['admin.cuan@gmail.com', 'member@samehadakuu.com', 'affiliate.owner@gmail.com', 'jokosusilo011203@gmail.com'];
+      return Array.isArray(parsed) ? parsed.filter(u => !dummyEmails.includes(u.email?.toLowerCase())) : [];
     }
   } catch {}
-  return DEFAULT_USERS;
+  return [];
 };
 
 export const saveUsers = (users) => {

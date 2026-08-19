@@ -48,7 +48,7 @@ export const Sidebar = ({
     { id: 'halaman', label: 'Halaman Landing', icon: FileText },
     { id: 'domain', label: 'Domain Kustom', icon: Globe },
     ...(isAdmin ? [
-      { id: 'pengguna', label: 'Manajemen Pengguna', icon: Users },
+      { id: 'pengguna', label: 'Data Member', icon: Users },
       { id: 'pengaturan', label: 'Pengaturan Keamanan', icon: Shield },
     ] : []),
     { id: 'api_docs', label: 'Developer REST API', icon: Braces },
