@@ -5,7 +5,13 @@ import {
   Zap, 
   Check, 
   Save,
-  Key
+  Key,
+  ShieldCheck,
+  ShieldAlert,
+  RotateCcw,
+  Radio,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import { Header } from '../layout/Header';
 
@@ -52,13 +58,13 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
             ...config,
             ipWhitelist: updated
           });
-          setDetectedMsg(`✅ IP Anda (${myIp}) berhasil dibebaskan & masuk Whitelist!`);
+          setDetectedMsg(`IP Anda (${myIp}) berhasil ditambahkan ke Whitelist.`);
         } else {
-          setDetectedMsg(`ℹ️ IP Anda (${myIp}) sudah ada di dalam Whitelist.`);
+          setDetectedMsg(`IP Anda (${myIp}) sudah ada di dalam Whitelist.`);
         }
       }
     } catch {
-      setDetectedMsg('❌ Gagal mendeteksi IP otomatis. Silakan masukkan IP manual.');
+      setDetectedMsg('Gagal mendeteksi IP otomatis. Silakan masukkan IP secara manual.');
     } finally {
       setDetectingIp(false);
     }
@@ -72,9 +78,9 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'clear_cooldown' })
       });
-      setDetectedMsg('✅ Semua riwayat blokir dan cooldown IP berhasil di-reset!');
+      setDetectedMsg('Semua riwayat blokir dan cooldown IP berhasil di-reset.');
     } catch {
-      setDetectedMsg('❌ Gagal mereset cooldown server.');
+      setDetectedMsg('Gagal mereset cooldown server.');
     } finally {
       setClearingCooldown(false);
     }
@@ -209,11 +215,11 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
                 <div className="neu-panel-inset" style={{ padding: '1.25rem', borderRadius: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
                     <div>
-                      <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: 'var(--accent-emerald)', margin: 0 }}>
-                        🟢 IP Whitelist (Bebas Blokir Khusus Admin)
+                      <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: 'var(--accent-emerald)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                        <ShieldCheck size={16} /> IP Whitelist (Bebas Akses Khusus Admin)
                       </h4>
                       <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', fontWeight: 600, margin: '0.2rem 0 0 0' }}>
-                        IP di daftar ini akan 100% lolos dari Rate Limiter, Cooldown, dan Filter Bot.
+                        Alamat IP di daftar ini dikecualikan dari Rate Limiting, Cooldown, dan Filter Bot.
                       </p>
                     </div>
 
@@ -225,7 +231,7 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
                       style={{ fontSize: '0.775rem', padding: '0.45rem 0.85rem' }}
                     >
                       <Zap size={14} />
-                      <span>{detectingIp ? 'Mendeteksi...' : '⚡ Deteksi & Bebaskan IP Saya'}</span>
+                      <span>{detectingIp ? 'Mendeteksi...' : 'Deteksi & Whitelist IP Saya'}</span>
                     </button>
                   </div>
 
@@ -241,7 +247,9 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
                 {/* Blacklist Section */}
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <label className="form-label" style={{ marginBottom: 0 }}>🔴 IP Blacklist (Satu per baris)</label>
+                    <label className="form-label" style={{ marginBottom: 0, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                      <ShieldAlert size={15} style={{ color: 'var(--accent-rose)' }} /> IP Blacklist (Satu per baris)
+                    </label>
                     <button
                       type="button"
                       onClick={handleClearAllCooldowns}
@@ -250,7 +258,8 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
                       style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}
                       title="Reset semua cooldown dan blokir sementara"
                     >
-                      <span>{clearingCooldown ? 'Mereset...' : '🔄 Reset Cooldown Server'}</span>
+                      <RotateCcw size={13} />
+                      <span>{clearingCooldown ? 'Mereset...' : 'Reset Cooldown Server'}</span>
                     </button>
                   </div>
                   <textarea 
