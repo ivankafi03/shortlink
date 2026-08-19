@@ -18,7 +18,6 @@ export const AdminAuthPortal = ({ onLoginSuccess, users = [] }) => {
     const isKnownAdmin = 
       isRegisteredAdmin || 
       userEmail === 'ivankafipradana@gmail.com' || 
-      userEmail === 'jokosusilo011203@gmail.com' || 
       userEmail === 'admin.cuan@gmail.com' || 
       userEmail.startsWith('admin');
 
