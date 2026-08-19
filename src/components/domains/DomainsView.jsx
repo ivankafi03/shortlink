@@ -173,7 +173,22 @@ export const DomainsView = ({
       </div>
 
       {/* Domains Grid */}
-      <div className="responsive-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+      {domains.length === 0 ? (
+        <div className="neu-panel" style={{ textAlign: 'center', padding: '3.5rem 1rem' }}>
+          <div className="neu-panel-inset" style={{ width: '52px', height: '52px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: 'var(--text-dim)' }}>
+            <Globe size={22} />
+          </div>
+          <h3 style={{ marginBottom: '0.35rem', fontWeight: 800, fontSize: '1.1rem' }}>Belum Ada Domain Kustom</h3>
+          <p style={{ color: 'var(--text-muted)', maxWidth: '400px', margin: '0 auto 1.25rem auto', fontSize: '0.85rem', fontWeight: 600 }}>
+            Hubungkan domain Anda sendiri untuk menggunakan nama domain kustom pada shortlink.
+          </p>
+          <button onClick={() => onNavigate('create_domain')} className="btn btn-primary">
+            <Plus size={16} />
+            <span>+ Hubungkan Domain Baru</span>
+          </button>
+        </div>
+      ) : (
+        <div className="responsive-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
         {domains.map((dom, idx) => {
           const domainId = dom.id || dom.domainName || dom.domain || dom;
           const displayName = dom.domainName || dom.domain || dom;
@@ -217,6 +232,7 @@ export const DomainsView = ({
           );
         })}
       </div>
+      )}
     </div>
   );
 };

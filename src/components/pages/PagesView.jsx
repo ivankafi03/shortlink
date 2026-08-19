@@ -208,7 +208,7 @@ export const PagesView = ({
             Halaman landing kustom dapat dipakai sebagai perangkap bot atau halaman pengalihan khusus.
           </p>
           <button onClick={() => handleOpenEditor(null)} className="btn btn-primary">
-            + Buat Halaman Landing Pertama
+            + Buat Halaman Landing Baru
           </button>
         </div>
       ) : (

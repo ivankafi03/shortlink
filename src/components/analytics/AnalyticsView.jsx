@@ -194,7 +194,7 @@ const AnalyticsListView = ({ links, analyticsLogs, onSelectLink }) => {
                     <td style={{ textAlign: 'right', fontWeight: 800, fontSize: '1rem', color: '#f59e0b' }}>{proxy}</td>
                     <td style={{ textAlign: 'right' }}>
                       <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
-                        lihat <ChevronRight size={14} />
+                        Detail <ChevronRight size={14} />
                       </span>
                     </td>
                   </tr>

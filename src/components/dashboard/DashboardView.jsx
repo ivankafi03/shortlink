@@ -166,24 +166,29 @@ export const DashboardView = ({
         {filteredLinks.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3.5rem 1rem' }}>
             <div className="neu-panel-inset" style={{ 
-              width: '56px', 
-              height: '56px', 
+              width: '52px', 
+              height: '52px', 
               borderRadius: '50%', 
               display: 'inline-flex', 
               alignItems: 'center', 
-              justifyContent: 'center',
-              marginBottom: '1rem',
-              color: 'var(--primary)'
+              justifyContent: 'center', 
+              marginBottom: '1rem', 
+              color: 'var(--text-dim)' 
             }}>
-              <Plus size={24} />
+              <Layers size={22} />
             </div>
-            <h3 style={{ marginBottom: '0.5rem', fontWeight: 900 }}>buat tautan pendek pertama anda</h3>
-            <p style={{ color: 'var(--text-muted)', maxWidth: '480px', margin: '0 auto 1.5rem auto', fontSize: '0.875rem', fontWeight: 600 }}>
-              Tautan pendek memungkinkan anda mengalihkan pengunjung ke tujuan apa pun dengan kendali penuh atas siapa yang melihat apa.
+            <h3 style={{ marginBottom: '0.35rem', fontWeight: 800, fontSize: '1.1rem' }}>
+              {searchQuery ? 'Tautan Tidak Ditemukan' : 'Belum Ada Tautan'}
+            </h3>
+            <p style={{ color: 'var(--text-muted)', maxWidth: '400px', margin: '0 auto 1.25rem auto', fontSize: '0.85rem', fontWeight: 600 }}>
+              {searchQuery ? 'Tidak ada tautan yang sesuai dengan filter pencarian.' : 'Daftar tautan pendek yang aktif akan tampil di sini.'}
             </p>
-            <button onClick={onOpenCreateModal} className="btn btn-primary">
-              buat tautan pertama anda
-            </button>
+            {!searchQuery && (
+              <button onClick={onOpenCreateModal} className="btn btn-primary">
+                <Plus size={16} />
+                <span>Buat Tautan Baru</span>
+              </button>
+            )}
           </div>
         ) : (
           <>
