@@ -25,86 +25,82 @@ export const BrandLogo = ({
         ...style 
       }}
     >
-      {/* ── SVG Geometric Emblem (3D Faceted D) ── */}
+      {/* ── SVG Geometric Emblem (Unmistakable Capital Letter D) ── */}
       <svg 
         width={iconWidth} 
         height={iconHeight} 
         viewBox="0 0 120 120" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
-        style={{ flexShrink: 0, filter: 'drop-shadow(0 2px 8px rgba(37, 99, 235, 0.22))' }}
+        style={{ flexShrink: 0, filter: 'drop-shadow(0 2px 8px rgba(37, 99, 235, 0.25))' }}
       >
         <defs>
-          {/* Main Top-Right Electric Ribbon */}
-          <linearGradient id="dRibbonTop" x1="20" y1="15" x2="105" y2="60" gradientUnits="userSpaceOnUse">
+          {/* Top-Right Glowing Cyan Ribbon */}
+          <linearGradient id="capD_top" x1="20" y1="12" x2="116" y2="60" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#38bdf8" />
             <stop offset="100%" stopColor="#2563eb" />
           </linearGradient>
 
-          {/* Bottom-Right Deep Azure Ribbon */}
-          <linearGradient id="dRibbonBottom" x1="105" y1="60" x2="20" y2="105" gradientUnits="userSpaceOnUse">
+          {/* Bottom-Right Royal Blue Ribbon */}
+          <linearGradient id="capD_bottom" x1="116" y1="60" x2="20" y2="108" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#2563eb" />
             <stop offset="100%" stopColor="#1d4ed8" />
           </linearGradient>
 
-          {/* Left Vertical Spine / Facet */}
-          <linearGradient id="dSpine" x1="20" y1="15" x2="52" y2="105" gradientUnits="userSpaceOnUse">
+          {/* Left Vertical Spine */}
+          <linearGradient id="capD_spine" x1="16" y1="12" x2="48" y2="108" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#0ea5e9" />
             <stop offset="50%" stopColor="#2563eb" />
             <stop offset="100%" stopColor="#1e40af" />
           </linearGradient>
 
           {/* Inner Accent Core */}
-          <linearGradient id="dCore" x1="45" y1="38" x2="75" y2="82" gradientUnits="userSpaceOnUse">
+          <linearGradient id="capD_core" x1="44" y1="36" x2="88" y2="84" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#67e8f9" />
-            <stop offset="100%" stopColor="#3b82f6" />
-          </linearGradient>
-
-          {/* Signal Wave / Link Glow */}
-          <linearGradient id="dWave" x1="82" y1="20" x2="115" y2="50" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#06b6d4" />
             <stop offset="100%" stopColor="#3b82f6" />
           </linearGradient>
         </defs>
 
-        {/* ── Outer Geometric "D" Facets ── */}
-        {/* 1. Left Vertical Pillar */}
+        {/* ── 1. Left Vertical Spine of Capital "D" ── */}
         <path
-          d="M20 18 C20 14.5 23.5 12 27 12 L50 12 L44 108 L26 108 C22.5 108 20 105.5 20 102 Z"
-          fill="url(#dSpine)"
+          d="M 18 16 C 18 13.5 20 12 23 12 L 48 12 L 48 108 L 23 108 C 20 108 18 106.5 18 104 Z"
+          fill="url(#capD_spine)"
         />
 
-        {/* 2. Top Angled Facet */}
+        {/* ── 2. Top-Half Arc of Capital "D" ── */}
         <path
-          d="M48 12 L78 12 C96 12 108 24 108 44 C108 53 104 60 97 65 L66 65 L48 12 Z"
-          fill="url(#dRibbonTop)"
+          d="M 44 12 L 68 12 C 96 12 114 32 114 60 L 68 60 L 44 12 Z"
+          fill="url(#capD_top)"
         />
 
-        {/* 3. Bottom Angled Return Facet */}
+        {/* ── 3. Bottom-Half Arc of Capital "D" ── */}
         <path
-          d="M97 65 C104 70 108 77 108 86 C108 102 94 108 76 108 L44 108 L66 65 L97 65 Z"
-          fill="url(#dRibbonBottom)"
+          d="M 114 60 C 114 88 96 108 68 108 L 44 108 L 68 60 L 114 60 Z"
+          fill="url(#capD_bottom)"
         />
 
-        {/* 4. Center Geometric Negative Cutout */}
+        {/* ── 4. Single Continuous Inner Counter / Hole of Capital "D" (Negative Space) ── */}
         <path
-          d="M48 38 L68 38 C78 38 84 44 84 54 C84 62 78 68 68 68 L48 68 Z M48 68 L68 68 C78 68 84 74 84 82 C84 89 77 94 67 94 L46 94 Z"
+          d="M 46 34 L 64 34 C 80 34 90 45 90 60 C 90 75 80 86 64 86 L 46 86 Z"
           fill="var(--bg-surface, #ffffff)"
         />
 
-        {/* 5. Modern Smart Link Accent Bar */}
+        {/* ── 5. Modern Smart Link Inner Accent ── */}
         <path
-          d="M52 48 L65 48 C70 48 73 51 73 56 C73 60 70 63 65 63 L52 63 Z"
-          fill="url(#dCore)"
-        />
-        <path
-          d="M51 71 L64 71 C69 71 72 74 72 79 C72 83 69 86 64 86 L50 86 Z"
-          fill="url(#dCore)"
+          d="M 48 44 L 62 44 C 72 44 79 51 79 60 C 79 69 72 76 62 76 L 48 76 Z"
+          fill="url(#capD_core)"
+          opacity="0.9"
         />
 
-        {/* 6. Dynamic Signal Dots / Link Nodes (Top Right) */}
-        <circle cx="106" cy="18" r="4.5" fill="#38bdf8" />
-        <path d="M96 14 C102 11 110 13 114 19" stroke="#38bdf8" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.85" />
+        {/* ── 6. Futuristic Core Negative Gap ── */}
+        <path
+          d="M 48 52 L 60 52 C 65 52 69 55 69 60 C 69 65 65 68 60 68 L 48 68 Z"
+          fill="var(--bg-surface, #ffffff)"
+        />
+
+        {/* ── 7. Smart Node Dot & Radar Arc (Top Right) ── */}
+        <circle cx="106" cy="18" r="4" fill="#38bdf8" />
+        <path d="M 96 15 C 102 12 109 13 113 19" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.8" />
       </svg>
 
       {/* ── Modern Typography Wordmark ── */}
