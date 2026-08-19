@@ -31,6 +31,7 @@ export const fetchAllFromCloud = async () => {
 };
 
 export const AVAILABLE_DOMAINS = [
+  'cuanflix.site',
   'samehadakuu.com',
   'whatsappp.my.id',
   'www.samehadakuu.com',
@@ -102,6 +103,14 @@ const INITIAL_ANALYTICS = [];
 
 const INITIAL_DOMAINS = [
   {
+    id: 'dom_cuanflix_1',
+    domainName: 'cuanflix.site',
+    serverIp: '76.76.21.21',
+    status: 'active',
+    sslActive: true,
+    createdAt: new Date().toISOString()
+  },
+  {
     id: 'dom_samehadakuu_1',
     domainName: 'samehadakuu.com',
     serverIp: '76.76.21.21',
@@ -112,14 +121,6 @@ const INITIAL_DOMAINS = [
   {
     id: 'dom_whatsappp_1',
     domainName: 'whatsappp.my.id',
-    serverIp: '76.76.21.21',
-    status: 'active',
-    sslActive: true,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'dom_samehadakuu_2',
-    domainName: 'www.samehadakuu.com',
     serverIp: '76.76.21.21',
     status: 'active',
     sslActive: true,

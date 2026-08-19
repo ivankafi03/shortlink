@@ -8,6 +8,8 @@ import './index.css'
 ;(function domainGuard() {
   const host = window.location.hostname.toLowerCase();
   const isPrimary =
+    host === 'cuanflix.site' ||
+    host === 'www.cuanflix.site' ||
     host === 'samehadakuu.com' ||
     host === 'www.samehadakuu.com' ||
     host === 'samehadakuu.site' ||

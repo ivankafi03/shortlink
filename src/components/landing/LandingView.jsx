@@ -171,7 +171,7 @@ const T = {
   }
 };
 
-const DOMAINS = ['samehadakuu.com', 'whatsappp.my.id', 'www.samehadakuu.com'];
+const DOMAINS = ['cuanflix.site', 'samehadakuu.com', 'whatsappp.my.id'];
 
 // ─── FAQ Item ──────────────────────────────────────────────────────────────────
 
