@@ -40,14 +40,15 @@ export const Sidebar = ({
   }, [mobileDrawerOpen]);
 
   const isAdmin = currentUser?.role === 'admin' || 
-    (typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin')));
+    (typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) ||
+    currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com';
 
   const navItems = [
     { id: 'tautan', label: 'Tautan & Dashboard', icon: Link2 },
     { id: 'analitik', label: 'Analitik Trafik', icon: BarChart2 },
-    { id: 'halaman', label: 'Halaman Landing', icon: FileText },
-    { id: 'domain', label: 'Domain Kustom', icon: Globe },
     ...(isAdmin ? [
+      { id: 'halaman', label: 'Halaman Landing', icon: FileText },
+      { id: 'domain', label: 'Domain Kustom', icon: Globe },
       { id: 'pengguna', label: 'Data Member', icon: Users },
       { id: 'pengaturan', label: 'Pengaturan Keamanan', icon: Shield },
     ] : []),
@@ -57,9 +58,12 @@ export const Sidebar = ({
   const bottomNavItems = [
     { id: 'tautan', label: 'Tautan', icon: Link2 },
     { id: 'analitik', label: 'Analitik', icon: BarChart2 },
-    { id: 'halaman', label: 'Halaman', icon: FileText },
-    { id: 'domain', label: 'Domain', icon: Globe },
-    { id: 'simulator', label: 'Simulator', icon: Play },
+    ...(isAdmin ? [
+      { id: 'halaman', label: 'Halaman', icon: FileText },
+      { id: 'domain', label: 'Domain', icon: Globe },
+    ] : [
+      { id: 'api_docs', label: 'API', icon: Braces },
+    ]),
   ];
 
   const handleTabClick = (tabId) => {

@@ -557,27 +557,41 @@ export function App() {
         )}
 
         {(activeTab === 'halaman' || activeTab === 'create_page') && (
-          <PagesView 
-            pages={pages}
-            onSavePage={handleSavePage}
-            onDeletePage={handleDeletePage}
-            onOpenCreateModal={handleOpenCreateLink}
-            onOpenSimulator={() => navigateToTab('simulator')}
-            currentRoute={activeTab}
-            onNavigate={(tab) => navigateToTab(tab)}
-          />
+          isSuperAdmin ? (
+            <PagesView 
+              pages={pages}
+              onSavePage={handleSavePage}
+              onDeletePage={handleDeletePage}
+              onOpenCreateModal={handleOpenCreateLink}
+              onOpenSimulator={() => navigateToTab('simulator')}
+              currentRoute={activeTab}
+              onNavigate={(tab) => navigateToTab(tab)}
+            />
+          ) : (
+            <div className="neu-panel" style={{ padding: '2.5rem', textAlign: 'center' }}>
+              <h2 style={{ color: 'var(--accent-rose)', fontWeight: 900, marginBottom: '0.5rem' }}>Akses Dibatasi</h2>
+              <p style={{ color: 'var(--text-muted)' }}>Fitur template halaman landing hanya dapat dikelola oleh Super Admin di whatsappp.my.id</p>
+            </div>
+          )
         )}
 
         {(activeTab === 'domain' || activeTab === 'create_domain') && (
-          <DomainsView 
-            domains={domains}
-            onAddDomain={handleAddDomain}
-            onDeleteDomain={handleDeleteDomain}
-            onOpenCreateModal={handleOpenCreateLink}
-            onOpenSimulator={() => navigateToTab('simulator')}
-            currentRoute={activeTab}
-            onNavigate={(tab) => navigateToTab(tab)}
-          />
+          isSuperAdmin ? (
+            <DomainsView 
+              domains={domains}
+              onAddDomain={handleAddDomain}
+              onDeleteDomain={handleDeleteDomain}
+              onOpenCreateModal={handleOpenCreateLink}
+              onOpenSimulator={() => navigateToTab('simulator')}
+              currentRoute={activeTab}
+              onNavigate={(tab) => navigateToTab(tab)}
+            />
+          ) : (
+            <div className="neu-panel" style={{ padding: '2.5rem', textAlign: 'center' }}>
+              <h2 style={{ color: 'var(--accent-rose)', fontWeight: 900, marginBottom: '0.5rem' }}>Akses Dibatasi</h2>
+              <p style={{ color: 'var(--text-muted)' }}>Pengaturan domain server dan DNS hanya dapat dikelola oleh Super Admin di whatsappp.my.id</p>
+            </div>
+          )
         )}
 
         {activeTab === 'pengguna' && (

@@ -209,10 +209,12 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
   const [urlInput, setUrlInput] = useState('');
 
   const domainOptions = useMemo(() => {
-    if (domains && domains.length > 0) {
-      return domains.map(d => d.domainName || d.domain || d);
-    }
-    return DOMAINS;
+    const raw = (domains && domains.length > 0)
+      ? domains.map(d => d.domainName || d.domain || d)
+      : DOMAINS;
+    // Selalu sembunyikan domain admin internal (whatsappp.my.id) dari publik
+    const filtered = raw.filter(d => !d.toLowerCase().includes('whatsappp') && !d.toLowerCase().includes('admin'));
+    return filtered.length > 0 ? filtered : DOMAINS;
   }, [domains]);
 
   const showcaseLinks = useMemo(() => {

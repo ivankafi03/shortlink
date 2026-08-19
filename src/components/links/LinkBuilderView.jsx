@@ -30,9 +30,18 @@ export const LinkBuilderView = ({
   onOpenSimulator,
   onNavigate
 }) => {
-  const domainOptions = (domains && domains.length > 0)
+  const isAdmin = currentUser?.role === 'admin' || 
+    (typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) ||
+    currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com';
+
+  const rawDomains = (domains && domains.length > 0)
     ? domains.map(d => d.domainName || d.domain || d)
     : AVAILABLE_DOMAINS;
+
+  // Filter out admin domain (whatsappp.my.id) from member dropdown
+  const domainOptions = isAdmin 
+    ? rawDomains 
+    : rawDomains.filter(d => !d.toLowerCase().includes('whatsappp') && !d.toLowerCase().includes('admin'));
 
   const [mode, setMode] = useState('redirect'); // 'redirect' | 'video'
   const [activeTab, setActiveTab] = useState('dasar'); // 'dasar' | 'Fallback' | 'Bot' | 'penargetan' | 'opsi'
