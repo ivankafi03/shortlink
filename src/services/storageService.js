@@ -296,7 +296,7 @@ const INITIAL_DOMAINS = [
 ];
 
 export const DEFAULT_CONFIG = {
-  googleClientId: '189146836407-oqluq07dcqpf9nbbloq1udkla26t707a.apps.googleusercontent.com',
+  googleClientId: '189146836407-tlu7pjcacmeki4k2ne1ubg8mostet92t.apps.googleusercontent.com',
   timezone: 'Asia/Jakarta',
   googleCrawlerBlock: true,
   ipBlacklist: '185.220.101.*\n185.220.102.*',

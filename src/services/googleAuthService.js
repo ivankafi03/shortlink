@@ -19,7 +19,7 @@ export const parseGoogleJwt = (token) => {
 };
 
 // Client ID fallback / config helper
-export const DEFAULT_GOOGLE_CLIENT_ID = '189146836407-oqluq07dcqpf9nbbloq1udkla26t707a.apps.googleusercontent.com';
+export const DEFAULT_GOOGLE_CLIENT_ID = '189146836407-tlu7pjcacmeki4k2ne1ubg8mostet92t.apps.googleusercontent.com';
 
 export const getActiveGoogleClientId = () => {
   try {
