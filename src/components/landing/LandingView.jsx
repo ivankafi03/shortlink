@@ -461,52 +461,48 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
               </button>
             )}
 
-            {/* Dashboard Platform Features Navigation */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <div style={{ fontSize: '0.725rem', fontWeight: 800, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem', paddingLeft: '0.5rem' }}>
+            {/* Dashboard Platform Features Navigation (Text Only) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div style={{ fontSize: '0.725rem', fontWeight: 800, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.35rem', paddingLeft: '0.5rem' }}>
                 Fitur & Layanan Platform
               </div>
 
               {[
-                { id: 'tautan', label: 'Tautan & Dashboard', icon: Link2, color: 'var(--primary)' },
-                { id: 'analitik', label: 'Analitik Trafik', icon: BarChart2, color: '#10b981' },
-                { id: 'halaman', label: 'Halaman Landing', icon: FileText, color: '#8b5cf6' },
-                { id: 'domain', label: 'Domain Kustom', icon: Globe, color: '#f59e0b' },
-                { id: 'api_docs', label: 'Developer REST API', icon: Braces, color: '#06b6d4' },
+                { id: 'tautan', label: 'Tautan & Dashboard' },
+                { id: 'analitik', label: 'Analitik Trafik' },
+                { id: 'halaman', label: 'Halaman Landing' },
+                { id: 'domain', label: 'Domain Kustom' },
+                { id: 'api_docs', label: 'Developer REST API' },
                 ...(currentUser?.role === 'admin' ? [
-                  { id: 'pengguna', label: 'Manajemen Pengguna', icon: Users, color: '#ec4899' },
-                  { id: 'pengaturan', label: 'Pengaturan Keamanan', icon: Shield, color: '#f43f5e' }
+                  { id: 'pengguna', label: 'Manajemen Pengguna' },
+                  { id: 'pengaturan', label: 'Pengaturan Keamanan' }
                 ] : [])
-              ].map(item => {
-                const IconComp = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    className="btn btn-ghost"
-                    style={{ 
-                      padding: '0.75rem 0.85rem', 
-                      fontSize: '0.875rem', 
-                      width: '100%', 
-                      justifyContent: 'flex-start', 
-                      fontWeight: 700, 
-                      gap: '0.75rem',
-                      borderRadius: '10px'
-                    }}
-                    onClick={() => {
-                      setMobileNavOpen(false);
-                      if (currentUser) {
-                        onNavigate(item.id);
-                      } else {
-                        if (onOpenGoogleLogin) onOpenGoogleLogin();
-                        else onNavigate('login');
-                      }
-                    }}
-                  >
-                    <IconComp size={18} style={{ color: item.color }} />
-                    <span>{item.label}</span>
-                  </button>
-                );
-              })}
+              ].map(item => (
+                <button
+                  key={item.id}
+                  className="btn btn-ghost"
+                  style={{ 
+                    padding: '0.75rem 1rem', 
+                    fontSize: '0.9rem', 
+                    width: '100%', 
+                    justifyContent: 'flex-start', 
+                    fontWeight: 700, 
+                    borderRadius: '8px',
+                    textAlign: 'left'
+                  }}
+                  onClick={() => {
+                    setMobileNavOpen(false);
+                    if (currentUser) {
+                      onNavigate(item.id);
+                    } else {
+                      if (onOpenGoogleLogin) onOpenGoogleLogin();
+                      else onNavigate('login');
+                    }
+                  }}
+                >
+                  <span>{item.label}</span>
+                </button>
+              ))}
             </div>
           </div>
 
