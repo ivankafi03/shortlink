@@ -25,7 +25,9 @@ import {
   getStoredConfig,
   saveConfig,
   getStoredUsers,
-  saveUsers
+  saveUsers,
+  fetchAllFromCloud,
+  STORAGE_KEYS
 } from './services/storageService';
 
 
@@ -176,11 +178,59 @@ export function App() {
     };
   }, [currentUser, isDedicatedAdminHost]);
 
+  // Cloud Synchronization Listener — Syncs with Neon Postgres on Vercel across samehadakuu.com and whatsappp.my.id
+  useEffect(() => {
+    let isMounted = true;
+    const syncCloudData = async () => {
+      try {
+        const cloudData = await fetchAllFromCloud();
+        if (cloudData && typeof cloudData === 'object' && isMounted) {
+          if (cloudData[STORAGE_KEYS.LINKS] && Array.isArray(cloudData[STORAGE_KEYS.LINKS])) {
+            setLinks(cloudData[STORAGE_KEYS.LINKS]);
+            localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(cloudData[STORAGE_KEYS.LINKS]));
+          }
+          if (cloudData[STORAGE_KEYS.USERS] && Array.isArray(cloudData[STORAGE_KEYS.USERS])) {
+            setUsers(cloudData[STORAGE_KEYS.USERS]);
+            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(cloudData[STORAGE_KEYS.USERS]));
+          }
+          if (cloudData[STORAGE_KEYS.PAGES] && Array.isArray(cloudData[STORAGE_KEYS.PAGES])) {
+            setPages(cloudData[STORAGE_KEYS.PAGES]);
+            localStorage.setItem(STORAGE_KEYS.PAGES, JSON.stringify(cloudData[STORAGE_KEYS.PAGES]));
+          }
+          if (cloudData[STORAGE_KEYS.DOMAINS] && Array.isArray(cloudData[STORAGE_KEYS.DOMAINS])) {
+            setDomains(cloudData[STORAGE_KEYS.DOMAINS]);
+            localStorage.setItem(STORAGE_KEYS.DOMAINS, JSON.stringify(cloudData[STORAGE_KEYS.DOMAINS]));
+          }
+          if (cloudData[STORAGE_KEYS.ANALYTICS] && Array.isArray(cloudData[STORAGE_KEYS.ANALYTICS])) {
+            setAnalyticsLogs(cloudData[STORAGE_KEYS.ANALYTICS]);
+            localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(cloudData[STORAGE_KEYS.ANALYTICS]));
+          }
+          if (cloudData[STORAGE_KEYS.CONFIG] && typeof cloudData[STORAGE_KEYS.CONFIG] === 'object') {
+            setConfig(cloudData[STORAGE_KEYS.CONFIG]);
+            localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(cloudData[STORAGE_KEYS.CONFIG]));
+          }
+        }
+      } catch {}
+    };
+
+    syncCloudData();
+
+    // Periodic sync every 8 seconds and on window focus/tab switch
+    const interval = setInterval(syncCloudData, 8000);
+    window.addEventListener('focus', syncCloudData);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      window.removeEventListener('focus', syncCloudData);
+    };
+  }, []);
+
   const handleLoginSuccess = (userData) => {
     // Di domain whatsappp.my.id, hanya role admin yang boleh masuk
     const userEmail = (userData.email || '').toLowerCase().trim();
     const isRegisteredAdmin = users.some(
-      u => u.email.toLowerCase() === userEmail && u.role === 'admin' && u.status === 'active'
+      u => u.email?.toLowerCase() === userEmail && u.role === 'admin' && u.status === 'active'
     );
     const isKnownAdmin = isRegisteredAdmin || userEmail === 'ivankafipradana@gmail.com' || userEmail === 'admin.cuan@gmail.com' || userEmail.startsWith('admin');
 
@@ -200,6 +250,29 @@ export function App() {
       localStorage.setItem('vidy_user_v1', JSON.stringify(finalUserData));
       localStorage.setItem('vidy_last_active_v1', Date.now().toString());
     } catch {}
+
+    // Jika member baru mendaftar di samehadakuu.com, simpan ke database member cloud
+    if (!isKnownAdmin && finalUserData.role === 'member') {
+      const currentUsers = getStoredUsers();
+      const existsIndex = currentUsers.findIndex(u => u.email?.toLowerCase() === userEmail);
+      let updatedUsers;
+      if (existsIndex !== -1) {
+        updatedUsers = [...currentUsers];
+        updatedUsers[existsIndex] = { ...updatedUsers[existsIndex], ...finalUserData };
+      } else {
+        updatedUsers = [{
+          id: finalUserData.id || `user_${Date.now()}`,
+          name: finalUserData.name,
+          email: finalUserData.email,
+          role: 'member',
+          status: 'active',
+          avatar: finalUserData.avatar,
+          createdAt: new Date().toISOString()
+        }, ...currentUsers];
+      }
+      setUsers(updatedUsers);
+      saveUsers(updatedUsers);
+    }
 
     setActiveTab('tautan');
     const targetPath = getPathFromTab('tautan');

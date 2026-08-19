@@ -1,10 +1,33 @@
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   USERS: 'vidy_users_v1',
   LINKS: 'vidy_links_v1',
   PAGES: 'vidy_pages_v1',
   ANALYTICS: 'vidy_analytics_v1',
   DOMAINS: 'vidy_domains_v1',
   CONFIG: 'vidy_config_v1'
+};
+
+// Cloud Database Sync Helper for Neon Postgres
+export const syncToCloud = async (key, value) => {
+  try {
+    await fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value })
+    });
+  } catch {
+    // Offline / fallback silently handled
+  }
+};
+
+export const fetchAllFromCloud = async () => {
+  try {
+    const res = await fetch('/api/data?all=true');
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 };
 
 export const AVAILABLE_DOMAINS = [
@@ -327,6 +350,7 @@ export const saveLinks = (links) => {
       console.warn('Failed to save links after cleanup:', err);
     }
   }
+  syncToCloud(STORAGE_KEYS.LINKS, links);
 };
 
 export const getStoredPages = () => {
@@ -353,6 +377,7 @@ export const savePages = (pages) => {
       console.warn('Failed to save pages:', err);
     }
   }
+  syncToCloud(STORAGE_KEYS.PAGES, pages);
 };
 
 export const getStoredAnalytics = () => {
@@ -383,6 +408,7 @@ export const recordClick = (logEntry) => {
         localStorage.setItem(STORAGE_KEYS.ANALYTICS, JSON.stringify(trimmed));
       } catch {}
     }
+    syncToCloud(STORAGE_KEYS.ANALYTICS, updatedLogs);
 
     const links = getStoredLinks();
     const targetLinkIndex = links.findIndex((l) => l.id === logEntry.linkId);
@@ -419,6 +445,7 @@ export const saveDomains = (domains) => {
       console.warn('Failed to save domains:', err);
     }
   }
+  syncToCloud(STORAGE_KEYS.DOMAINS, domains);
 };
 
 export const getStoredConfig = () => {
@@ -449,6 +476,7 @@ export const saveConfig = (config) => {
       console.warn('Failed to save config:', err);
     }
   }
+  syncToCloud(STORAGE_KEYS.CONFIG, config);
 };
 
 export const getPublicShowcaseLinks = () => {
@@ -483,4 +511,5 @@ export const saveUsers = (users) => {
   try {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
   } catch {}
+  syncToCloud(STORAGE_KEYS.USERS, users);
 };
