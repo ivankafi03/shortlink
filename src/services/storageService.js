@@ -31,11 +31,10 @@ export const fetchAllFromCloud = async () => {
 };
 
 export const AVAILABLE_DOMAINS = [
-  'cuanflix.site',
-  'link.cuanflix.site',
-  'cdn.cuanflix.site',
-  'go.cuanflix.site',
-  'whatsappp.my.id'
+  'samehadakuu.com',
+  'whatsappp.my.id',
+  'www.samehadakuu.com',
+  'www.whatsappp.my.id'
 ];
 
 export const DEFAULT_USERS = [];
@@ -103,25 +102,25 @@ const INITIAL_ANALYTICS = [];
 
 const INITIAL_DOMAINS = [
   {
+    id: 'dom_samehadakuu_1',
+    domainName: 'samehadakuu.com',
+    serverIp: '76.76.21.21',
+    status: 'active',
+    sslActive: true,
+    createdAt: new Date().toISOString()
+  },
+  {
     id: 'dom_whatsappp_1',
     domainName: 'whatsappp.my.id',
-    serverIp: '51.79.145.138',
+    serverIp: '76.76.21.21',
     status: 'active',
     sslActive: true,
     createdAt: new Date().toISOString()
   },
   {
-    id: 'dom_cuanflix_1',
-    domainName: 'cuanflix.site',
-    serverIp: '51.79.145.138',
-    status: 'active',
-    sslActive: true,
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'dom_cuanflix_2',
-    domainName: 'link.cuanflix.site',
-    serverIp: '51.79.145.138',
+    id: 'dom_samehadakuu_2',
+    domainName: 'www.samehadakuu.com',
+    serverIp: '76.76.21.21',
     status: 'active',
     sslActive: true,
     createdAt: new Date().toISOString()
@@ -137,7 +136,7 @@ export const DEFAULT_CONFIG = {
   ispKeywords: 'Googlebot\nDigitalOcean\nLinode\nAmazon'
 };
 
-// Auto Self-Healing function to prune bloated localStorage items & purge old dummy seeds
+// Auto Self-Healing function to prune bloated localStorage items & migrate old unpointed domains
 const sanitizeStorageQuota = () => {
   try {
     const rawAnalytics = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
@@ -161,11 +160,16 @@ const sanitizeStorageQuota = () => {
       try {
         const parsed = JSON.parse(rawLinks);
         if (Array.isArray(parsed)) {
-          // Purge legacy dummy demo links
-          const filtered = parsed.filter(l => !['link_1', 'link_2', 'link_3', 'link_4', 'link_5'].includes(l.id));
-          if (filtered.length !== parsed.length) {
-            localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(filtered));
-          }
+          // Purge legacy dummy demo links & migrate any cuanflix links to samehadakuu.com
+          const updated = parsed
+            .filter(l => !['link_1', 'link_2', 'link_3', 'link_4', 'link_5'].includes(l.id))
+            .map(l => {
+              if (l.domain && l.domain.includes('cuanflix')) {
+                return { ...l, domain: 'samehadakuu.com' };
+              }
+              return l;
+            });
+          localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(updated));
         }
       } catch {}
     }
