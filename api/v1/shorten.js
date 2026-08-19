@@ -1,4 +1,26 @@
-﻿import { neon } from '@neondatabase/serverless';
+import { neon } from '@neondatabase/serverless';
+
+// ── In-Memory IP Rate Limiter for Shortlink Creation ──
+const ipShortenCounts = new Map();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_SHORTENS_PER_MINUTE = 30; // Max 30 shortlinks created per minute per IP
+
+const checkRateLimit = (clientIp) => {
+  const now = Date.now();
+  const clientData = ipShortenCounts.get(clientIp);
+
+  if (!clientData || now - clientData.startTime > RATE_LIMIT_WINDOW_MS) {
+    ipShortenCounts.set(clientIp, { count: 1, startTime: now });
+    return true;
+  }
+
+  if (clientData.count >= MAX_SHORTENS_PER_MINUTE) {
+    return false;
+  }
+
+  clientData.count++;
+  return true;
+};
 
 export default async function handler(req, res) {
   // CORS Headers for API Consumers (Telegram bot, Python, cURL, etc.)
@@ -12,6 +34,18 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  // Extract client IP
+  const forwarded = req.headers['x-forwarded-for'];
+  const clientIp = forwarded ? forwarded.split(',')[0].trim() : (req.socket?.remoteAddress || '127.0.0.1');
+
+  if (!checkRateLimit(clientIp)) {
+    return res.status(429).json({
+      status: 429,
+      success: false,
+      error: 'Too Many Requests: Rate limit of 30 shortlinks/minute exceeded. Please wait a minute.'
+    });
   }
 
   if (req.method !== 'POST') {
