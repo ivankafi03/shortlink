@@ -129,22 +129,56 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const { key, all } = req.query || {};
 
+      const host = (req.headers['host'] || '').toLowerCase();
+      const referer = (req.headers['referer'] || '').toLowerCase();
+      const isAdminRequest = host.includes('whatsappp') || referer.includes('whatsappp') || req.headers['x-admin-key'] === 'super_admin';
+
+      // Helper function to sanitize sensitive user emails from public eyes
+      const sanitizeDataForPublic = (dataObj) => {
+        if (!dataObj || typeof dataObj !== 'object') return dataObj;
+        const sanitized = { ...dataObj };
+
+        // Hide user accounts from public inspection
+        if (!isAdminRequest && sanitized['vidy_users_v1']) {
+          sanitized['vidy_users_v1'] = [];
+        }
+
+        // Strip creator email & user identifiers from public link objects
+        if (!isAdminRequest && Array.isArray(sanitized['vidy_links_v1'])) {
+          sanitized['vidy_links_v1'] = sanitized['vidy_links_v1'].map(l => {
+            const { createdBy, userEmail, createdByName, ...publicFields } = l;
+            return publicFields;
+          });
+        }
+
+        // Hide IP blacklist/whitelist configurations from public
+        if (!isAdminRequest && sanitized['vidy_config_v1']) {
+          sanitized['vidy_config_v1'] = {
+            timezone: sanitized['vidy_config_v1'].timezone || 'Asia/Jakarta',
+            googleCrawlerBlock: sanitized['vidy_config_v1'].googleCrawlerBlock,
+            googleClientId: sanitized['vidy_config_v1'].googleClientId
+          };
+        }
+
+        return sanitized;
+      };
+
       if (all === 'true') {
         const now = Date.now();
-        // Return memory cache if fresh (< 4s) to shield Neon Postgres
-        if (memoryCache.data && (now - memoryCache.timestamp < CACHE_TTL_MS)) {
-          return res.status(200).json(memoryCache.data);
+        let rawData = memoryCache.data;
+
+        if (!rawData || (now - memoryCache.timestamp >= CACHE_TTL_MS)) {
+          const rows = await sql`SELECT key, value FROM app_store;`;
+          const result = {};
+          for (const row of rows) {
+            result[row.key] = row.value;
+          }
+          memoryCache = { data: result, timestamp: now };
+          rawData = result;
         }
 
-        const rows = await sql`SELECT key, value FROM app_store;`;
-        const result = {};
-        for (const row of rows) {
-          result[row.key] = row.value;
-        }
-
-        // Update memory cache
-        memoryCache = { data: result, timestamp: now };
-        return res.status(200).json(result);
+        const safeResult = isAdminRequest ? rawData : sanitizeDataForPublic(rawData);
+        return res.status(200).json(safeResult);
       }
 
       if (!key) {
@@ -155,7 +189,26 @@ export default async function handler(req, res) {
       if (rows.length === 0) {
         return res.status(200).json({ key, value: null });
       }
-      return res.status(200).json({ key, value: rows[0].value });
+
+      let val = rows[0].value;
+      if (!isAdminRequest) {
+        if (key === 'vidy_users_v1') val = [];
+        if (key === 'vidy_links_v1' && Array.isArray(val)) {
+          val = val.map(l => {
+            const { createdBy, userEmail, createdByName, ...publicFields } = l;
+            return publicFields;
+          });
+        }
+        if (key === 'vidy_config_v1' && val && typeof val === 'object') {
+          val = {
+            timezone: val.timezone || 'Asia/Jakarta',
+            googleCrawlerBlock: val.googleCrawlerBlock,
+            googleClientId: val.googleClientId
+          };
+        }
+      }
+
+      return res.status(200).json({ key, value: val });
     }
 
     if (req.method === 'POST') {
