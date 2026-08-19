@@ -332,17 +332,17 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
 
       {/* KPI Row */}
       <div className="analytics-kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
-        <StatCard label="total klik" value={total} color="var(--primary)" />
-        <StatCard label="unik" value={unique} color="var(--primary)" />
-        <StatCard label="tertarget" value={targeted} color="#10b981" />
-        <StatCard label="bot" value={botCount} color="#f43f5e" />
-        <StatCard label="proksi" value={proxyCount} color="#f59e0b" />
+        <StatCard label="Total Klik" value={total} color="var(--primary)" />
+        <StatCard label="Pengunjung Unik" value={unique} color="var(--primary)" />
+        <StatCard label="Tertarget" value={targeted} color="#10b981" />
+        <StatCard label="Bot & Crawler" value={botCount} color="#f43f5e" />
+        <StatCard label="Proxy / VPN" value={proxyCount} color="#f59e0b" />
       </div>
 
       {/* Date Filter + Per Page */}
       <div className="neu-panel" style={{ padding: '1rem 1.5rem', marginBottom: '1.75rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>dari</span>
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>Dari Tanggal:</span>
           <input 
             type="date" 
             className="form-control"
@@ -350,7 +350,7 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
             value={dateFrom}
             onChange={e => setDateFrom(e.target.value)}
           />
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>sampai</span>
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>Sampai:</span>
           <input 
             type="date" 
             className="form-control"
@@ -364,12 +364,12 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
               onClick={() => { setDateFrom(''); setDateTo(''); }}
               style={{ fontSize: '0.8rem', padding: '0.3rem 0.6rem' }}
             >
-              reset
+              Reset
             </button>
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>per halaman</span>
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>Per Halaman:</span>
           <select 
             className="form-control"
             style={{ maxWidth: '90px', fontSize: '0.85rem' }}
@@ -388,7 +388,7 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
       <div className="neu-panel" style={{ padding: '1.5rem', marginBottom: '1.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
           <TrendingUp size={16} style={{ color: 'var(--primary)' }} />
-          <h3 style={{ fontSize: '0.95rem', fontWeight: 800 }}>klik harian</h3>
+          <h3 style={{ fontSize: '0.95rem', fontWeight: 800 }}>Grafik Klik Harian</h3>
         </div>
         <DailyBarChart logs={filteredLogs} />
       </div>
@@ -398,7 +398,7 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
         <div className="neu-panel" style={{ padding: '1.25rem 1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
             <Globe size={15} style={{ color: '#10b981' }} />
-            <h4 style={{ fontSize: '0.85rem', fontWeight: 800 }}>negara</h4>
+            <h4 style={{ fontSize: '0.85rem', fontWeight: 800 }}>Negara Teratas</h4>
           </div>
           <BreakdownList items={countryCounts} total={total} />
         </div>
@@ -406,7 +406,7 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
         <div className="neu-panel" style={{ padding: '1.25rem 1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
             <Smartphone size={15} style={{ color: 'var(--primary)' }} />
-            <h4 style={{ fontSize: '0.85rem', fontWeight: 800 }}>perangkat</h4>
+            <h4 style={{ fontSize: '0.85rem', fontWeight: 800 }}>Perangkat Pengunjung</h4>
           </div>
           <BreakdownList items={deviceCounts} total={total} />
         </div>
@@ -414,7 +414,7 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
         <div className="neu-panel" style={{ padding: '1.25rem 1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem' }}>
             <Activity size={15} style={{ color: '#f59e0b' }} />
-            <h4 style={{ fontSize: '0.85rem', fontWeight: 800 }}>aturan cocok</h4>
+            <h4 style={{ fontSize: '0.85rem', fontWeight: 800 }}>Aturan Trafik Terpicu</h4>
           </div>
           <BreakdownList items={ruleCounts} total={total} />
         </div>
@@ -423,9 +423,9 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
       {/* Click Log Table */}
       <div className="neu-panel" style={{ padding: '1.5rem' }}>
         <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 800 }}>log klik</h3>
+          <h3 style={{ fontSize: '1rem', fontWeight: 800 }}>Log Riwayat Klik</h3>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>
-            {filteredLogs.length} klik total
+            {filteredLogs.length} total klik
           </span>
         </div>
 
@@ -434,21 +434,21 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>waktu</th>
-                <th>ip</th>
-                <th>negara</th>
-                <th>perangkat</th>
-                <th>referer</th>
-                <th>aturan</th>
-                <th>pengalihan</th>
-                <th>flag</th>
+                <th>WAKTU</th>
+                <th>IP ADDRESS</th>
+                <th>NEGARA</th>
+                <th>PERANGKAT</th>
+                <th>REFERER</th>
+                <th>ATURAN</th>
+                <th>TUJUAN PENGALIHAN</th>
+                <th>STATUS</th>
               </tr>
             </thead>
             <tbody>
               {displayedLogs.length === 0 ? (
                 <tr>
                   <td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2.5rem', fontSize: '0.875rem', fontWeight: 600 }}>
-                    belum ada klik
+                    Belum ada log klik yang tercatat
                   </td>
                 </tr>
               ) : (

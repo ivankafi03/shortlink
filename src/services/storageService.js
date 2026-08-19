@@ -68,12 +68,12 @@ const INITIAL_PAGES = [
   },
   {
     id: 'page_bio_link_1',
-    name: 'Halaman Arahan Bio Link Affiliate',
+    name: 'Halaman Arahan Bio Link (Template)',
     slug: 'bio-links',
     htmlContent: `<!DOCTYPE html>
 <html>
 <head>
-  <title>My Bio Link</title>
+  <title>Official Links & Bio</title>
   <style>
     body { font-family: sans-serif; background: #f6f8fc; color: #1e293b; display: flex; justify-content: center; padding: 2rem 1rem; }
     .container { max-width: 420px; width: 100%; text-align: center; }
@@ -84,12 +84,12 @@ const INITIAL_PAGES = [
 </head>
 <body>
   <div class="container">
-    <div class="avatar">IV</div>
-    <h3>Ivanka Fipradana</h3>
-    <p style="color: #64748b; font-size: 0.9rem;">Official Links & Special Offers</p>
-    <a href="#" class="link-btn">Promo Shopee Hari Ini</a>
-    <a href="#" class="link-btn">Join Channel Telegram VIP</a>
-    <a href="#" class="link-btn">Kunjungi Website Resmi</a>
+    <div class="avatar">D</div>
+    <h3>Official Links & Bio</h3>
+    <p style="color: #64748b; font-size: 0.9rem;">Tautan Resmi & Penawaran Spesial</p>
+    <a href="#" class="link-btn">Kunjungi Website Utama</a>
+    <a href="#" class="link-btn">Follow Akun Media Sosial</a>
+    <a href="#" class="link-btn">Hubungi Dukungan CS</a>
   </div>
 </body>
 </html>`,
