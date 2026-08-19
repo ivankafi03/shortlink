@@ -133,7 +133,6 @@ export const DomainsView = ({
         title="Domain Kustom" 
         subtitle="Kelola domain kustom untuk memperkuat branding tautan pendek anda"
         onOpenCreateModal={onOpenCreateModal}
-        onOpenSimulator={onOpenSimulator}
       />
 
       {/* Main Header Bar */}

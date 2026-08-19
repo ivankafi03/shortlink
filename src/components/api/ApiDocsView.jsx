@@ -113,7 +113,6 @@ echo $res;`
         title="Developer REST API" 
         subtitle="Integrasi otomatisasi penyingkat tautan via HTTP API & Telegram Bot"
         onOpenCreateModal={onOpenCreateModal}
-        onOpenSimulator={onOpenSimulator}
       />
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

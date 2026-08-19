@@ -6,7 +6,6 @@ import {
   FileText, 
   Globe, 
   Shield, 
-  Play,
   Plus,
   LogOut,
   Menu,
@@ -183,15 +182,6 @@ export const Sidebar = ({
 
         {/* Drawer Footer Actions & Account */}
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem', marginTop: '1.5rem' }}>
-          <button 
-            onClick={() => { onOpenSimulator(); setMobileDrawerOpen(false); }}
-            className="btn btn-sm"
-            style={{ width: '100%', marginBottom: '1rem', justifyContent: 'flex-start', fontWeight: 800 }}
-          >
-            <Play size={15} style={{ color: 'var(--accent-emerald)' }} />
-            <span>Test Router Simulator</span>
-          </button>
-
           {currentUser ? (
             <>
               <div className="neu-panel-inset" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.75rem 0.85rem' }}>
@@ -241,7 +231,7 @@ export const Sidebar = ({
       <nav className="mobile-bottom-nav">
         {bottomNavItems.map(item => {
           const Icon = item.icon;
-          const isActive = item.id === 'simulator' ? false : activeTab === item.id;
+          const isActive = activeTab === item.id;
           return (
             <button
               key={item.id}
@@ -331,15 +321,6 @@ export const Sidebar = ({
 
         {/* Sidebar Footer Actions & Account */}
         <div>
-          <button 
-            onClick={onOpenSimulator}
-            className="btn btn-sm"
-            style={{ width: '100%', marginBottom: '1.25rem', justifyContent: 'flex-start', fontWeight: 800 }}
-          >
-            <Play size={14} style={{ color: 'var(--accent-emerald)' }} />
-            <span>Test Router Simulator</span>
-          </button>
-
           {currentUser ? (
             <>
               <div className="neu-panel-inset" style={{ 

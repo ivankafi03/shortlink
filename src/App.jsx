@@ -52,7 +52,6 @@ const getTabFromPath = (path) => {
   if (cleanPath.includes('domains') || cleanPath.includes('domain')) return 'domain';
   if (cleanPath.includes('settings') || cleanPath.includes('pengaturan')) return 'pengaturan';
   if (cleanPath.includes('users') || cleanPath.includes('pengguna')) return 'pengguna';
-  if (cleanPath.includes('simulator') || cleanPath.includes('test-router')) return 'simulator';
   if (cleanPath.includes('api-docs') || cleanPath.includes('api')) return 'api_docs';
   
   if (cleanPath === '' || cleanPath === '/') {
@@ -86,7 +85,6 @@ const getPathFromTab = (tab) => {
     case 'create_domain': return '/domains/create';
     case 'pengaturan': return '/settings';
     case 'pengguna': return '/users';
-    case 'simulator': return '/simulator';
     case 'api_docs': return '/api';
     case 'tautan': default: return '/dashboard';
   }
@@ -434,11 +432,6 @@ export function App() {
     const updated = users.filter(u => u.id !== id);
     setUsers(updated);
     saveUsers(updated);
-  };
-
-  // Simulator Launchers
-  const handleOpenSimulatorForLink = (link) => {
-    navigateToTab('simulator');
   };
 
   const handleSelectLinkAnalytics = (linkId) => {

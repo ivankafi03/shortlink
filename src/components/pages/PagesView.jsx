@@ -183,7 +183,6 @@ export const PagesView = ({
         title="Halaman Landing" 
         subtitle="Buat dan kelola template halaman HTML kustom untuk bot trap atau fallback"
         onOpenCreateModal={onOpenCreateModal}
-        onOpenSimulator={onOpenSimulator}
       />
 
       {/* Primary Actions Header */}

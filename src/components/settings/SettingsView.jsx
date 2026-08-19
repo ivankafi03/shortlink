@@ -52,7 +52,6 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
         title="Pengaturan Keamanan" 
         subtitle="Konfigurasi filter keamanan global, daftar hitam IP, ASN data center, dan zona waktu"
         onOpenCreateModal={onOpenCreateModal}
-        onOpenSimulator={onOpenSimulator}
       />
 
       <form onSubmit={handleSave}>

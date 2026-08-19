@@ -88,7 +88,6 @@ export const UsersView = ({
         title="Data Member" 
         subtitle="Kelola akun member yang mendaftar di platform shortlink"
         onOpenCreateModal={onOpenCreateModal}
-        onOpenSimulator={onOpenSimulator}
       />
 
       {/* Action Bar */}

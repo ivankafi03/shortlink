@@ -448,15 +448,6 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
               <Link2 size={16} style={{ color: 'var(--primary)' }} />
               <span>Buat Tautan Cepat</span>
             </button>
-
-            <button 
-              className="btn btn-ghost" 
-              style={{ padding: '0.75rem', fontSize: '0.9rem', width: '100%', justifyContent: 'flex-start', fontWeight: 700 }}
-              onClick={() => { onNavigate('simulator'); setMobileNavOpen(false); }}
-            >
-              <Play size={16} style={{ color: 'var(--accent-emerald)' }} />
-              <span>Test Router Simulator</span>
-            </button>
           </div>
         </div>
 

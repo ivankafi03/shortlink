@@ -16,8 +16,7 @@ export const Navbar = ({
   setActiveTab, 
   theme, 
   setTheme, 
-  onOpenCreateModal,
-  onOpenSimulator 
+  onOpenCreateModal 
 }) => {
   const navItems = [
     { id: 'tautan', label: 'tautan', icon: Link2 },
@@ -82,15 +81,6 @@ export const Navbar = ({
 
       {/* Right Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-        {/* Simulator Launcher */}
-        <button 
-          onClick={onOpenSimulator} 
-          className="btn btn-sm"
-          title="Uji coba penargetan lalu lintas"
-        >
-          <Play size={14} style={{ color: 'var(--accent-emerald)' }} />
-          <span>Test Router</span>
-        </button>
 
         {/* Create Link Quick Action */}
         <button 
