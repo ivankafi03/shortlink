@@ -24,6 +24,7 @@ export const LinkBuilderView = ({
   linkToEdit, 
   pages, 
   domains = [],
+  currentUser = null,
   onSaveLink, 
   onCancel,
   onOpenSimulator,
@@ -176,6 +177,7 @@ export const LinkBuilderView = ({
     const params = paramText.split('\n').map(p => p.trim()).filter(Boolean);
     const tagsArray = tags.split(',').map(t => t.trim()).filter(Boolean);
 
+    const userIdentifier = currentUser?.email?.toLowerCase().trim() || 'admin';
     const sharedFields = {
       domain,
       name: name || 'Tautan Baru',
@@ -212,6 +214,8 @@ export const LinkBuilderView = ({
       clickLimitPerIp: clickLimitPerIp ? Number(clickLimitPerIp) : 0,
       resetLimitHours: resetLimitHours ? Number(resetLimitHours) : 0,
       clicks: linkToEdit ? linkToEdit.clicks : 0,
+      createdBy: linkToEdit?.createdBy || userIdentifier,
+      userEmail: linkToEdit?.userEmail || userIdentifier,
       createdAt: linkToEdit ? linkToEdit.createdAt : new Date().toISOString()
     };
 

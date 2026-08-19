@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Sidebar } from './components/layout/Sidebar';
 import { LandingView } from './components/landing/LandingView';
 import { DashboardView } from './components/dashboard/DashboardView';
@@ -485,6 +485,28 @@ export function App() {
     );
   }
 
+  const isSuperAdmin = currentUser?.role === 'admin' || isDedicatedAdminHost || currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com' || currentUser?.email?.toLowerCase() === 'admin.cuan@gmail.com';
+
+  // Strict Privacy Isolation:
+  // Admin sees ALL links across the entire platform.
+  // Member ONLY sees their own links!
+  const userLinks = useMemo(() => {
+    if (isSuperAdmin) return links;
+    if (!currentUser?.email) return [];
+    const myEmail = currentUser.email.toLowerCase().trim();
+    return links.filter(l => 
+      (l.createdBy && l.createdBy.toLowerCase().trim() === myEmail) ||
+      (l.userEmail && l.userEmail.toLowerCase().trim() === myEmail)
+    );
+  }, [links, isSuperAdmin, currentUser]);
+
+  // Analytics Isolation: Member only sees click logs for their own links
+  const userAnalytics = useMemo(() => {
+    if (isSuperAdmin) return analyticsLogs;
+    const myLinkIds = new Set(userLinks.map(l => l.id));
+    return analyticsLogs.filter(log => myLinkIds.has(log.linkId));
+  }, [analyticsLogs, isSuperAdmin, userLinks]);
+
   return (
     <div className="app-layout">
 
@@ -503,7 +525,7 @@ export function App() {
       <main className="main-wrapper">
         {activeTab === 'tautan' && (
           <DashboardView 
-            links={links}
+            links={userLinks}
             onDeleteLink={handleDeleteLink}
             onBulkDelete={handleBulkDeleteLinks}
             onEditLink={handleEditLink}
@@ -518,6 +540,7 @@ export function App() {
             linkToEdit={linkToEdit}
             pages={pages}
             domains={domains}
+            currentUser={currentUser}
             onSaveLink={handleSaveLink}
             onCancel={() => navigateToTab('tautan')}
             onOpenSimulator={() => navigateToTab('simulator')}
@@ -526,8 +549,8 @@ export function App() {
 
         {activeTab === 'analitik' && (
           <AnalyticsView 
-            analyticsLogs={analyticsLogs}
-            links={links}
+            analyticsLogs={userAnalytics}
+            links={userLinks}
             onOpenCreateModal={handleOpenCreateLink}
             onOpenSimulator={() => navigateToTab('simulator')}
           />
@@ -593,8 +616,8 @@ export function App() {
 
         {activeTab === 'simulator' && (
           <TrafficSimulatorView 
-            links={links}
-            initialLink={links[0]}
+            links={userLinks}
+            initialLink={userLinks[0]}
             onClose={() => navigateToTab('tautan')}
             isModal={false}
           />

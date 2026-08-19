@@ -86,9 +86,6 @@ export const Sidebar = ({
             <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.2rem', color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
               D <span style={{ color: 'var(--primary)' }}>shortlink</span>
             </div>
-            <div style={{ fontSize: '0.675rem', fontWeight: 900, color: 'var(--primary)', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <Shield size={10} /> {(typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) ? 'SUPER ADMIN PORTAL' : 'MEMBER DASHBOARD'}
-            </div>
           </div>
         </div>
 
@@ -293,9 +290,6 @@ export const Sidebar = ({
               }}>
                 D <span style={{ color: 'var(--primary)' }}>shortlink</span>
               </div>
-              <span style={{ fontSize: '0.675rem', color: 'var(--primary)', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.2rem' }}>
-                <Shield size={10} /> {(typeof window !== 'undefined' && (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'))) ? 'SUPER ADMIN PORTAL' : 'MEMBER DASHBOARD'}
-              </span>
             </div>
           </div>
 

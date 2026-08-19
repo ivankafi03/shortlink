@@ -338,15 +338,14 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         forwardUtm: false,
         enableBotBlocker: false,
         clicks: 0,
+        createdBy: currentUser?.email || 'anonymous',
+        userEmail: currentUser?.email || 'anonymous',
         createdAt: item.createdAt
       }));
       // Simpan ke App state tanpa navigate (agar user tetap di landing)
       const currentLinks = getStoredLinks();
       const updatedLinks = [...linkItems, ...currentLinks];
       saveLinks(updatedLinks);
-      // Jika hanya 1 link, panggil onSaveLink agar state App update
-      // tapi jangan navigate (onSaveLink biasanya navigate ke tautan)
-      // Kita skip onSaveLink agar user tetap di halaman
     } else {
       // Fallback: simpan langsung ke storage tanpa update App state
       const currentLinks = getStoredLinks();
@@ -362,7 +361,10 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         devices: [], countries: [], countryRule: 'allow',
         referers: [], refererRule: 'allow', params: [],
         blockProxy: false, forwardUtm: false, enableBotBlocker: false,
-        clicks: 0, createdAt: item.createdAt
+        clicks: 0, 
+        createdBy: currentUser?.email || 'anonymous',
+        userEmail: currentUser?.email || 'anonymous',
+        createdAt: item.createdAt
       }));
       saveLinks([...linkItems, ...currentLinks]);
     }
