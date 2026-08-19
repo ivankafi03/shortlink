@@ -80,9 +80,9 @@ const INITIAL_PAGES = [
   <style>
     body { font-family: sans-serif; background: #f6f8fc; color: #1e293b; display: flex; justify-content: center; padding: 2rem 1rem; }
     .container { max-width: 420px; width: 100%; text-align: center; }
-    .avatar { width: 80px; height: 80px; border-radius: 50%; background: #f472b6; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem; }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; background: #db2777; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem; }
     .link-btn { display: block; width: 100%; padding: 1rem; margin: 0.75rem 0; background: white; color: #0f172a; font-weight: 600; text-decoration: none; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-    .link-btn:hover { border-color: #f472b6; color: #f472b6; }
+    .link-btn:hover { border-color: #db2777; color: #db2777; }
   </style>
 </head>
 <body>
