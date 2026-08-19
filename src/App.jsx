@@ -38,6 +38,8 @@ const extractShortCodeFromPath = (path) => {
 // Comprehensive Path to Tab mapping
 const getTabFromPath = (path) => {
   const cleanPath = (path || '').toLowerCase().split('?')[0].split('#')[0].trim().replace(/\/$/, '');
+  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+  const isAdminDomain = host.includes('whatsappp') || host.includes('admin');
   
   if (cleanPath.includes('dashboard') || cleanPath.includes('tautan')) return 'tautan';
   if (cleanPath.endsWith('/create')) return 'create_link';
@@ -50,7 +52,15 @@ const getTabFromPath = (path) => {
   if (cleanPath.includes('users') || cleanPath.includes('pengguna')) return 'pengguna';
   if (cleanPath.includes('simulator') || cleanPath.includes('test-router')) return 'simulator';
   if (cleanPath.includes('api-docs') || cleanPath.includes('api')) return 'api_docs';
-  if (cleanPath === '' || cleanPath === '/') return 'home';
+  
+  if (cleanPath === '' || cleanPath === '/') {
+    // whatsappp.my.id adalah domain dedicated Admin, default ke Dashboard Admin
+    if (isAdminDomain) {
+      return 'tautan';
+    }
+    // samehadakuu.com adalah domain Member/Publik, default ke Landing Page
+    return 'home';
+  }
 
   // Check if path is a shortlink code (e.g. /fMRS4R or /fMRS4R.mp4)
   const code = extractShortCodeFromPath(cleanPath);
@@ -58,7 +68,7 @@ const getTabFromPath = (path) => {
     return 'public_shortlink';
   }
 
-  return 'home';
+  return isAdminDomain ? 'tautan' : 'home';
 };
 
 // Tab to Path mapping
