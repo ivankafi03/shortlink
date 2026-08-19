@@ -26,11 +26,11 @@ export const ApiDocsView = ({ onOpenCreateModal, onOpenSimulator }) => {
   // Playground State
   const [testUrl, setTestUrl] = useState('https://example.com/target-page');
   const [testAlias, setTestAlias] = useState('');
-  const [testDomain, setTestDomain] = useState('whatsappp.my.id');
+  const [testDomain, setTestDomain] = useState(typeof window !== 'undefined' ? window.location.hostname : 'cuanflix.site');
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://whatsappp.my.id';
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://cuanflix.site';
 
   const generateNewKey = () => {
     const randomHex = Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('');

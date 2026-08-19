@@ -268,8 +268,8 @@ export const LinkBuilderView = ({
     <div>
       {/* Header Bar */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '1.85rem', marginBottom: '0.15rem' }}>
-          {linkToEdit ? 'Edit Tautan' : 'buat tautan'}
+        <h1 style={{ fontSize: '1.85rem', marginBottom: '0.15rem', fontWeight: 900 }}>
+          {linkToEdit ? 'Edit Tautan' : 'Buat Tautan Baru'}
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600 }}>
           Atur URL tujuan, alias pendek, penargetan pengunjung, dan fitur keamanan
@@ -324,7 +324,7 @@ export const LinkBuilderView = ({
             className={`tab-btn ${activeTab === 'dasar' ? 'active' : ''}`}
           >
             <Info size={15} />
-            <span>dasar</span>
+            <span>Dasar</span>
           </button>
           <button 
             type="button"
@@ -340,7 +340,7 @@ export const LinkBuilderView = ({
             className={`tab-btn ${activeTab === 'Bot' ? 'active' : ''}`}
           >
             <Shield size={15} />
-            <span>Bot</span>
+            <span>Bot & Crawler</span>
           </button>
           <button 
             type="button"
@@ -348,7 +348,7 @@ export const LinkBuilderView = ({
             className={`tab-btn ${activeTab === 'penargetan' ? 'active' : ''}`}
           >
             <Crosshair size={15} />
-            <span>penargetan</span>
+            <span>Penargetan</span>
           </button>
           <button 
             type="button"
@@ -356,7 +356,7 @@ export const LinkBuilderView = ({
             className={`tab-btn ${activeTab === 'opsi' ? 'active' : ''}`}
           >
             <Sliders size={15} />
-            <span>opsi</span>
+            <span>Opsi & Batasan</span>
           </button>
         </div>
 
@@ -1062,10 +1062,10 @@ export const LinkBuilderView = ({
             </div>
           )}
 
-          {/* Tab 5: opsi (100% Vidy.my Exact UI & Defaults) */}
+          {/* Tab 5: Opsi & Batasan */}
           {activeTab === 'opsi' && (
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.2rem' }}>opsi & mode pengalihan</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.2rem' }}>Opsi & Mode Pengalihan</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1.5rem' }}>
                 Atur mode pengalihan (Auto / Tombol Klik / Langsung), penundaan timer, deteksi bot, dan batas klik.
               </p>
@@ -1106,7 +1106,7 @@ export const LinkBuilderView = ({
                     onChange={e => setEnableBotBlocker(e.target.checked)} 
                   />
                   <label htmlFor="enableBotBlocker" className="form-label" style={{ marginBottom: 0, cursor: 'pointer', fontWeight: 700 }}>
-                    pemblokir bot
+                    Pemblokir Bot (Anti-Crawler)
                   </label>
                 </div>
 
@@ -1118,7 +1118,7 @@ export const LinkBuilderView = ({
                     onChange={e => setBlockProxy(e.target.checked)} 
                   />
                   <label htmlFor="blockProxy" className="form-label" style={{ marginBottom: 0, cursor: 'pointer', fontWeight: 700 }}>
-                    pemblokir proksi
+                    Pemblokir Proxy & VPN
                   </label>
                 </div>
 
@@ -1130,18 +1130,18 @@ export const LinkBuilderView = ({
                     onChange={e => setForwardUtm(e.target.checked)} 
                   />
                   <label htmlFor="forwardUtm" className="form-label" style={{ marginBottom: 0, cursor: 'pointer', fontWeight: 700 }}>
-                    teruskan parameter UTM & query
+                    Teruskan Parameter UTM & Query
                   </label>
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
                 <div className="form-group">
-                  <label className="form-label">batas klik per IP</label>
+                  <label className="form-label">Batas Klik per IP</label>
                   <input 
                     type="number" 
                     min="0"
-                    placeholder="tak terbatas" 
+                    placeholder="Tidak Terbatas" 
                     className="form-control" 
                     value={clickLimitPerIp}
                     onChange={e => setClickLimitPerIp(e.target.value)}
@@ -1150,11 +1150,11 @@ export const LinkBuilderView = ({
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">reset setelah (jam)</label>
+                  <label className="form-label">Reset Batas Setelah (Jam)</label>
                   <input 
                     type="number" 
                     min="0"
-                    placeholder="tidak pernah" 
+                    placeholder="Tidak Pernah" 
                     className="form-control" 
                     value={resetLimitHours}
                     onChange={e => setResetLimitHours(e.target.value)}
@@ -1172,7 +1172,7 @@ export const LinkBuilderView = ({
             </button>
             <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem 2rem' }}>
               <Check size={16} />
-              <span>{linkToEdit ? 'Simpan Perubahan' : 'buat tautan'}</span>
+              <span>{linkToEdit ? 'Simpan Perubahan' : 'Buat Tautan'}</span>
             </button>
           </div>
         </form>

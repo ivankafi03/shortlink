@@ -1,62 +1,86 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ExternalLink, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, ShieldAlert, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { evaluateTrafficRouting } from '../../services/trafficRouter';
+import { fetchAllFromCloud, STORAGE_KEYS } from '../../services/storageService';
 import { NativeAdBanner } from '../common/NativeAdBanner';
 import logoImg from '../../assets/logo.png';
 
-export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
-  // Stable ref so we never recreate the object inside useEffect
-  const activeLinkRef = useRef(link || {
-    id: `dyn_${shortCode}`,
-    shortCode: shortCode,
-    domain: window.location.hostname,
-    targetUrl: 'https://youtube.com',
-    name: `Shortlink ${shortCode}`,
-    mode: 'redirect',
-    redirectMode: 'auto',
-    addMp4Suffix: false
-  });
-
-  // If link prop changes (after data loads), update ref
-  if (link && link !== activeLinkRef.current) {
-    activeLinkRef.current = link;
-  }
-
-  const activeLink = activeLinkRef.current;
-
+export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) => {
+  const [activeLink, setActiveLink] = useState(initialLink || null);
+  const [notFound, setNotFound] = useState(false);
   const [resolvedIp, setResolvedIp] = useState('180.252.12.98');
   const [routingResult, setRoutingResult] = useState(null);
   // 'redirecting' = initial loading screen, 'card' = landing card (only for redirectMode='click')
   const [phase, setPhase] = useState('redirecting');
+  const hasExecutedRef = useRef(false);
 
-  // Redirect function — stable, no deps
+  // Redirect function — stable
   const doRedirect = (dest) => {
-    const url = dest || 'https://youtube.com';
+    if (!dest) return;
     try {
-      window.location.replace(url);
+      window.location.replace(dest);
     } catch {
-      window.location.href = url;
+      window.location.href = dest;
     }
   };
 
+  // 1. Fetch link from database if initialLink is undefined
   useEffect(() => {
+    if (initialLink) {
+      setActiveLink(initialLink);
+      return;
+    }
+
+    let isMounted = true;
+    fetchAllFromCloud()
+      .then((cloudData) => {
+        if (!isMounted) return;
+        const cloudLinks = cloudData?.[STORAGE_KEYS.LINKS] || [];
+        const cleanCode = (shortCode || '').replace(/\.(mp4|m3u8|webm)$/i, '').toLowerCase();
+        const matched = cloudLinks.find(l => 
+          (l.shortCode && l.shortCode.toLowerCase() === cleanCode) ||
+          (l.id && l.id.toLowerCase() === cleanCode)
+        );
+
+        if (matched) {
+          setActiveLink(matched);
+        } else {
+          setNotFound(true);
+          setPhase('not_found');
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setNotFound(true);
+          setPhase('not_found');
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [shortCode, initialLink]);
+
+  // 2. Perform traffic routing when activeLink is available
+  useEffect(() => {
+    if (!activeLink || hasExecutedRef.current) return;
+    hasExecutedRef.current = true;
+
     // Inject Popunder script dynamically (only on shortlink public view)
     const popScript = document.createElement('script');
     popScript.src = 'https://pl29429557.effectivecpmnetwork.com/ec/06/5a/ec065a7e4c204506aa310f99c17a98a4.js';
     popScript.async = true;
     document.head.appendChild(popScript);
 
-    // Coba dapatkan IP real pengunjung dari API publik
-    // Ini async tapi tidak menghambat routing (routing jalan duluan)
+    // Dapatkan IP real pengunjung
     fetch('https://api.ipify.org?format=json')
       .then(r => r.json())
       .then(data => { if (data?.ip) setResolvedIp(data.ip); })
-      .catch(() => {}); // Silently fail, pakai IP default
+      .catch(() => {});
 
-    const al = activeLinkRef.current;
     const userAgent = navigator.userAgent || '';
     const simulatedRequest = {
-      userIp: resolvedIp,  // Fix: gunakan IP yang diresolve, bukan hardcode
+      userIp: resolvedIp,
       country: 'ID',
       device: /mobile|android|iphone|ipad/i.test(userAgent) ? 'seluler' : 'desktop',
       referer: document.referrer || 'direct',
@@ -66,33 +90,68 @@ export const PublicLinkView = ({ shortCode, link, onRecordClick }) => {
       queryParams: Object.fromEntries(new URLSearchParams(window.location.search))
     };
 
-    const result = evaluateTrafficRouting(al, simulatedRequest);
+    const result = evaluateTrafficRouting(activeLink, simulatedRequest);
     setRoutingResult(result);
 
     if (onRecordClick && typeof onRecordClick === 'function') {
-      try { onRecordClick(al.id, result); } catch {}
+      try { onRecordClick(activeLink.id, result); } catch {}
     }
 
     if (result.action === 'target') {
-      const mode = al.redirectMode;
-      // `result.destination` is the resolved destination from trafficRouter
-      const dest = result.destination || al.targetUrl || 'https://youtube.com';
+      const mode = activeLink.redirectMode;
+      const dest = result.destination || activeLink.targetUrl || 'https://youtube.com';
 
-      // Always switch to 'card' so NativeAdBanner mounts & registers impression
       setPhase('card');
 
       if (mode === 'click') {
         // Mode Landing Page: stays on card until user clicks button
         return;
       } else {
-        // Mode Langsung: auto-redirect 400ms after banner script mounts, no user click required
+        // Mode Langsung: auto-redirect 400ms after banner script mounts
         const t = setTimeout(() => doRedirect(dest), 400);
         return () => clearTimeout(t);
       }
     }
-    // For blocked/fallback/bot_trap: setRoutingResult will trigger re-render with correct UI
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shortCode]); // Only run once per shortCode — link data is loaded synchronously
+  }, [activeLink, resolvedIp]);
+
+  // ── 404 Not Found ───────────────────────────────────────────────────────────
+  if (notFound || phase === 'not_found') {
+    return (
+      <div style={{
+        minHeight: '100vh', background: '#eef2f5', color: '#0f172a',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '1.5rem', textAlign: 'center',
+        fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif"
+      }}>
+        <div style={{
+          width: '64px', height: '64px', borderRadius: '16px',
+          background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.25)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#ef4444', marginBottom: '1.25rem'
+        }}>
+          <AlertCircle size={32} />
+        </div>
+        <h2 style={{ fontSize: '1.45rem', fontWeight: 900, marginBottom: '0.4rem', color: '#0f172a' }}>
+          Tautan Tidak Ditemukan
+        </h2>
+        <p style={{ color: '#64748b', fontSize: '0.875rem', maxWidth: '400px', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+          Shortlink yang Anda cari tidak tersedia, telah kedaluwarsa, atau tautan telah dihapus oleh pembuatnya.
+        </p>
+        <a 
+          href="/" 
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+            padding: '0.65rem 1.25rem', borderRadius: '10px',
+            background: '#2563eb', color: '#fff', textDecoration: 'none',
+            fontSize: '0.85rem', fontWeight: 800
+          }}
+        >
+          <ArrowLeft size={16} />
+          <span>Kembali ke Beranda</span>
+        </a>
+      </div>
+    );
+  }
 
   // ── Bot Trap / Fallback HTML ────────────────────────────────────────────────
   if (routingResult?.action === 'bot_trap' || routingResult?.action === 'fallback') {
