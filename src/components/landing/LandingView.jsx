@@ -24,7 +24,10 @@ import {
   TrendingUp,
   Eye,
   Shuffle,
-  Film
+  Film,
+  FileText,
+  Users,
+  LogOut
 } from 'lucide-react';
 import { BrandLogo } from '../common/BrandLogo';
 import { QrCodeModal } from '../common/QrCodeModal';
@@ -398,74 +401,134 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
       />
 
       <aside className={`mobile-slide-drawer ${mobileNavOpen ? 'open' : ''}`}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem' }}>
-            <BrandLogo size={32} />
-            <button 
-              onClick={() => setMobileNavOpen(false)} 
-              className="btn btn-ghost btn-sm"
-              style={{ width: '32px', height: '32px', padding: 0 }}
-            >
-              <X size={18} />
-            </button>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+          <div>
+            {/* Drawer Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+              <BrandLogo size={30} />
+              <button 
+                onClick={() => setMobileNavOpen(false)} 
+                className="btn btn-ghost btn-sm"
+                style={{ width: '32px', height: '32px', padding: 0 }}
+                aria-label="Tutup Menu"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Profile or Login Card */}
+            {currentUser ? (
+              <div className="neu-panel-inset" style={{ padding: '0.85rem 1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <img 
+                    src={currentUser.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(currentUser.email || 'user')}`} 
+                    alt={currentUser.name} 
+                    style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid var(--border-subtle)' }} 
+                  />
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-main)' }}>{currentUser.name || 'Pengguna'}</div>
+                    <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{currentUser.email}</div>
+                  </div>
+                </div>
+                {onLogout && (
+                  <button 
+                    onClick={() => { onLogout(); setMobileNavOpen(false); }} 
+                    className="btn btn-ghost btn-sm" 
+                    style={{ padding: '0.4rem', color: 'var(--accent-rose)' }} 
+                    title="Keluar"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button 
+                className="btn btn-primary" 
+                style={{ padding: '0.75rem', fontSize: '0.9rem', width: '100%', fontWeight: 800, justifyContent: 'center', gap: '0.65rem', marginBottom: '1.25rem', borderRadius: '12px' }}
+                onClick={() => { 
+                  setMobileNavOpen(false);
+                  if (onOpenGoogleLogin) onOpenGoogleLogin();
+                  else onNavigate('login');
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Masuk dengan Google</span>
+              </button>
+            )}
+
+            {/* Dashboard Platform Features Navigation */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              <div style={{ fontSize: '0.725rem', fontWeight: 800, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem', paddingLeft: '0.5rem' }}>
+                Fitur & Layanan Platform
+              </div>
+
+              {[
+                { id: 'tautan', label: 'Tautan & Dashboard', icon: Link2, color: 'var(--primary)' },
+                { id: 'analitik', label: 'Analitik Trafik', icon: BarChart2, color: '#10b981' },
+                { id: 'halaman', label: 'Halaman Landing', icon: FileText, color: '#8b5cf6' },
+                { id: 'domain', label: 'Domain Kustom', icon: Globe, color: '#f59e0b' },
+                { id: 'api_docs', label: 'Developer REST API', icon: Braces, color: '#06b6d4' },
+                ...(currentUser?.role === 'admin' ? [
+                  { id: 'pengguna', label: 'Manajemen Pengguna', icon: Users, color: '#ec4899' },
+                  { id: 'pengaturan', label: 'Pengaturan Keamanan', icon: Shield, color: '#f43f5e' }
+                ] : [])
+              ].map(item => {
+                const IconComp = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    className="btn btn-ghost"
+                    style={{ 
+                      padding: '0.75rem 0.85rem', 
+                      fontSize: '0.875rem', 
+                      width: '100%', 
+                      justifyContent: 'flex-start', 
+                      fontWeight: 700, 
+                      gap: '0.75rem',
+                      borderRadius: '10px'
+                    }}
+                    onClick={() => {
+                      setMobileNavOpen(false);
+                      if (currentUser) {
+                        onNavigate(item.id);
+                      } else {
+                        if (onOpenGoogleLogin) onOpenGoogleLogin();
+                        else onNavigate('login');
+                      }
+                    }}
+                  >
+                    <IconComp size={18} style={{ color: item.color }} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-            <button 
-              className="btn btn-primary" 
-              style={{ padding: '0.75rem', fontSize: '0.9rem', width: '100%', fontWeight: 800, justifyContent: 'center', gap: '0.5rem' }}
-              onClick={() => { 
-                setMobileNavOpen(false);
-                if (currentUser) {
-                  onNavigate('tautan');
-                } else {
-                  onNavigate('login');
-                }
-              }}
-            >
-              {currentUser ? (
-                <span>Dashboard Tautan</span>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                  </svg>
-                  <span>Masuk dengan Google</span>
-                </>
-              )}
-            </button>
-
-            <button 
-              className="btn btn-ghost" 
-              style={{ padding: '0.75rem', fontSize: '0.9rem', width: '100%', justifyContent: 'flex-start', fontWeight: 700 }}
-              onClick={() => { onNavigate('create_link'); setMobileNavOpen(false); }}
-            >
-              <Link2 size={16} style={{ color: 'var(--primary)' }} />
-              <span>Buat Tautan Cepat</span>
-            </button>
-          </div>
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
-          <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Pilih Bahasa</div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button 
-              className={`btn ${lang === 'ID' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ flex: 1, padding: '0.5rem', fontSize: '0.825rem' }}
-              onClick={() => setLang('ID')}
-            >
-              Indonesia
-            </button>
-            <button 
-              className={`btn ${lang === 'EN' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ flex: 1, padding: '0.5rem', fontSize: '0.825rem' }}
-              onClick={() => setLang('EN')}
-            >
-              English
-            </button>
+          {/* Language Selector at bottom of drawer */}
+          <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '0.775rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '0.45rem' }}>Pilih Bahasa</div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                className={`btn ${lang === 'ID' ? 'btn-primary' : 'btn-ghost'}`}
+                style={{ flex: 1, padding: '0.45rem', fontSize: '0.8rem', fontWeight: 700 }}
+                onClick={() => setLang('ID')}
+              >
+                Indonesia
+              </button>
+              <button 
+                className={`btn ${lang === 'EN' ? 'btn-primary' : 'btn-ghost'}`}
+                style={{ flex: 1, padding: '0.45rem', fontSize: '0.8rem', fontWeight: 700 }}
+                onClick={() => setLang('EN')}
+              >
+                English
+              </button>
+            </div>
           </div>
         </div>
       </aside>
@@ -477,6 +540,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* Desktop Navigation Items */}
           <div className="landing-nav-desktop-items" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <button className="btn btn-ghost" style={{ padding: '0.5rem 0.85rem', fontSize: '0.875rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }} onClick={() => onNavigate('api_docs')}>
               <Braces size={16} style={{ color: 'var(--primary)' }} />
@@ -490,7 +554,8 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                 if (currentUser) {
                   onNavigate('tautan');
                 } else {
-                  onNavigate('login');
+                  if (onOpenGoogleLogin) onOpenGoogleLogin();
+                  else onNavigate('login');
                 }
               }}
             >
@@ -542,6 +607,45 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
               )}
             </div>
           </div>
+
+          {/* Mobile Quick Google Login Button (Visible on Small Screens) */}
+          <button 
+            className="btn btn-ghost btn-sm landing-nav-mobile-login-btn"
+            style={{ 
+              padding: '0.4rem 0.75rem', 
+              fontSize: '0.8rem', 
+              fontWeight: 800, 
+              alignItems: 'center', 
+              gap: '0.4rem', 
+              border: '1px solid var(--border-subtle)', 
+              borderRadius: '20px',
+              background: 'var(--bg-surface)'
+            }}
+            onClick={() => {
+              if (currentUser) {
+                onNavigate('tautan');
+              } else {
+                if (onOpenGoogleLogin) onOpenGoogleLogin();
+                else onNavigate('login');
+              }
+            }}
+          >
+            {currentUser ? (
+              currentUser.avatar ? (
+                <img src={currentUser.avatar} alt="" style={{ width: '20px', height: '20px', borderRadius: '50%' }} />
+              ) : <span>Dashboard</span>
+            ) : (
+              <>
+                <svg width="14" height="14" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Masuk</span>
+              </>
+            )}
+          </button>
 
           {/* Hamburger Menu Toggle for Mobile */}
           <button 
