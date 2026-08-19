@@ -20,9 +20,9 @@
   --border-subtle: rgba(193, 203, 212, 0.6);
   --border-strong: #cbd5e1;
 
-  --primary: #db2777;
-  --primary-hover: #be185d;
-  --primary-light: rgba(219, 39, 119, 0.15);
+  --primary: #fe6081;
+  --primary-hover: #e5496d;
+  --primary-light: rgba(254, 96, 129, 0.16);
 
   --accent-emerald: #059669;
   --accent-rose: #e11d48;
@@ -956,8 +956,8 @@ textarea.form-control {
 
 .page-loading-bar {
   height: 100%;
-  background: linear-gradient(90deg, #db2777, #f472b6, #ec4899);
-  box-shadow: 0 0 10px #db2777, 0 0 5px #f472b6;
+  background: linear-gradient(90deg, #fe6081, #ff8ca5, #e5496d);
+  box-shadow: 0 0 10px #fe6081, 0 0 5px #ff8ca5;
   transition: width 0.2s ease-out, opacity 0.25s ease;
   width: 0%;
 }
@@ -976,8 +976,8 @@ textarea.form-control {
   box-shadow: 0 4px 12px rgba(0,0,0,0.12);
   font-size: 0.775rem;
   font-weight: 800;
-  color: #db2777;
-  border: 1px solid rgba(219,39,119,0.25);
+  color: #fe6081;
+  border: 1px solid rgba(254,96,129,0.25);
   animation: fadeInSpinner 0.15s ease;
 }
 
@@ -989,7 +989,7 @@ textarea.form-control {
 .spinner-icon {
   width: 14px;
   height: 14px;
-  border: 2px solid #db2777;
+  border: 2px solid #fe6081;
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;

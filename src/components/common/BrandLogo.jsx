@@ -32,32 +32,32 @@ export const BrandLogo = ({
         viewBox="0 0 120 120" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
-        style={{ flexShrink: 0, filter: 'drop-shadow(0 2px 8px rgba(219, 39, 119, 0.35))' }}
+        style={{ flexShrink: 0, filter: 'drop-shadow(0 2px 8px rgba(254, 96, 129, 0.38))' }}
       >
         <defs>
-          {/* Top-Right Glowing Pastel Pink Ribbon */}
+          {/* Top-Right Glowing Vidoy Pink Ribbon */}
           <linearGradient id="capD_top" x1="20" y1="12" x2="116" y2="60" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#f472b6" />
-            <stop offset="100%" stopColor="#db2777" />
+            <stop offset="0%" stopColor="#ff8ca5" />
+            <stop offset="100%" stopColor="#fe6081" />
           </linearGradient>
 
-          {/* Bottom-Right Rich Rose Pink Ribbon */}
+          {/* Bottom-Right Deep Vidoy Pink Ribbon */}
           <linearGradient id="capD_bottom" x1="116" y1="60" x2="20" y2="108" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#db2777" />
-            <stop offset="100%" stopColor="#be185d" />
+            <stop offset="0%" stopColor="#fe6081" />
+            <stop offset="100%" stopColor="#e5496d" />
           </linearGradient>
 
           {/* Left Vertical Spine */}
           <linearGradient id="capD_spine" x1="16" y1="12" x2="48" y2="108" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#ec4899" />
-            <stop offset="50%" stopColor="#db2777" />
-            <stop offset="100%" stopColor="#9d174d" />
+            <stop offset="0%" stopColor="#ffd7df" />
+            <stop offset="50%" stopColor="#fe6081" />
+            <stop offset="100%" stopColor="#e5496d" />
           </linearGradient>
 
           {/* Inner Accent Core */}
           <linearGradient id="capD_core" x1="44" y1="36" x2="88" y2="84" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#fbcfe8" />
-            <stop offset="100%" stopColor="#db2777" />
+            <stop offset="0%" stopColor="#ffd5de" />
+            <stop offset="100%" stopColor="#fe6081" />
           </linearGradient>
         </defs>
 

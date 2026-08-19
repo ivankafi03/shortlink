@@ -175,7 +175,7 @@ const T = {
 };
 
 const FEATURE_ICONS = [Target, Shield, Zap, Globe, Link2, MousePointerClick, BarChart2, Braces, Play];
-const FEATURE_COLORS = ['#db2777', '#ec4899', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#6366f1', '#10b981'];
+const FEATURE_COLORS = ['#fe6081', '#ff8ca5', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#6366f1', '#10b981'];
 const DOMAINS = ['cuanflix.site', 'samehadakuu.com', 'whatsappp.my.id'];
 
 // ─── FAQ Item ──────────────────────────────────────────────────────────────────

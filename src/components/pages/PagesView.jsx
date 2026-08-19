@@ -40,7 +40,7 @@ export const PagesView = ({
     .card { background: #ffffff; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; max-width: 420px; }
     h1 { font-size: 1.5rem; margin-bottom: 0.75rem; color: #0f172a; }
     p { color: #64748b; font-size: 0.9rem; line-height: 1.6; }
-    .btn { display: inline-block; margin-top: 1.25rem; background: #db2777; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: bold; }
+    .btn { display: inline-block; margin-top: 1.25rem; background: #fe6081; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: bold; }
   </style>
 </head>
 <body>
