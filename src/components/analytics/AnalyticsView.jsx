@@ -77,7 +77,7 @@ const DailyBarChart = ({ logs }) => {
             <div style={{ 
               width: '100%', 
               height: count > 0 ? `${Math.max(heightPct, 10)}%` : '3px',
-              background: isToday ? 'var(--primary)' : count > 0 ? '#93c5fd' : 'var(--border-subtle)',
+              background: isToday ? 'var(--primary)' : count > 0 ? '#ff8ca5' : 'var(--border-subtle)',
               borderRadius: '3px 3px 0 0',
               transition: 'all 0.2s ease'
             }} />
