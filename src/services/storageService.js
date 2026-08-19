@@ -17,6 +17,15 @@ export const AVAILABLE_DOMAINS = [
 
 export const DEFAULT_USERS = [
   {
+    id: 'user_admin_ivan',
+    name: 'Ivan Kafi (Super Admin)',
+    email: 'ivankafipradana@gmail.com',
+    role: 'admin',
+    status: 'active',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ivankafipradana@gmail.com',
+    createdAt: new Date().toISOString()
+  },
+  {
     id: 'user_admin_1',
     name: 'Super Admin',
     email: 'admin.cuan@gmail.com',
@@ -497,7 +506,14 @@ export const getPublicShowcaseLinks = () => {
 export const getStoredUsers = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.USERS);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Pastikan ivankafipradana@gmail.com selalu ada dengan role admin
+      if (!parsed.some(u => u.email.toLowerCase() === 'ivankafipradana@gmail.com')) {
+        parsed.unshift(DEFAULT_USERS[0]);
+      }
+      return parsed;
+    }
   } catch {}
   return DEFAULT_USERS;
 };
