@@ -296,7 +296,7 @@ const INITIAL_DOMAINS = [
 ];
 
 export const DEFAULT_CONFIG = {
-  googleClientId: '',
+  googleClientId: '189146836407-oqluq07dcqpf9nbbloq1udkla26t707a.apps.googleusercontent.com',
   timezone: 'Asia/Jakarta',
   googleCrawlerBlock: true,
   ipBlacklist: '185.220.101.*\n185.220.102.*',
@@ -453,12 +453,16 @@ export const getStoredConfig = () => {
   try {
     const data = localStorage.getItem(STORAGE_KEYS.CONFIG);
     if (!data) {
-      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(INITIAL_CONFIG));
-      return INITIAL_CONFIG;
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(DEFAULT_CONFIG));
+      return DEFAULT_CONFIG;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    if (!parsed.googleClientId) {
+      parsed.googleClientId = DEFAULT_CONFIG.googleClientId;
+    }
+    return parsed;
   } catch {
-    return INITIAL_CONFIG;
+    return DEFAULT_CONFIG;
   }
 };
 

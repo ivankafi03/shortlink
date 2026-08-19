@@ -19,6 +19,8 @@ export const parseGoogleJwt = (token) => {
 };
 
 // Client ID fallback / config helper
+export const DEFAULT_GOOGLE_CLIENT_ID = '189146836407-oqluq07dcqpf9nbbloq1udkla26t707a.apps.googleusercontent.com';
+
 export const getActiveGoogleClientId = () => {
   try {
     const envId = import.meta.env?.VITE_GOOGLE_CLIENT_ID;
@@ -32,7 +34,7 @@ export const getActiveGoogleClientId = () => {
       }
     }
   } catch {}
-  return '';
+  return DEFAULT_GOOGLE_CLIENT_ID;
 };
 
 // Dynamically load Google GSI SDK script
