@@ -90,15 +90,6 @@ export const Sidebar = ({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button 
-            onClick={() => { onOpenCreateModal(); setMobileDrawerOpen(false); }}
-            className="btn btn-primary btn-sm"
-            style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
-          >
-            <Plus size={15} />
-            <span>Buat</span>
-          </button>
-
-          <button 
             onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
             className="btn btn-ghost btn-sm"
             style={{ width: '38px', height: '38px', padding: 0 }}
