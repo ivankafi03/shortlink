@@ -522,6 +522,7 @@ export function App() {
             onEditLink={handleEditLink}
             onOpenCreateModal={handleOpenCreateLink}
             onSelectLinkAnalytics={handleSelectLinkAnalytics}
+            currentUser={currentUser}
           />
         )}
 

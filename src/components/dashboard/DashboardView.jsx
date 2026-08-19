@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Plus, 
   Search, 
@@ -8,27 +8,31 @@ import {
   ExternalLink, 
   BarChart2, 
   Edit3, 
-  Play, 
   Shield, 
   ShieldAlert,
   Globe, 
   Smartphone,
   Layers,
   Sliders,
-  QrCode
+  QrCode,
+  Mail,
+  User,
+  Filter
 } from 'lucide-react';
 import { Header } from '../layout/Header';
 import { QrCodeModal } from '../common/QrCodeModal';
 
 export const DashboardView = ({ 
-  links, 
+  links = [], 
   onDeleteLink, 
   onBulkDelete, 
   onEditLink, 
   onOpenCreateModal, 
-  onSelectLinkAnalytics
+  onSelectLinkAnalytics,
+  currentUser = null
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [ownerFilter, setOwnerFilter] = useState('all');
   const [selectedIds, setSelectedIds] = useState([]);
   const [copiedId, setCopiedId] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
@@ -47,14 +51,32 @@ export const DashboardView = ({
     return sum + count;
   }, 0);
 
+  // Extract unique creator emails for quick filtering
+  const uniqueOwners = useMemo(() => {
+    const map = new Map();
+    links.forEach(l => {
+      const email = (l.createdBy || l.userEmail || 'admin.cuan@gmail.com').toLowerCase().trim();
+      const name = l.createdByName || email.split('@')[0];
+      if (!map.has(email)) {
+        map.set(email, { email, name, count: 0 });
+      }
+      map.get(email).count++;
+    });
+    return Array.from(map.values());
+  }, [links]);
+
   const filteredLinks = links.filter(link => {
-    const query = searchQuery.toLowerCase();
-    return (
-      link.name.toLowerCase().includes(query) ||
-      link.shortCode.toLowerCase().includes(query) ||
-      link.targetUrl.toLowerCase().includes(query) ||
-      link.domain.toLowerCase().includes(query)
+    const query = searchQuery.toLowerCase().trim();
+    const owner = (link.createdBy || link.userEmail || '').toLowerCase().trim();
+    const matchesQuery = (
+      (link.name || '').toLowerCase().includes(query) ||
+      (link.shortCode || '').toLowerCase().includes(query) ||
+      (link.targetUrl || '').toLowerCase().includes(query) ||
+      (link.domain || '').toLowerCase().includes(query) ||
+      owner.includes(query)
     );
+    const matchesOwner = ownerFilter === 'all' || owner === ownerFilter.toLowerCase().trim();
+    return matchesQuery && matchesOwner;
   });
 
   const handleCopy = (shortUrl, id) => {
@@ -133,18 +155,39 @@ export const DashboardView = ({
       {/* Main Table Container */}
       <div className="neu-panel" style={{ padding: '1.5rem' }}>
         {/* Filter Controls Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: '260px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '240px' }}>
             <Search size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
             <input 
               type="text"
-              placeholder="Cari berdasarkan nama, short code, atau URL tujuan..."
+              placeholder="Cari nama, alias, URL, atau email pemilik..."
               className="form-control"
               style={{ paddingLeft: '2.5rem' }}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
           </div>
+
+          {/* Owner Filter Dropdown */}
+          {uniqueOwners.length > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Filter size={15} style={{ color: 'var(--text-dim)', flexShrink: 0 }} />
+              <select
+                value={ownerFilter}
+                onChange={e => setOwnerFilter(e.target.value)}
+                className="form-control"
+                style={{ fontSize: '0.825rem', padding: '0.55rem 0.75rem', maxWidth: '240px' }}
+                title="Filter Tautan berdasarkan Akun Pemilik"
+              >
+                <option value="all">Semua Pemilik ({links.length})</option>
+                {uniqueOwners.map(o => (
+                  <option key={o.email} value={o.email}>
+                    {o.email} ({o.count})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {selectedIds.length > 0 && (
             <button 
@@ -204,6 +247,7 @@ export const DashboardView = ({
                     </th>
                     <th>TAUTAN PENDEK</th>
                     <th>NAMA & TUJUAN</th>
+                    <th>PEMILIK (EMAIL)</th>
                     <th>ATURAN FILTER</th>
                     <th>KLIK</th>
                     <th style={{ textAlign: 'right' }}>AKSI</th>
@@ -213,6 +257,7 @@ export const DashboardView = ({
                   {filteredLinks.map(link => {
                     const fullShortUrl = `https://${link.domain}/${link.shortCode}${link.addMp4Suffix ? '.mp4' : ''}`;
                     const isSelected = selectedIds.includes(link.id);
+                    const ownerEmail = link.createdBy || link.userEmail || 'admin.cuan@gmail.com';
 
                     return (
                       <tr key={link.id}>
@@ -240,12 +285,37 @@ export const DashboardView = ({
                             href={link.targetUrl} 
                             target="_blank" 
                             rel="noreferrer" 
-                            style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                            style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                           >
                             <span>{link.targetUrl}</span>
                             <ExternalLink size={11} />
                           </a>
                         </td>
+
+                        {/* Owner Email Column */}
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <img 
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(ownerEmail)}`}
+                              alt=""
+                              style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid var(--border-subtle)', background: 'var(--bg-main)', flexShrink: 0 }}
+                            />
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                              <span 
+                                style={{ fontSize: '0.785rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--text-main)', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                title={ownerEmail}
+                              >
+                                {ownerEmail}
+                              </span>
+                              {link.createdByName && link.createdByName !== ownerEmail.split('@')[0] && (
+                                <span style={{ fontSize: '0.675rem', color: 'var(--text-dim)', fontWeight: 600 }}>
+                                  {link.createdByName}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+
                         <td>
                           <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
                             {link.devices && link.devices.length > 0 && (
@@ -288,13 +358,6 @@ export const DashboardView = ({
                               title="Generasi & Unduh QR Code"
                             >
                               <QrCode size={13} style={{ color: 'var(--primary)' }} />
-                            </button>
-                            <button 
-                              onClick={() => onTestLinkInSimulator(link)}
-                              className="btn btn-sm"
-                              title="Test dalam Traffic Router Simulator"
-                            >
-                              <Play size={13} style={{ color: 'var(--accent-cyan)' }} />
                             </button>
                             <button 
                               onClick={() => onSelectLinkAnalytics(link.id)}
@@ -399,6 +462,14 @@ export const DashboardView = ({
                         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>{link.targetUrl}</span>
                         <ExternalLink size={11} style={{ flexShrink: 0, color: 'var(--text-dim)' }} />
                       </a>
+
+                      {/* Owner Email Pill */}
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.4rem', background: 'var(--bg-main)', padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                        <Mail size={11} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-main)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                          {link.createdBy || link.userEmail || 'admin.cuan@gmail.com'}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Filter Rules Row */}
@@ -437,12 +508,13 @@ export const DashboardView = ({
                       </button>
 
                       <button 
-                        onClick={() => onTestLinkInSimulator(link)}
+                        onClick={() => { setQrModalUrl(fullShortUrl); setQrModalOpen(true); }}
                         className="btn btn-sm"
                         style={{ flex: 1, padding: '0.35rem 0.5rem', fontSize: '0.75rem', justifyContent: 'center' }}
+                        title="QR Code"
                       >
-                        <Play size={12} style={{ color: 'var(--accent-cyan)' }} />
-                        <span>Test</span>
+                        <QrCode size={12} style={{ color: 'var(--primary)' }} />
+                        <span>QR</span>
                       </button>
 
                       <button 
