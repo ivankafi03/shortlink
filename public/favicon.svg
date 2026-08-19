@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
   <defs>
     <linearGradient id="favD_top" x1="20" y1="12" x2="116" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#38bdf8" />
-      <stop offset="100%" stop-color="#2563eb" />
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="100%" stop-color="#e11d48" />
     </linearGradient>
     <linearGradient id="favD_bottom" x1="116" y1="60" x2="20" y2="108" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#2563eb" />
-      <stop offset="100%" stop-color="#1d4ed8" />
+      <stop offset="0%" stop-color="#e11d48" />
+      <stop offset="100%" stop-color="#be123c" />
     </linearGradient>
     <linearGradient id="favD_spine" x1="16" y1="12" x2="48" y2="108" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0ea5e9" />
-      <stop offset="50%" stop-color="#2563eb" />
-      <stop offset="100%" stop-color="#1e40af" />
+      <stop offset="0%" stop-color="#f43f5e" />
+      <stop offset="50%" stop-color="#e11d48" />
+      <stop offset="100%" stop-color="#9f1239" />
     </linearGradient>
     <linearGradient id="favD_core" x1="44" y1="36" x2="88" y2="84" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#67e8f9" />
-      <stop offset="100%" stop-color="#3b82f6" />
+      <stop offset="0%" stop-color="#fda4af" />
+      <stop offset="100%" stop-color="#f43f5e" />
     </linearGradient>
   </defs>
 
@@ -38,6 +38,6 @@
   <path d="M 48 52 L 60 52 C 65 52 69 55 69 60 C 69 65 65 68 60 68 L 48 68 Z" fill="#ffffff" />
 
   <!-- Smart Signal Node -->
-  <circle cx="106" cy="18" r="5" fill="#38bdf8" />
-  <path d="M 96 15 C 102 12 109 13 113 19" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" fill="none" />
+  <circle cx="106" cy="18" r="5" fill="#fb7185" />
+  <path d="M 96 15 C 102 12 109 13 113 19" stroke="#fb7185" stroke-width="3" stroke-linecap="round" fill="none" />
 </svg>
