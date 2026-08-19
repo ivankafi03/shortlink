@@ -20,11 +20,27 @@ export const syncToCloud = async (key, value) => {
   }
 };
 
-export const fetchAllFromCloud = async () => {
+export const fetchAllFromCloud = async (customEmail = '') => {
   try {
     const isDedicatedAdmin = typeof window !== 'undefined' && 
       (window.location.hostname.toLowerCase().includes('whatsappp') || window.location.hostname.toLowerCase().includes('admin'));
-    const headers = isDedicatedAdmin ? { 'x-admin-key': 'super_admin' } : {};
+    
+    let savedUser = null;
+    try {
+      savedUser = JSON.parse(localStorage.getItem('vidy_user_v1') || '{}');
+    } catch {}
+
+    const email = customEmail || savedUser?.email || '';
+    const isAdmin = isDedicatedAdmin || 
+      savedUser?.role === 'admin' || 
+      email === 'ivankafipradana@gmail.com' || 
+      email === 'admin.cuan@gmail.com';
+
+    const headers = {
+      ...(isAdmin ? { 'x-admin-key': 'super_admin' } : {}),
+      ...(email ? { 'x-user-email': email.toLowerCase().trim() } : {})
+    };
+
     const res = await fetch('/api/data?all=true', { headers });
     if (!res.ok) return null;
     return await res.json();

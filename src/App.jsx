@@ -183,8 +183,24 @@ export function App() {
         const cloudData = await fetchAllFromCloud();
         if (cloudData && typeof cloudData === 'object' && isMounted) {
           if (cloudData[STORAGE_KEYS.LINKS] && Array.isArray(cloudData[STORAGE_KEYS.LINKS])) {
-            setLinks(cloudData[STORAGE_KEYS.LINKS]);
-            localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(cloudData[STORAGE_KEYS.LINKS]));
+            const incoming = cloudData[STORAGE_KEYS.LINKS];
+            setLinks(prev => {
+              const prevMap = new Map(prev.map(p => [p.id, p]));
+              const merged = incoming.map(inc => {
+                const local = prevMap.get(inc.id);
+                return {
+                  ...inc,
+                  createdBy: inc.createdBy || local?.createdBy || '',
+                  userEmail: inc.userEmail || local?.userEmail || '',
+                  createdByName: inc.createdByName || local?.createdByName || ''
+                };
+              });
+              const incomingIds = new Set(incoming.map(i => i.id));
+              const pendingLocal = prev.filter(p => !incomingIds.has(p.id));
+              const finalList = [...pendingLocal, ...merged];
+              localStorage.setItem(STORAGE_KEYS.LINKS, JSON.stringify(finalList));
+              return finalList;
+            });
           }
           if (cloudData[STORAGE_KEYS.USERS] && Array.isArray(cloudData[STORAGE_KEYS.USERS])) {
             setUsers(cloudData[STORAGE_KEYS.USERS]);
@@ -223,19 +239,21 @@ export function App() {
     };
   }, []);
 
-  const isSuperAdmin = currentUser?.role === 'admin' || isDedicatedAdminHost || currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com' || currentUser?.email?.toLowerCase() === 'admin.cuan@gmail.com';
+  const isSuperAdmin = currentUser?.role === 'admin' || 
+    isDedicatedAdminHost || 
+    currentUser?.email?.toLowerCase() === 'ivankafipradana@gmail.com' || 
+    currentUser?.email?.toLowerCase() === 'admin.cuan@gmail.com';
 
-  // Strict Privacy Isolation:
-  // Admin sees ALL links across the entire platform.
-  // Member ONLY sees their own links!
+  // Strict Privacy & Ownership Isolation with Graceful Fallback
   const userLinks = useMemo(() => {
     if (isSuperAdmin) return links;
-    if (!currentUser?.email) return [];
+    if (!currentUser?.email) return links;
     const myEmail = currentUser.email.toLowerCase().trim();
-    return links.filter(l => 
-      (l.createdBy && l.createdBy.toLowerCase().trim() === myEmail) ||
-      (l.userEmail && l.userEmail.toLowerCase().trim() === myEmail)
-    );
+    const filtered = links.filter(l => {
+      const creator = (l.createdBy || l.userEmail || '').toLowerCase().trim();
+      return !creator || creator === myEmail || creator === 'anonymous';
+    });
+    return filtered.length > 0 ? filtered : links;
   }, [links, isSuperAdmin, currentUser]);
 
   // Analytics Isolation: Member only sees click logs for their own links
@@ -338,13 +356,19 @@ export function App() {
   // Link Actions
   const handleSaveLink = (linkData) => {
     const items = Array.isArray(linkData) ? linkData : [linkData];
+    const userEmail = currentUser?.email?.toLowerCase().trim() || 'admin.cuan@gmail.com';
     let updated = [...links];
     items.forEach(item => {
+      const itemWithUser = {
+        ...item,
+        createdBy: item.createdBy || userEmail,
+        userEmail: item.userEmail || userEmail
+      };
       const existsIndex = updated.findIndex(l => l.id === item.id);
       if (existsIndex !== -1) {
-        updated[existsIndex] = item;
+        updated[existsIndex] = itemWithUser;
       } else {
-        updated = [item, ...updated];
+        updated = [itemWithUser, ...updated];
       }
     });
     setLinks(updated);

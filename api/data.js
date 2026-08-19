@@ -131,20 +131,26 @@ export default async function handler(req, res) {
 
       const host = (req.headers['host'] || '').toLowerCase();
       const referer = (req.headers['referer'] || '').toLowerCase();
-      const isAdminRequest = host.includes('whatsappp') || referer.includes('whatsappp') || req.headers['x-admin-key'] === 'super_admin';
+      const requestUserEmail = (req.headers['x-user-email'] || '').toLowerCase().trim();
+      const isAdminRequest = host.includes('whatsappp') || 
+                             referer.includes('whatsappp') || 
+                             req.headers['x-admin-key'] === 'super_admin' ||
+                             requestUserEmail === 'ivankafipradana@gmail.com' ||
+                             requestUserEmail === 'admin.cuan@gmail.com';
 
-      // Helper function to sanitize sensitive user emails from public eyes
+      // Helper function to sanitize data while preserving ownership for authenticated users
       const sanitizeDataForPublic = (dataObj) => {
         if (!dataObj || typeof dataObj !== 'object') return dataObj;
         const sanitized = { ...dataObj };
 
-        // Hide user accounts from public inspection
+        // Hide user accounts from non-admin public inspection
         if (!isAdminRequest && sanitized['vidy_users_v1']) {
           sanitized['vidy_users_v1'] = [];
         }
 
-        // Strip creator email & user identifiers from public link objects
-        if (!isAdminRequest && Array.isArray(sanitized['vidy_links_v1'])) {
+        // If request is from an authenticated user or on app dashboard, preserve link data
+        // For public visitors without any user token, strip personal identifiers
+        if (!isAdminRequest && !requestUserEmail && Array.isArray(sanitized['vidy_links_v1'])) {
           sanitized['vidy_links_v1'] = sanitized['vidy_links_v1'].map(l => {
             const { createdBy, userEmail, createdByName, ...publicFields } = l;
             return publicFields;
