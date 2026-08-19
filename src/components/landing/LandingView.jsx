@@ -484,8 +484,8 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <nav className="landing-nav">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-          <div className="neu-logo-box" style={{ width: '34px', height: '34px', borderRadius: '10px', padding: '2px', overflow: 'hidden' }}>
-            <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} loading="eager" decoding="sync" />
+          <div className="neu-logo-box" style={{ width: '36px', height: '36px', borderRadius: '10px', padding: '2px', overflow: 'hidden' }}>
+            <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '8px' }} loading="eager" decoding="sync" />
           </div>
           <span style={{ fontWeight: 900, fontSize: '1.1rem', letterSpacing: '-0.03em' }}>
             D <span style={{ color: 'var(--primary)' }}>shortlink</span>

@@ -82,13 +82,13 @@ export const Sidebar = ({
       <header className="mobile-top-bar">
         <div 
           onClick={onGoHome}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', marginBottom: '1.75rem' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
         >
-          <div className="neu-logo-box" style={{ width: '42px', height: '42px', borderRadius: '12px', padding: '2px', flexShrink: 0 }}>
-            <img src={logoImg} alt="D shortlink Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+          <div className="neu-logo-box" style={{ width: '38px', height: '38px', borderRadius: '10px', padding: '2px', overflow: 'hidden', flexShrink: 0 }}>
+            <img src={logoImg} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '8px' }} />
           </div>
-          <div style={{ overflow: 'hidden' }}>
-            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.2rem', color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          <div>
+            <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 900, fontSize: '1.15rem', color: 'var(--text-main)', letterSpacing: '-0.02em', lineHeight: 1 }}>
               D <span style={{ color: 'var(--primary)' }}>shortlink</span>
             </div>
           </div>
@@ -267,18 +267,18 @@ export const Sidebar = ({
           <div 
             onClick={onGoHome}
             style={{ 
-              display: 'flex', alignItems: 'center', gap: '0.85rem', 
-              padding: '0.5rem 0.25rem 1.75rem 0.25rem',
+              display: 'flex', alignItems: 'center', gap: '0.75rem', 
+              padding: '0.5rem 0.25rem 1.5rem 0.25rem',
               cursor: 'pointer',
               transition: 'opacity 0.15s'
             }}
-            title="Dashboard Admin"
+            title="Dashboard"
           >
-            <div className="neu-logo-box" style={{ width: '54px', height: '54px', borderRadius: '16px', padding: '3px', overflow: 'hidden', flexShrink: 0 }}>
+            <div className="neu-logo-box" style={{ width: '42px', height: '42px', borderRadius: '12px', padding: '2px', overflow: 'hidden', flexShrink: 0 }}>
               <img 
                 src={logoImg} 
-                alt="D shortlink Logo" 
-                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '13px' }} 
+                alt="Logo" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.35)', borderRadius: '10px' }} 
                 loading="eager"
                 decoding="sync"
               />
@@ -288,9 +288,9 @@ export const Sidebar = ({
               <div style={{ 
                 fontFamily: 'var(--font-heading)', 
                 fontWeight: 900, 
-                fontSize: '1.35rem',
+                fontSize: '1.25rem',
                 lineHeight: 1.1,
-                letterSpacing: '-0.04em',
+                letterSpacing: '-0.03em',
                 color: 'var(--text-main)'
               }}>
                 D <span style={{ color: 'var(--primary)' }}>shortlink</span>
