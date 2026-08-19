@@ -13,6 +13,7 @@ import {
   X,
   Braces
 } from 'lucide-react';
+import { LiveStatusBadge } from '../common/LiveStatusBadge';
 import logoImg from '../../assets/logo.png';
 
 export const Sidebar = ({ 
@@ -374,9 +375,10 @@ export const Sidebar = ({
                   <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {currentUser.name}
                   </div>
-                  <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: '0.25rem' }}>
                     {currentUser.email}
                   </div>
+                  <LiveStatusBadge size="small" />
                 </div>
               </div>
 

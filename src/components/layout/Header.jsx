@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Plus, Play } from 'lucide-react';
+import { LiveStatusBadge } from '../common/LiveStatusBadge';
 
 export const Header = ({ title, subtitle, onOpenCreateModal, onOpenSimulator }) => {
   return (
@@ -12,8 +13,11 @@ export const Header = ({ title, subtitle, onOpenCreateModal, onOpenSimulator }) 
       gap: '0.85rem'
     }}>
       <div style={{ flex: '1 1 220px' }}>
-        <h1 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.6rem)', marginBottom: '0.15rem', lineHeight: 1.25 }}>{title}</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600 }}>{subtitle}</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap', marginBottom: '0.15rem' }}>
+          <h1 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.6rem)', margin: 0, lineHeight: 1.25 }}>{title}</h1>
+          <LiveStatusBadge size="small" />
+        </div>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600, margin: 0 }}>{subtitle}</p>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>

@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Activity
 } from 'lucide-react';
+import { LiveStatusBadge } from '../common/LiveStatusBadge';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -141,14 +142,11 @@ const AnalyticsListView = ({ links, analyticsLogs, onSelectLink }) => {
     <div>
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.15rem' }}>
-          <h1 style={{ fontSize: '1.85rem', fontWeight: 900 }}>Analitik Trafik</h1>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem', fontWeight: 800, color: '#059669', background: '#d1fae5', padding: '0.2rem 0.65rem', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
-            Live Real-Time
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.15rem', flexWrap: 'wrap' }}>
+          <h1 style={{ fontSize: '1.85rem', fontWeight: 900, margin: 0 }}>Analitik Trafik</h1>
+          <LiveStatusBadge />
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600 }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600, margin: 0 }}>
           Statistik trafik real-time seluruh tautan kamu
         </p>
       </div>
@@ -315,9 +313,12 @@ const AnalyticsDetailView = ({ link, analyticsLogs, onBack }) => {
       {/* Header */}
       <div style={{ marginBottom: '1.25rem' }}>
         <div>
-          <h1 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.5rem)', marginBottom: '0.15rem', lineHeight: 1.25 }}>
-            /{link.shortCode}{link.addMp4Suffix ? '.mp4' : ''}
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.2rem' }}>
+            <h1 style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.5rem)', margin: 0, lineHeight: 1.25 }}>
+              /{link.shortCode}{link.addMp4Suffix ? '.mp4' : ''}
+            </h1>
+            <LiveStatusBadge size="small" />
+          </div>
           <a 
             href={link.targetUrl} 
             target="_blank" 
