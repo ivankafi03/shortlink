@@ -15,21 +15,70 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
   const [timezone, setTimezone] = useState(config.timezone || 'Asia/Jakarta');
   const [googleCrawlerBlock, setGoogleCrawlerBlock] = useState(!!config.googleCrawlerBlock);
   const [ipBlacklist, setIpBlacklist] = useState(config.ipBlacklist || '');
+  const [ipWhitelist, setIpWhitelist] = useState(config.ipWhitelist || '');
   const [asnList, setAsnList] = useState(config.asnList || '');
   const [ispKeywords, setIspKeywords] = useState(config.ispKeywords || '');
   const [googleClientId, setGoogleClientId] = useState(config.googleClientId || '');
 
   const [isSaved, setIsSaved] = useState(false);
+  const [detectingIp, setDetectingIp] = useState(false);
+  const [detectedMsg, setDetectedMsg] = useState('');
+  const [clearingCooldown, setClearingCooldown] = useState(false);
 
   // Sync state lokal saat prop config berubah dari luar (mis. reset ke default)
   useEffect(() => {
     setTimezone(config.timezone || 'Asia/Jakarta');
     setGoogleCrawlerBlock(!!config.googleCrawlerBlock);
     setIpBlacklist(config.ipBlacklist || '');
+    setIpWhitelist(config.ipWhitelist || '');
     setAsnList(config.asnList || '');
     setIspKeywords(config.ispKeywords || '');
     setGoogleClientId(config.googleClientId || '');
   }, [config]);
+
+  const handleDetectAndWhitelistMyIp = async () => {
+    setDetectingIp(true);
+    setDetectedMsg('');
+    try {
+      const res = await fetch('https://api.ipify.org?format=json');
+      const data = await res.json();
+      if (data?.ip) {
+        const myIp = data.ip.trim();
+        const currentList = ipWhitelist.split('\n').map(s => s.trim()).filter(Boolean);
+        if (!currentList.includes(myIp)) {
+          const updated = [...currentList, myIp].join('\n');
+          setIpWhitelist(updated);
+          onSaveConfig({
+            ...config,
+            ipWhitelist: updated
+          });
+          setDetectedMsg(`✅ IP Anda (${myIp}) berhasil dibebaskan & masuk Whitelist!`);
+        } else {
+          setDetectedMsg(`ℹ️ IP Anda (${myIp}) sudah ada di dalam Whitelist.`);
+        }
+      }
+    } catch {
+      setDetectedMsg('❌ Gagal mendeteksi IP otomatis. Silakan masukkan IP manual.');
+    } finally {
+      setDetectingIp(false);
+    }
+  };
+
+  const handleClearAllCooldowns = async () => {
+    setClearingCooldown(true);
+    try {
+      await fetch('/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear_cooldown' })
+      });
+      setDetectedMsg('✅ Semua riwayat blokir dan cooldown IP berhasil di-reset!');
+    } catch {
+      setDetectedMsg('❌ Gagal mereset cooldown server.');
+    } finally {
+      setClearingCooldown(false);
+    }
+  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -39,6 +88,7 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
       timezone,
       googleCrawlerBlock,
       ipBlacklist,
+      ipWhitelist,
       asnList,
       ispKeywords
     });
@@ -96,7 +146,7 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
               className={`tab-btn ${activeTab === 'ip' ? 'active' : ''}`}
             >
               <Zap size={15} />
-              <span>IP Blocking</span>
+              <span>IP Whitelist & Blacklist</span>
             </button>
             <button 
               type="button"
@@ -109,6 +159,13 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
           </div>
 
           <div style={{ marginTop: '1.5rem' }}>
+            {/* Status Alert Message */}
+            {detectedMsg && (
+              <div className="neu-panel-inset" style={{ padding: '0.85rem 1.1rem', borderRadius: '10px', marginBottom: '1.25rem', fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-main)', border: '1px solid var(--border-subtle)' }}>
+                {detectedMsg}
+              </div>
+            )}
+
             {/* Tab 1: General */}
             {activeTab === 'general' && (
               <div>
@@ -145,14 +202,60 @@ export const SettingsView = ({ config, onSaveConfig, onOpenCreateModal }) => {
               </div>
             )}
 
-            {/* Tab 2: IP Blocking */}
+            {/* Tab 2: IP Whitelist & Blacklist */}
             {activeTab === 'ip' && (
-              <div>
-                <div className="form-group">
-                  <label className="form-label">IP Blacklist (Satu per baris)</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {/* Whitelist Section */}
+                <div className="neu-panel-inset" style={{ padding: '1.25rem', borderRadius: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                    <div>
+                      <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: 'var(--accent-emerald)', margin: 0 }}>
+                        🟢 IP Whitelist (Bebas Blokir Khusus Admin)
+                      </h4>
+                      <p style={{ fontSize: '0.775rem', color: 'var(--text-muted)', fontWeight: 600, margin: '0.2rem 0 0 0' }}>
+                        IP di daftar ini akan 100% lolos dari Rate Limiter, Cooldown, dan Filter Bot.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleDetectAndWhitelistMyIp}
+                      disabled={detectingIp}
+                      className="btn btn-primary btn-sm"
+                      style={{ fontSize: '0.775rem', padding: '0.45rem 0.85rem' }}
+                    >
+                      <Zap size={14} />
+                      <span>{detectingIp ? 'Mendeteksi...' : '⚡ Deteksi & Bebaskan IP Saya'}</span>
+                    </button>
+                  </div>
+
                   <textarea 
                     className="form-control"
-                    style={{ minHeight: '140px' }}
+                    style={{ minHeight: '90px', fontFamily: 'var(--font-mono)', fontSize: '0.825rem' }}
+                    placeholder="127.0.0.1&#10;180.252.12.34"
+                    value={ipWhitelist}
+                    onChange={e => setIpWhitelist(e.target.value)}
+                  />
+                </div>
+
+                {/* Blacklist Section */}
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <label className="form-label" style={{ marginBottom: 0 }}>🔴 IP Blacklist (Satu per baris)</label>
+                    <button
+                      type="button"
+                      onClick={handleClearAllCooldowns}
+                      disabled={clearingCooldown}
+                      className="btn btn-ghost btn-sm"
+                      style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}
+                      title="Reset semua cooldown dan blokir sementara"
+                    >
+                      <span>{clearingCooldown ? 'Mereset...' : '🔄 Reset Cooldown Server'}</span>
+                    </button>
+                  </div>
+                  <textarea 
+                    className="form-control"
+                    style={{ minHeight: '100px', fontFamily: 'var(--font-mono)', fontSize: '0.825rem' }}
                     placeholder="192.168.1.*&#10;10.0.0.1"
                     value={ipBlacklist}
                     onChange={e => setIpBlacklist(e.target.value)}

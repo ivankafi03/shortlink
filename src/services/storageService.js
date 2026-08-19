@@ -133,6 +133,7 @@ export const DEFAULT_CONFIG = {
   timezone: 'Asia/Jakarta',
   googleCrawlerBlock: true,
   ipBlacklist: '185.220.101.*\n185.220.102.*',
+  ipWhitelist: '127.0.0.1\n::1',
   asnList: 'AS15169\nAS16509',
   ispKeywords: 'Googlebot\nDigitalOcean\nLinode\nAmazon'
 };

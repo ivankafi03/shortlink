@@ -164,6 +164,12 @@ export default async function handler(req, res) {
 
       const { action, key, value, data, logEntry } = req.body || {};
 
+      if (action === 'clear_cooldown') {
+        ipRequestCounts.clear();
+        ipClickCooldown.clear();
+        return res.status(200).json({ success: true, message: 'All IP cooldowns and rate limits cleared' });
+      }
+
       if (action === 'record_click' && logEntry) {
         const userAgentHeader = req.headers['user-agent'] || logEntry.userAgent || '';
         if (isBotUserAgent(userAgentHeader) || logEntry.isBot) {
