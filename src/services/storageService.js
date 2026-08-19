@@ -295,12 +295,13 @@ const INITIAL_DOMAINS = [
   }
 ];
 
-const INITIAL_CONFIG = {
+export const DEFAULT_CONFIG = {
+  googleClientId: '',
   timezone: 'Asia/Jakarta',
   googleCrawlerBlock: true,
-  ipBlacklist: '192.168.1.*\n10.0.0.1',
-  asnList: 'AS15169\nAS13335',
-  ispKeywords: 'meta\nfacebook\namazon\ndigitalocean'
+  ipBlacklist: '185.220.101.*\n185.220.102.*',
+  asnList: 'AS15169\nAS16509',
+  ispKeywords: 'Googlebot\nDigitalOcean\nLinode\nAmazon'
 };
 
 // Auto Self-Healing function to prune bloated localStorage items
