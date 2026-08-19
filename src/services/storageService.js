@@ -26,6 +26,15 @@ export const DEFAULT_USERS = [
     createdAt: new Date().toISOString()
   },
   {
+    id: 'user_admin_joko',
+    name: 'Joko Susilo (Admin)',
+    email: 'jokosusilo011203@gmail.com',
+    role: 'admin',
+    status: 'active',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=jokosusilo011203@gmail.com',
+    createdAt: new Date().toISOString()
+  },
+  {
     id: 'user_admin_1',
     name: 'Super Admin',
     email: 'admin.cuan@gmail.com',
@@ -508,9 +517,11 @@ export const getStoredUsers = () => {
     const saved = localStorage.getItem(STORAGE_KEYS.USERS);
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Pastikan ivankafipradana@gmail.com selalu ada dengan role admin
       if (!parsed.some(u => u.email.toLowerCase() === 'ivankafipradana@gmail.com')) {
         parsed.unshift(DEFAULT_USERS[0]);
+      }
+      if (!parsed.some(u => u.email.toLowerCase() === 'jokosusilo011203@gmail.com')) {
+        parsed.unshift(DEFAULT_USERS[1]);
       }
       return parsed;
     }
