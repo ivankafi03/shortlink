@@ -100,17 +100,19 @@ export function App() {
   // Link Builder Page State
   const [linkToEdit, setLinkToEdit] = useState(null);
 
-  // Member Google User State — Default to null (Wajib login) & 1 Hour Expiration
+  // Member Google User State — Default to null (Wajib login) & 1 Hour Expiration khusus whatsappp.my.id
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('vidy_user_v1');
       if (saved) {
-        const lastActive = Number(localStorage.getItem('vidy_last_active_v1')) || 0;
-        const ONE_HOUR = 60 * 60 * 1000;
-        if (Date.now() - lastActive > ONE_HOUR) {
-          localStorage.removeItem('vidy_user_v1');
-          localStorage.removeItem('vidy_last_active_v1');
-          return null;
+        if (isDedicatedAdminHost) {
+          const lastActive = Number(localStorage.getItem('vidy_last_active_v1')) || 0;
+          const ONE_HOUR = 60 * 60 * 1000;
+          if (Date.now() - lastActive > ONE_HOUR) {
+            localStorage.removeItem('vidy_user_v1');
+            localStorage.removeItem('vidy_last_active_v1');
+            return null;
+          }
         }
         return JSON.parse(saved);
       }
@@ -120,9 +122,9 @@ export function App() {
 
   const [googleModalOpen, setGoogleModalOpen] = useState(false);
 
-  // 1-Hour Inactivity Auto Logout Listener
+  // 1-Hour Inactivity Auto Logout Listener — KHUSUS DOMAIN ADMIN (whatsappp.my.id)
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !isDedicatedAdminHost) return;
 
     const ONE_HOUR = 60 * 60 * 1000;
     
@@ -153,7 +155,7 @@ export function App() {
         const lastActive = Number(localStorage.getItem('vidy_last_active_v1')) || 0;
         if (Date.now() - lastActive > ONE_HOUR) {
           handleLogout();
-          alert('Sesi Anda telah berakhir karena tidak ada aktivitas selama 1 jam. Silakan login kembali.');
+          alert('Sesi Admin Anda telah berakhir karena tidak ada aktivitas selama 1 jam. Silakan login kembali.');
         }
       } catch {}
     }, 30000);
@@ -162,7 +164,7 @@ export function App() {
       events.forEach(event => window.removeEventListener(event, handleUserActivity));
       clearInterval(checkInterval);
     };
-  }, [currentUser]);
+  }, [currentUser, isDedicatedAdminHost]);
 
   const handleLoginSuccess = (userData) => {
     // Di domain whatsappp.my.id, hanya role admin yang boleh masuk
