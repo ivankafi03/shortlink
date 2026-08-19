@@ -30,6 +30,22 @@ import './index.css'
   }
 })();
 
+// ─── Auto Recovery for Stale Module Script Hash Errors ────────────────────────
+window.addEventListener('vite:preloadError', () => {
+  window.location.reload();
+});
+
+window.addEventListener('error', (event) => {
+  if (
+    event?.message &&
+    (event.message.includes('Failed to fetch dynamically imported module') ||
+     event.message.includes('Failed to load module script') ||
+     event.message.includes('MIME type of "text/html"'))
+  ) {
+    window.location.reload();
+  }
+});
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
