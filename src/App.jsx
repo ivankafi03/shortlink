@@ -8,7 +8,7 @@ import { PagesView } from './components/pages/PagesView';
 import { DomainsView } from './components/domains/DomainsView';
 import { SettingsView } from './components/settings/SettingsView';
 import { PublicLinkView } from './components/public/PublicLinkView';
-import { GoogleLoginModal } from './components/common/GoogleLoginModal';
+import { LoginView } from './components/auth/LoginView';
 import { AdminAuthPortal } from './components/admin/AdminAuthPortal';
 import { TrafficSimulatorView } from './components/simulator/TrafficSimulatorView';
 import { ApiDocsView } from './components/api/ApiDocsView';
@@ -41,6 +41,7 @@ const getTabFromPath = (path) => {
   const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
   const isAdminDomain = host.includes('whatsappp') || host.includes('admin');
   
+  if (cleanPath === 'login' || cleanPath === 'masuk') return 'login';
   if (cleanPath.includes('dashboard') || cleanPath.includes('tautan')) return 'tautan';
   if (cleanPath.endsWith('/create')) return 'create_link';
   if (cleanPath.includes('analytics') || cleanPath.includes('analitik')) return 'analitik';
@@ -75,6 +76,7 @@ const getTabFromPath = (path) => {
 const getPathFromTab = (tab) => {
   switch (tab) {
     case 'home': return '/';
+    case 'login': return '/login';
     case 'create_link': return '/create';
     case 'analitik': return '/analytics';
     case 'halaman': return '/pages';
@@ -130,8 +132,6 @@ export function App() {
     return null;
   });
 
-  const [googleModalOpen, setGoogleModalOpen] = useState(false);
-
   // 1-Hour Inactivity Auto Logout Listener — KHUSUS DOMAIN ADMIN (whatsappp.my.id)
   useEffect(() => {
     if (!currentUser || !isDedicatedAdminHost) return;
@@ -182,7 +182,7 @@ export function App() {
     const isRegisteredAdmin = users.some(
       u => u.email.toLowerCase() === userEmail && u.role === 'admin' && u.status === 'active'
     );
-    const isKnownAdmin = isRegisteredAdmin || userEmail === 'admin.cuan@gmail.com' || userEmail.startsWith('admin');
+    const isKnownAdmin = isRegisteredAdmin || userEmail === 'ivankafipradana@gmail.com' || userEmail === 'admin.cuan@gmail.com' || userEmail.startsWith('admin');
 
     if (isDedicatedAdminHost && !isKnownAdmin) {
       alert(`Akses Ditolak: Akun "${userData.email}" bukan Administrator. Hanya akun Admin yang diizinkan masuk ke portal whatsappp.my.id.`);
@@ -201,7 +201,6 @@ export function App() {
       localStorage.setItem('vidy_last_active_v1', Date.now().toString());
     } catch {}
 
-    setGoogleModalOpen(false);
     setActiveTab('tautan');
     const targetPath = getPathFromTab('tautan');
     if (window.location.pathname !== targetPath) {
@@ -383,49 +382,38 @@ export function App() {
     );
   }
 
-  // Untuk semua rute admin (/dashboard, /analytics, /pages, /domains, /settings, /create, /simulator, /api):
-  // Jika user belum login, tampilkan AdminAuthPortal (Portal Login Admin) langsung di domain tersebut
-  if (activeTab !== 'home' && activeTab !== 'public_shortlink') {
-    if (!currentUser) {
-      return (
-        <>
-          <AdminAuthPortal onLoginSuccess={handleLoginSuccess} users={users} />
-          <GoogleLoginModal 
-            isOpen={googleModalOpen} 
-            onClose={() => setGoogleModalOpen(false)} 
-            onLoginSuccess={handleLoginSuccess} 
-          />
-        </>
-      );
-    }
+  // Halaman Login Member (/login)
+  if (activeTab === 'login') {
+    return <LoginView onLoginSuccess={handleLoginSuccess} onNavigate={navigateToTab} />;
   }
 
-  // Landing page is full-page for public domains (no sidebar)
+  // Jika domain Admin (whatsappp.my.id) dan belum login, tampilkan AdminAuthPortal
+  if (isDedicatedAdminHost && !currentUser) {
+    return <AdminAuthPortal onLoginSuccess={handleLoginSuccess} users={users} />;
+  }
+
+  // Jika domain Member (samehadakuu.com) dan belum login saat akses halaman internal:
+  if (!isDedicatedAdminHost && !currentUser && activeTab !== 'home' && activeTab !== 'public_shortlink') {
+    return <LoginView onLoginSuccess={handleLoginSuccess} onNavigate={navigateToTab} />;
+  }
+
+  // Landing page untuk domain member/publik (samehadakuu.com)
   if (activeTab === 'home') {
     return (
-      <>
-        <LandingView 
-          onNavigate={(tab) => navigateToTab(tab)} 
-          links={links}
-          analyticsLogs={analyticsLogs}
-          domains={domains}
-          currentUser={currentUser}
-          onOpenGoogleLogin={() => setGoogleModalOpen(true)}
-          onLogout={handleLogout}
-          onSaveLink={handleSaveLink}
-        />
-        <GoogleLoginModal 
-          isOpen={googleModalOpen} 
-          onClose={() => setGoogleModalOpen(false)} 
-          onLoginSuccess={handleLoginSuccess} 
-        />
-      </>
+      <LandingView 
+        onNavigate={(tab) => navigateToTab(tab)} 
+        links={links}
+        analyticsLogs={analyticsLogs}
+        domains={domains}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        onSaveLink={handleSaveLink}
+      />
     );
   }
 
   return (
     <div className="app-layout">
-
 
       {/* Left Vertical Sidebar */}
       <Sidebar 
@@ -435,7 +423,6 @@ export function App() {
         onOpenSimulator={() => navigateToTab('simulator')}
         onGoHome={() => navigateToTab('tautan')}
         currentUser={currentUser}
-        onOpenGoogleLogin={() => setGoogleModalOpen(true)}
         onLogout={handleLogout}
       />
 
@@ -547,12 +534,6 @@ export function App() {
           />
         )}
       </main>
-
-      <GoogleLoginModal 
-        isOpen={googleModalOpen} 
-        onClose={() => setGoogleModalOpen(false)} 
-        onLoginSuccess={handleLoginSuccess} 
-      />
     </div>
   );
 }

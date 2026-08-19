@@ -419,7 +419,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                 if (currentUser) {
                   onNavigate('tautan');
                 } else {
-                  onOpenGoogleLogin();
+                  onNavigate('login');
                 }
               }}
             >
@@ -502,7 +502,7 @@ export const LandingView = ({ onNavigate, links = [], analyticsLogs = [], domain
                 if (currentUser) {
                   onNavigate('tautan');
                 } else {
-                  onOpenGoogleLogin();
+                  onNavigate('login');
                 }
               }}
             >

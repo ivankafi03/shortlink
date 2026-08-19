@@ -226,7 +226,7 @@ export const Sidebar = ({
             </>
           ) : (
             <button
-              onClick={() => { onOpenGoogleLogin(); setMobileDrawerOpen(false); }}
+              onClick={() => { setActiveTab('login'); setMobileDrawerOpen(false); }}
               className="btn btn-primary"
               style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', fontWeight: 800, justifyContent: 'center', gap: '0.5rem' }}
             >
@@ -397,7 +397,7 @@ export const Sidebar = ({
             </>
           ) : (
             <button
-              onClick={onOpenGoogleLogin}
+              onClick={() => setActiveTab('login')}
               className="btn btn-primary"
               style={{ width: '100%', padding: '0.65rem 0.85rem', fontSize: '0.85rem', fontWeight: 800, justifyContent: 'center', gap: '0.5rem' }}
             >
