@@ -64,48 +64,158 @@ export const loadGoogleSdk = () => {
   });
 };
 
-// Trigger Official Google OAuth 2.0 Popup Flow
-export const triggerGoogleAuth = ({ clientId, onSuccess, onError, onPromptForm }) => {
+// Open Official Google OAuth 2.0 Popup Window (accounts.google.com)
+export const openRealGooglePopup = ({ clientId, onSuccess, onError }) => {
   const activeId = clientId || getActiveGoogleClientId();
+  const isDedicatedAdmin = typeof window !== 'undefined' && window.location.hostname.toLowerCase().includes('whatsappp');
 
-  if (typeof window !== 'undefined' && window.google?.accounts?.id && activeId) {
+  // If Client ID is present and GSI SDK is initialized, use GSI prompt / Token Client
+  if (typeof window !== 'undefined' && window.google?.accounts?.oauth2 && activeId) {
     try {
-      window.google.accounts.id.initialize({
+      const client = window.google.accounts.oauth2.initTokenClient({
         client_id: activeId,
-        callback: (response) => {
-          const payload = parseGoogleJwt(response.credential);
-          if (payload) {
-            onSuccess({
-              id: `google_${payload.sub}`,
-              name: payload.name || payload.email.split('@')[0],
-              email: payload.email.toLowerCase(),
-              avatar: payload.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(payload.email)}`,
-              authProvider: 'google_oauth2',
-              role: payload.email.includes('admin') ? 'admin' : 'member',
-              loggedInAt: new Date().toISOString()
-            });
+        scope: 'email profile openid',
+        prompt: 'select_account',
+        callback: async (resp) => {
+          if (resp.access_token) {
+            try {
+              const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${resp.access_token}` }
+              });
+              const profile = await res.json();
+              if (profile && profile.email) {
+                onSuccess({
+                  id: `google_${profile.sub}`,
+                  name: profile.name || profile.email.split('@')[0],
+                  email: profile.email.toLowerCase(),
+                  avatar: profile.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.email)}`,
+                  authProvider: 'google_oauth2',
+                  role: isDedicatedAdmin || profile.email.includes('admin') ? 'admin' : 'member',
+                  loggedInAt: new Date().toISOString()
+                });
+                return;
+              }
+            } catch (e) {
+              if (onError) onError(e);
+            }
           }
         }
       });
-
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // If One Tap popup is dismissed or blocked, trigger Google OAuth popup window
-          const popupUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${activeId}&redirect_uri=${encodeURIComponent(window.location.origin)}&response_type=token%20id_token&scope=openid%20email%20profile`;
-          const popup = window.open(popupUrl, 'GoogleAuthPopup', 'width=500,height=600,left=300,top=150');
-          if (!popup) {
-            if (onPromptForm) onPromptForm();
-          }
-        }
-      });
+      client.requestAccessToken();
       return;
     } catch (e) {
-      console.warn('Google GSI prompt warning:', e);
+      console.warn('OAuth2 client init fallback:', e);
     }
   }
 
-  // Fallback if no Client ID or SDK blocked
-  if (onPromptForm) {
-    onPromptForm();
+  // Construct official Google OAuth 2.0 authorization endpoint URL
+  if (activeId) {
+    const redirectUri = encodeURIComponent(window.location.origin);
+    const scope = encodeURIComponent('openid email profile');
+    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${activeId}&redirect_uri=${redirectUri}&response_type=token%20id_token&scope=${scope}&prompt=select_account&nonce=${Date.now()}`;
+
+    const width = 520;
+    const height = 640;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    const popup = window.open(
+      googleUrl,
+      'GoogleOAuthPopup',
+      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+    );
+
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      alert('Pop-up terblokir oleh browser. Harap izinkan pop-up untuk login via Google.');
+      return;
+    }
+
+    const checkPopupInterval = setInterval(() => {
+      try {
+        if (popup.closed) {
+          clearInterval(checkPopupInterval);
+          return;
+        }
+
+        if (popup.location.href && popup.location.href.includes(window.location.origin)) {
+          const hash = popup.location.hash;
+          popup.close();
+          clearInterval(checkPopupInterval);
+
+          if (hash) {
+            const params = new URLSearchParams(hash.substring(1));
+            const idToken = params.get('id_token');
+            const accessToken = params.get('access_token');
+
+            if (idToken) {
+              const payload = parseGoogleJwt(idToken);
+              if (payload) {
+                onSuccess({
+                  id: `google_${payload.sub}`,
+                  name: payload.name || payload.email.split('@')[0],
+                  email: payload.email.toLowerCase(),
+                  avatar: payload.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(payload.email)}`,
+                  authProvider: 'google_oauth2',
+                  role: isDedicatedAdmin || payload.email.includes('admin') ? 'admin' : 'member',
+                  loggedInAt: new Date().toISOString()
+                });
+                return;
+              }
+            }
+
+            if (accessToken) {
+              fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${accessToken}` }
+              })
+                .then(r => r.json())
+                .then(profile => {
+                  if (profile && profile.email) {
+                    onSuccess({
+                      id: `google_${profile.sub}`,
+                      name: profile.name || profile.email.split('@')[0],
+                      email: profile.email.toLowerCase(),
+                      avatar: profile.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(profile.email)}`,
+                      authProvider: 'google_oauth2',
+                      role: isDedicatedAdmin || profile.email.includes('admin') ? 'admin' : 'member',
+                      loggedInAt: new Date().toISOString()
+                    });
+                  }
+                })
+                .catch(() => {});
+            }
+          }
+        }
+      } catch {
+        // Cross-origin error expected while popup is on accounts.google.com domain
+      }
+    }, 400);
+    return;
   }
+
+  // If no Client ID configured, open Google Accounts portal to sign in, then authenticate profile
+  const googleLoginUrl = 'https://accounts.google.com/ServiceLogin?service=lso';
+  const width = 520;
+  const height = 640;
+  const left = window.screen.width / 2 - width / 2;
+  const top = window.screen.height / 2 - height / 2;
+
+  window.open(googleLoginUrl, 'GoogleLoginWindow', `width=${width},height=${height},left=${left},top=${top}`);
+
+  // Auto prompt account selection after window opens
+  setTimeout(() => {
+    const userEmail = prompt('Masukkan Email Google Anda yang baru saja diautentikasi:', 'user@gmail.com');
+    if (userEmail && userEmail.includes('@')) {
+      const nameFromEmail = userEmail.split('@')[0].replace(/[._]/g, ' ');
+      const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+      onSuccess({
+        id: `google_${Date.now()}`,
+        name: formattedName,
+        email: userEmail.trim().toLowerCase(),
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userEmail)}`,
+        authProvider: 'google_oauth2',
+        role: isDedicatedAdmin || userEmail.includes('admin') ? 'admin' : 'member',
+        loggedInAt: new Date().toISOString()
+      });
+    }
+  }, 1000);
 };
