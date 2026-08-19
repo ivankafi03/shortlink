@@ -29,13 +29,48 @@ const checkRateLimit = (clientIp) => {
   return true;
 };
 
-// Cleanup old rate limit entries every 60 seconds
+// ── In-Memory IP Click Cooldown (Protects click counts from spam/k6/flooding) ──
+const ipClickCooldown = new Map();
+const CLICK_COOLDOWN_MS = 30000; // 30 seconds cooldown per IP per link
+
+const isBotUserAgent = (userAgent) => {
+  if (!userAgent || typeof userAgent !== 'string') return false;
+  const ua = userAgent.toLowerCase();
+  return (
+    ua.includes('k6') ||
+    ua.includes('artillery') ||
+    ua.includes('locust') ||
+    ua.includes('wrk') ||
+    ua.includes('autocannon') ||
+    ua.includes('vegeta') ||
+    ua.includes('jmeter') ||
+    ua.includes('apachebench') ||
+    ua.includes('gatling') ||
+    ua.includes('python') ||
+    ua.includes('curl') ||
+    ua.includes('wget') ||
+    ua.includes('go-http') ||
+    ua.includes('scrapy') ||
+    ua.includes('aiohttp') ||
+    ua.includes('headless') ||
+    ua.includes('puppeteer') ||
+    ua.includes('playwright') ||
+    ua.includes('postman')
+  );
+};
+
+// Cleanup old rate limit & click cooldown entries every 60 seconds
 if (!global.__rateLimitCleanup) {
   global.__rateLimitCleanup = setInterval(() => {
     const now = Date.now();
     for (const [ip, data] of ipRequestCounts.entries()) {
       if (now - data.startTime > RATE_LIMIT_WINDOW_MS * 2) {
         ipRequestCounts.delete(ip);
+      }
+    }
+    for (const [key, timestamp] of ipClickCooldown.entries()) {
+      if (now - timestamp > CLICK_COOLDOWN_MS * 2) {
+        ipClickCooldown.delete(key);
       }
     }
   }, 60000);
@@ -123,7 +158,21 @@ export default async function handler(req, res) {
       const { action, key, value, data, logEntry } = req.body || {};
 
       if (action === 'record_click' && logEntry) {
+        const userAgentHeader = req.headers['user-agent'] || logEntry.userAgent || '';
+        if (isBotUserAgent(userAgentHeader) || logEntry.isBot) {
+          return res.status(200).json({ success: false, reason: 'bot_click_ignored' });
+        }
+
         const linkIdentifier = logEntry.linkId || logEntry.shortCode;
+        const cooldownKey = `${clientIp}_${linkIdentifier}`;
+        const now = Date.now();
+        const lastClick = ipClickCooldown.get(cooldownKey);
+
+        // Click Cooldown: Only count 1 click per IP every 30 seconds
+        if (lastClick && now - lastClick < CLICK_COOLDOWN_MS) {
+          return res.status(200).json({ success: true, ignored: 'duplicate_cooldown' });
+        }
+        ipClickCooldown.set(cooldownKey, now);
 
         // 1. Atomically update links clicks in Postgres
         const linkRows = await sql`SELECT value FROM app_store WHERE key = 'vidy_links_v1';`;
