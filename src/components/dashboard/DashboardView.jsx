@@ -17,6 +17,7 @@ import {
   QrCode,
   Mail,
   User,
+  Users,
   Filter,
   LayoutGrid,
   List,
