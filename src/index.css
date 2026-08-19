@@ -5,19 +5,18 @@
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'Fira Code', monospace;
 
-  /* Neumorphism Light Theme Colors */
-  --bg-app: #eef2f5;
-  --bg-surface: #eef2f5;
-  --bg-inset: #e2e8ed;
+  /* Modern Clean Theme Colors & Soft Shadows (Zero White Edge Glow) */
+  --bg-app: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-inset: #f8fafc;
   
-  --shadow-dark: #c1cbd4;
-  --shadow-light: #ffffff;
+  --shadow-dark: rgba(15, 23, 42, 0.08);
 
   --text-main: #0f172a;
   --text-muted: #334155;
   --text-dim: #64748b;
 
-  --border-subtle: rgba(193, 203, 212, 0.6);
+  --border-subtle: #e2e8f0;
   --border-strong: #cbd5e1;
 
   --primary: #fe6081;
@@ -29,10 +28,10 @@
   --accent-amber: #d97706;
   --accent-cyan: #0284c7;
 
-  --neu-shadow-flat: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
-  --neu-shadow-hover: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-  --neu-shadow-pressed: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-  --neu-shadow-sm: 3px 3px 7px var(--shadow-dark), -3px -3px 7px var(--shadow-light);
+  --neu-shadow-flat: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --neu-shadow-hover: 0 10px 24px rgba(15, 23, 42, 0.09), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --neu-shadow-pressed: inset 0 2px 4px rgba(15, 23, 42, 0.06);
+  --neu-shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.04);
 
   --radius-sm: 8px;
   --radius-md: 14px;

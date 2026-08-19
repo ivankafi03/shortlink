@@ -216,9 +216,9 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
           .nb-dot:nth-child(3){animation-delay:.3s}
         `}</style>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-          <span className="nb-dot" style={{ background: '#fe6081', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
-          <span className="nb-dot" style={{ background: '#ff8ca5', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
-          <span className="nb-dot" style={{ background: '#0f172a', boxShadow: '3px 3px 6px #c1cbd4,-3px -3px 6px #fff' }}></span>
+          <span className="nb-dot" style={{ background: '#fe6081', boxShadow: '0 2px 6px rgba(254,96,129,0.3)' }}></span>
+          <span className="nb-dot" style={{ background: '#ff8ca5', boxShadow: '0 2px 6px rgba(255,140,165,0.3)' }}></span>
+          <span className="nb-dot" style={{ background: '#0f172a', boxShadow: '0 2px 6px rgba(15,23,42,0.3)' }}></span>
         </div>
         <span style={{ fontSize: '0.85rem', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#fe6081' }}>
           REDIRECTING…
@@ -236,15 +236,15 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
 
   return (
     <div style={{
-      minHeight: '100vh', background: '#eef2f5',
+      minHeight: '100vh', background: '#f1f5f9',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       padding: '24px', fontFamily: "'Outfit', 'Plus Jakarta Sans', sans-serif"
     }}>
       <div style={{
-        maxWidth: '420px', width: '100%', background: '#eef2f5',
-        border: '1px solid rgba(255,255,255,0.8)', borderRadius: '20px',
+        maxWidth: '420px', width: '100%', background: '#ffffff',
+        border: '1px solid #e2e8f0', borderRadius: '20px',
         padding: '2rem 1.5rem', textAlign: 'center',
-        boxShadow: '6px 6px 14px #c1cbd4, -6px -6px 14px #ffffff',
+        boxShadow: '0 12px 32px rgba(15, 23, 42, 0.08)',
         display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center'
       }}>
         {/* Logo & Domain */}
@@ -277,7 +277,7 @@ export const PublicLinkView = ({ shortCode, link: initialLink, onRecordClick }) 
             width: '100%', padding: '0.85rem 1.25rem', borderRadius: '12px',
             background: '#fe6081', color: '#fff', border: 'none',
             fontSize: '0.925rem', fontWeight: 800, cursor: 'pointer',
-            boxShadow: '4px 4px 10px #c1cbd4,-4px -4px 10px #fff',
+            boxShadow: '0 4px 14px rgba(254, 96, 129, 0.35)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
           }}
         >
